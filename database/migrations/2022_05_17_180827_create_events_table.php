@@ -1,13 +1,11 @@
 <?php
 
-use App\Models\EmployerStatus;
-use App\Models\Organization;
-use App\Models\User;
+use App\Models\Audience;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEmployersTable extends Migration
+class CreateEventsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,12 +14,13 @@ class CreateEmployersTable extends Migration
      */
     public function up()
     {
-        Schema::create('employers', function (Blueprint $table) {
+        Schema::create('events', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
-            $table->foreignIdFor(Organization::class);
-            $table->foreignIdFor(EmployerStatus::class);
+            $table->string('title', 45);
+            $table->string('img_path')->nullable();
+            $table->dateTime('date');
             $table->string('desc', 1000);
+            $table->foreignIdFor(Audience::class);
             $table->timestamps();
         });
     }
@@ -33,6 +32,6 @@ class CreateEmployersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('employers');
+        Schema::dropIfExists('events');
     }
 }

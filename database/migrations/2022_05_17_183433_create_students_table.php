@@ -1,12 +1,11 @@
 <?php
 
-use App\Models\Speciality;
-use App\Models\Student;
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStudentsSpecialitiesTable extends Migration
+class CreateStudentsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,10 +14,10 @@ class CreateStudentsSpecialitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('students_specialities', function (Blueprint $table) {
+        Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Student::class);
-            $table->foreignIdFor(Speciality::class);
+            $table->string('desc', 1000)->nullable();
+            $table->foreignIdFor(User::class);
             $table->timestamps();
         });
     }
@@ -30,6 +29,6 @@ class CreateStudentsSpecialitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('students_specialities');
+        Schema::dropIfExists('students');
     }
 }

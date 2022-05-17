@@ -1,7 +1,7 @@
 <?php
 
+use App\Models\VacancyType;
 use App\Models\Employer;
-use App\Models\Stage;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,11 +17,15 @@ class CreateVacanciesTable extends Migration
     {
         Schema::create('vacancies', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 45);
+            $table->string('title', 64);
             $table->string('desc', 1000);
-            $table->decimal('payment', 10);
+            $table->string('img_path')->nullable();
+            $table->string('link', 255);
+            $table->decimal('salary', 10);
+            $table->string('workplace', 255);
+            $table->string('level', 64);
+            $table->foreignIdFor(VacancyType::class);
             $table->foreignIdFor(Employer::class);
-            $table->foreignIdFor(Stage::class);
             $table->timestamps();
         });
     }

@@ -1,11 +1,12 @@
 <?php
 
-use App\Models\Faculty;
+use App\Models\Event;
+use App\Models\Employer;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSpecialitiesTable extends Migration
+class CreatePartnersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,11 +15,10 @@ class CreateSpecialitiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('specialities', function (Blueprint $table) {
+        Schema::create('partners', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 45)->unique();
-            $table->string('desc', 1000);
-            $table->foreignIdFor(Faculty::class);
+            $table->foreignIdFor(Event::class);
+            $table->foreignIdFor(Employer::class);
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ class CreateSpecialitiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('specialities');
+        Schema::dropIfExists('partners');
     }
 }

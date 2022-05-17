@@ -1,13 +1,12 @@
 <?php
 
-use App\Models\ApplicationStatus;
-use App\Models\Student;
+use App\Models\Faculty;
 use App\Models\Vacancy;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateApplicationsTable extends Migration
+class CreateFacultiesVacanciesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,12 +15,10 @@ class CreateApplicationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('applications', function (Blueprint $table) {
+        Schema::create('faculties_vacancies', function (Blueprint $table) {
             $table->id();
-            $table->string('desc', 1000);
-            $table->foreignIdFor(Student::class);
+            $table->foreignIdFor(Faculty::class);
             $table->foreignIdFor(Vacancy::class);
-            $table->foreignIdFor(ApplicationStatus::class);
             $table->timestamps();
         });
     }
@@ -33,6 +30,6 @@ class CreateApplicationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('applications');
+        Schema::dropIfExists('faculties_vacancies');
     }
 }

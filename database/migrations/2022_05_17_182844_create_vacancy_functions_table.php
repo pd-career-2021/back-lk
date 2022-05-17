@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrganizationsTable extends Migration
+class CreateVacancyFunctionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateOrganizationsTable extends Migration
      */
     public function up()
     {
-        Schema::create('organizations', function (Blueprint $table) {
+        Schema::create('vacancy_functions', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 45);
-            $table->string('full_name', 100)->unique();
-            $table->string('desc', 1000);
+            $table->string('title', 64)->unique();
             $table->timestamps();
         });
     }
@@ -29,6 +27,6 @@ class CreateOrganizationsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('organizations');
+        Schema::dropIfExists('vacancy_functions');
     }
 }

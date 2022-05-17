@@ -15,8 +15,9 @@ class CreateFacultiesTable extends Migration
     {
         Schema::create('faculties', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 45)->unique();
+            $table->string('title', 128)->unique();
             $table->string('desc', 1000);
+            $table->string('img_path')->nullable();
             $table->timestamps();
         });
     }
