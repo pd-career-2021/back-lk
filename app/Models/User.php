@@ -20,10 +20,11 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'nickname',
+        'email',
         'password',
         'surname',
         'name',
+        'img_path',
         'sex',
     ];
 
@@ -40,6 +41,11 @@ class User extends Authenticatable
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function faculty(): HasOne
+    {
+        return $this->hasOne(Faculty::class);
     }
 
     public function student(): HasOne

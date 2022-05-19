@@ -5,9 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class Faculty extends Model
+class Industry extends Model
 {
     use HasFactory;
 
@@ -17,18 +16,11 @@ class Faculty extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'desc',
-        'img_path',
+        'title',
     ];
 
-    public function user(): HasMany
+    public function employers(): BelongsToMany
     {
-        return $this->hasMany(User::class);
-    }
-
-    public function vacancies(): BelongsToMany
-    {
-        return $this->belongsToMany(Vacancy::class)->using(FacultyVacancy::class);
+        return $this->belongsToMany(Employer::class)->using(CompanyIndustry::class);
     }
 }

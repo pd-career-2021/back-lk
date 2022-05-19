@@ -17,9 +17,13 @@ class Vacancy extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'title',
         'desc',
-        'payment',
+        'img_path',
+        'link',
+        'salary',
+        'workplace',
+        'level'
     ];
 
     public function employer(): BelongsTo
@@ -41,4 +45,15 @@ class Vacancy extends Model
             'speciality_id'
         );
     }
+
+    public function faculties(): BelongsToMany
+    {
+        return $this->belongsToMany(Faculty::class)->using(FacultyVacancy::class);
+    }
+
+    public function functions(): BelongsToMany
+    {
+        return $this->belongsToMany(VacancyFunction::class)->using(VacanciesFunctions::class);
+    }
+
 }
