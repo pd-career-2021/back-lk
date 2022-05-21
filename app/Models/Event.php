@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Event extends Model
 {
@@ -18,9 +18,9 @@ class Event extends Model
         'img_path',
     ];
 
-    public function audience(): HasOne
+    public function audience(): BelongsTo
     {
-        return $this->hasOne(Audience::class);
+        return $this->belongsTo(Audience::class);
     }
 
     public function employers(): BelongsToMany

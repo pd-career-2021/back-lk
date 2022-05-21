@@ -31,19 +31,9 @@ class Vacancy extends Model
         return $this->belongsTo(Employer::class);
     }
 
-    public function stage(): BelongsTo
+    public function vacancyType(): BelongsTo
     {
-        return $this->belongsTo(Stage::class);
-    }
-
-    public function speciality(): BelongsToMany
-    {
-        return $this->belongsToMany(
-            Speciality::class,
-            'vacancies_specialities',
-            'vacancy_id',
-            'speciality_id'
-        );
+        return $this->belongsTo(VacancyType::class);
     }
 
     public function faculties(): BelongsToMany

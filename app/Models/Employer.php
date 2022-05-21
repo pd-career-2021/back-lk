@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Employer extends Model
 {
@@ -30,9 +29,9 @@ class Employer extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function companyType(): HasOne
+    public function companyType(): BelongsTo
     {
-        return $this->hasOne(CompanyType::class);
+        return $this->belongsTo(CompanyType::class);
     }
 
     public function news(): HasMany
@@ -43,18 +42,6 @@ class Employer extends Model
     public function industries(): BelongsToMany
     {
         return $this->belongsToMany(Industry::class)->using(CompanyIndustry::class);
-    }
-
-    ///Удалить??
-
-    public function organization(): BelongsTo
-    {
-        return $this->belongsTo(Organization::class);
-    }
-
-    public function employer_status(): BelongsTo
-    {
-        return $this->belongsTo(EmployerStatus::class);
     }
 
     public function event(): BelongsToMany

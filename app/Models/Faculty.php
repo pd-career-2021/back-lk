@@ -17,7 +17,7 @@ class Faculty extends Model
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
+        'title',
         'desc',
         'img_path',
     ];
