@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class VacancyType extends Model
 {
     use HasFactory;
-
+    protected $table = 'vacancies_types';
     /**
      * The attributes that are mass assignable.
      *

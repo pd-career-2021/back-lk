@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
+use App\Models\Faculty;
 
 class AuthController extends Controller
 {
@@ -17,21 +18,24 @@ class AuthController extends Controller
         $fields = $request->validate([
             'surname' => 'string|max:45',
             'name' => 'string|max:45',
-            'nickname' => 'required|string|max:45|unique:users,nickname',
+            'email' => 'required|email|unique:users,email',
             'sex' => 'required|string|in:male,female',
-            'password' => 'required|string|confirmed'
+            'password' => 'required|string|confirmed',
+            'faculty_id' => 'required|integer',
         ]);
 
         $user = new User([
             'surname' => $fields['surname'],
             'name' => $fields['name'],
-            'nickname' => $fields['nickname'],
+            'email' => $fields['email'],
             'sex' => $fields['sex'],
-            'password' => bcrypt($fields['password'])
+            'password' => bcrypt($fields['password']),
         ]);
 
         $role = Role::find(4);
         $user->role()->associate($role);
+        $faculty = Faculty::find($fields['faculty_id']);
+        $user->faculty()->associate($faculty);
         $user->save();
 
         $token = $user->createToken('polytoken', ['user'])->plainTextToken;
@@ -46,11 +50,11 @@ class AuthController extends Controller
 
     public function login(Request $request) {
         $fields = $request->validate([
-            'nickname' => 'required|string|max:45',
+            'email' => 'required|email',
             'password' => 'required|string'
         ]);
 
-        $user = User::where('nickname', $fields['nickname'])->first();
+        $user = User::where('email', $fields['email'])->first();
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response([
@@ -89,26 +93,28 @@ class AuthController extends Controller
         $fields = $request->validate([
             'surname' => 'string|max:45',
             'name' => 'string|max:45',
-            'nickname' => 'required|string|max:45|unique:users,nickname',
+            'email' => 'required|email|unique:users,email',
             'sex' => 'required|string|in:male,female',
-            'password' => 'required|string|confirmed'
+            'password' => 'required|string|confirmed',
+            'faculty_id' => 'integer'
         ]);
 
         $user = new User([
             'surname' => $fields['surname'],
             'name' => $fields['name'],
-            'nickname' => $fields['nickname'],
+            'email' => $fields['email'],
             'sex' => $fields['sex'],
-            'password' => bcrypt($fields['password'])
+            'password' => bcrypt($fields['password']),
+            'faculty_id' => $fields['faculty_id'],
         ]);
-
-        Role::create(['name' => 'Admin', 'desc' => 'Роль администратора']);
-        Role::create(['name' => 'Student', 'desc' => 'Роль студента']);
-        Role::create(['name' => 'Employer', 'desc' => 'Роль представителя организации']);
-        Role::create(['name' => 'User', 'desc' => 'Временная роль']);
-
+        
         $role = Role::find(1);
         $user->role()->associate($role);
+
+        Faculty::create(['title' => 'Факультет информационных технологий', 'desc' => 'Описание факультета']);
+        $faculty = Faculty::find(1);
+        $user->faculty()->associate($faculty);
+
         $user->save();
 
         $token = $user->createToken('polytoken', ['admin'])->plainTextToken;

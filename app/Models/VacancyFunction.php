@@ -21,6 +21,12 @@ class VacancyFunction extends Model
 
     public function vacancies(): BelongsToMany
     {
-        return $this->belongsToMany(Vacancy::class)->using(VacanciesFunctions::class);
+        // return $this->belongsToMany(Vacancy::class)->using(VacanciesFunctions::class);
+        return $this->belongsToMany(
+            Vacancy::class,
+            'vacancies_functions',
+            'vacancy_function_id',
+            'vacancy_id'
+        );
     }
 }

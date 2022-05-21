@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 class CreateRolesTable extends Migration
 {
@@ -19,6 +20,13 @@ class CreateRolesTable extends Migration
             $table->string('desc', 1000)->nullable();
             $table->timestamps();
         });
+
+        DB::table('roles')->insert(
+            ['name' => 'Admin', 'desc' => 'Роль администратора'],
+            ['name' => 'Student', 'desc' => 'Роль студента'],
+            ['name' => 'Employer', 'desc' => 'Роль представителя организации'],
+            ['name' => 'User', 'desc' => 'Временная роль']
+        );
     }
 
     /**

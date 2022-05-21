@@ -19,6 +19,17 @@ class Application extends Model
         'desc',
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'student_id',
+        'vacancy_id',
+        'application_status_id',
+    ];
+
     public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);

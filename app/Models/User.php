@@ -36,6 +36,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'img_path',
+        'role_id',
+        'faculty_id'
     ];
 
     public function role(): BelongsTo

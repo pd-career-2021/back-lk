@@ -29,6 +29,12 @@ class Faculty extends Model
 
     public function vacancies(): BelongsToMany
     {
-        return $this->belongsToMany(Vacancy::class)->using(FacultyVacancy::class);
+        // return $this->belongsToMany(Vacancy::class)->using(FacultyVacancy::class);
+        return $this->belongsToMany(
+            Vacancy::class,
+            'faculties_vacancies',
+            'vacancy_id',
+            'faculty_id'
+        );
     }
 }

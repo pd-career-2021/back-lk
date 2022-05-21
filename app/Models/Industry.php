@@ -21,6 +21,12 @@ class Industry extends Model
 
     public function employers(): BelongsToMany
     {
-        return $this->belongsToMany(Employer::class)->using(CompanyIndustry::class);
+        // return $this->belongsToMany(Employer::class)->using(CompanyIndustry::class);
+        return $this->belongsToMany(
+            Industry::class,
+            'company_industries',
+            'industry_id',
+            'employer_id'
+        );
     }
 }

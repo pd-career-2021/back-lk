@@ -9,11 +9,12 @@ use App\Models\ApplicationStatus;
 use App\Models\Vacancy;
 use App\Models\Student;
 use App\Models\Employer;
+use Illuminate\Support\Facades\Validator;
 
 class ApplicationController extends Controller
 {
     use ApiHelpers;
-
+    
     /**
      * Display a listing of the resource.
      *
@@ -21,18 +22,24 @@ class ApplicationController extends Controller
      */
     public function index()
     {
-        return Application::all();
+        $applications = Application::all();
+        foreach($applications as $application) {
+            $application['student'] = $application->student()->get();
+            $application['vacancy'] = $application->vacancy()->get();
+            $application['application_status'] = $application->application_status()->get();
+        }
+        
+        return response()->json($applications);
     }
-
+    
     public function indexStudentApplications(Request $request)
     {
         return Application::where('student_id', Student::where('user_id', $request->user()->id)->first()->id)->get();
     }
-
+    
     public function indexVacanciesApplications(Request $request)
     {
-        $user_id = $request->user()->id;
-        $employer_id = Employer::where('user_id', $user_id)->first()->id;
+        $employer_id = Employer::where('user_id', $request->user()->id)->first()->id;
         $vacancy_ids = array();
         foreach (Vacancy::where('employer_id', $employer_id)->get() as $vacancy) {
             array_push($vacancy_ids, $vacancy->id);
@@ -44,7 +51,7 @@ class ApplicationController extends Controller
         
         return $applications;
     }
-
+    
     /**
      * Store a newly created resource in storage.
      *
@@ -53,15 +60,24 @@ class ApplicationController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'desc' => 'required|string|max:1000',
+            'student_id' => 'required|integer',
+            'vacancy_id' => 'required|integer',
+            'application_status_id' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+            return $validator->errors()->all();
+        }
+        
         $application = new Application($request->all());
         $user = $request->user();
-
-        if ($this->isEmployer($user)) {
+        if ($this->isStudent($user)) {
             $student = Student::find($user->id);
         } else {
             $student = Student::find($request->input('student_id'));
         }
-
+        
         if(!$student) {
             return response([
                 'message' => 'Student not found.'
@@ -78,7 +94,7 @@ class ApplicationController extends Controller
         } else {
             $application->vacancy()->associate($vacancy);
         }
-
+        
         $application_status = ApplicationStatus::find($request->input('application_status_id'));
         if(!$application_status) {
             return response([
@@ -91,7 +107,7 @@ class ApplicationController extends Controller
         $application->save();
         return $application;
     }
-
+    
     /**
      * Display the specified resource.
      *
@@ -100,9 +116,14 @@ class ApplicationController extends Controller
      */
     public function show($id)
     {
-        return Application::find($id);
+        $application = Application::find($id);
+        $application['student'] = $application->student()->get();
+        $application['vacancy'] = $application->vacancy()->get();
+        $application['application_status'] = $application->application_status()->get();
+        
+        return $application;
     }
-
+    
     /**
      * Update the specified resource in storage.
      *
@@ -112,6 +133,16 @@ class ApplicationController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'desc' => 'string|max:1000',
+            'student_id' => 'integer',
+            'vacancy_id' => 'integer',
+            'application_status_id' => 'integer',
+        ]);
+        if ($validator->fails()) {
+            return $validator->errors()->all();
+        }
+        
         $user = $request->user();
         
         if ($this->isEmployer($user)) {
@@ -137,7 +168,7 @@ class ApplicationController extends Controller
                 }
             }
         }
-
+        
         $application = Application::find($id);
         if ($request->has('student_id')) {
             $student = Student::find($request->input('student_id'));
@@ -173,11 +204,14 @@ class ApplicationController extends Controller
         }
         
         $application->update($request->all());
-
+        
         $application->save();
+        $application['student'] = $application->student()->get();
+        $application['vacancy'] = $application->vacancy()->get();
+        $application['application_status'] = $application->application_status()->get();
         return $application;
     }
-
+    
     /**
      * Remove the specified resource from storage.
      *

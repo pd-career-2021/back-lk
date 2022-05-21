@@ -24,6 +24,16 @@ class Employer extends Model
         'desc'
     ];
 
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'company_type_id',
+        'img_path',
+    ];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -41,7 +51,13 @@ class Employer extends Model
 
     public function industries(): BelongsToMany
     {
-        return $this->belongsToMany(Industry::class)->using(CompanyIndustry::class);
+        // return $this->belongsToMany(Industry::class)->using(CompanyIndustry::class);
+        return $this->belongsToMany(
+            Industry::class,
+            'company_industries',
+            'employer_id',
+            'industry_id'
+        );
     }
 
     public function event(): BelongsToMany
