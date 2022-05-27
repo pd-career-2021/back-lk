@@ -11,10 +11,25 @@ class Event extends Model
 {
     use HasFactory;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'title',
         'date',
         'desc',
+        'img_path',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'audience_id',
         'img_path',
     ];
 
@@ -25,6 +40,6 @@ class Event extends Model
 
     public function employers(): BelongsToMany
     {
-        return $this->belongsToMany(Employer::class)->using(Partner::class);
+        return $this->belongsToMany(Employer::class, 'partners')->using(Partner::class);
     }
 }

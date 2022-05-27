@@ -27,10 +27,10 @@ class VacancyController extends Controller
         foreach($vacancies as $vacancy) {
             $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
             $vacancy['image'] = asset('storage/'.$path);
-            $vacancy['vacancy_type'] = $vacancy->vacancyType()->get();
-            $vacancy['employer'] = $vacancy->employer()->get();
-            $vacancy['faculties'] = $vacancy->faculties()->get();
-            $vacancy['functions'] = $vacancy->functions()->get();
+            $vacancy['vacancy_type'] = $vacancy->vacancyType;
+            $vacancy['employer'] = $vacancy->employer;
+            $vacancy['faculties'] = $vacancy->faculties;
+            $vacancy['functions'] = $vacancy->functions;
         }
         
         return response()->json($vacancies);
@@ -129,10 +129,10 @@ class VacancyController extends Controller
         $vacancy = Vacancy::find($id);
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
         $vacancy['image'] = asset('storage/'.$path);
-        $vacancy['vacancy_type'] = $vacancy->vacancyType()->get();
-        $vacancy['employer'] = $vacancy->employer()->get();
-        $vacancy['faculties'] = $vacancy->faculties()->get();
-        $vacancy['functions'] = $vacancy->functions()->get();
+        $vacancy['vacancy_type'] = $vacancy->vacancyType;
+        $vacancy['employer'] = $vacancy->employer;
+        $vacancy['faculties'] = $vacancy->faculties;
+        $vacancy['functions'] = $vacancy->functions;
         
         return response()->json($vacancy);
     }
@@ -234,10 +234,10 @@ class VacancyController extends Controller
         $vacancy->save();
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
         $vacancy['image'] = asset('storage/'.$path);
-        $vacancy['vacancy_type'] = $vacancy->vacancyType()->get();
-        $vacancy['employer'] = $vacancy->employer()->get();
-        $vacancy['faculties'] = $vacancy->faculties()->get();
-        $vacancy['functions'] = $vacancy->functions()->get();
+        $vacancy['vacancy_type'] = $vacancy->vacancyType;
+        $vacancy['employer'] = $vacancy->employer;
+        $vacancy['faculties'] = $vacancy->faculties;
+        $vacancy['functions'] = $vacancy->functions;
         
         return $vacancy;
     }
@@ -245,6 +245,7 @@ class VacancyController extends Controller
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */

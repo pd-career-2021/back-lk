@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Validator;
 class UserController extends Controller
 {
     use ApiHelpers;
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -22,16 +22,16 @@ class UserController extends Controller
     public function index()
     {
         $users = User::all();
-        foreach($users as $user) {
+        foreach ($users as $user) {
             $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-            $user['image'] = asset('storage/'.$path);
+            $user['image'] = asset('storage/' . $path);
             $user['role'] = $user->role;
             $user['faculty'] = $user->faculty;
         }
-        
+
         return response()->json($users);
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -53,7 +53,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
-        
+
         $user = new User([
             'name' => $request->input('name'),
             'surname' => $request->input('surname'),
@@ -61,18 +61,18 @@ class UserController extends Controller
             'password' => bcrypt($request->input('password')),
             'sex' => $request->input('sex'),
         ]);
-        
+
         $role = Role::find($request->input('role_id'));
-        if(!$role) {
+        if (!$role) {
             return response([
                 'message' => 'Role not found.'
             ], 401);
         } else {
             $user->role()->associate($role);
         }
-        
+
         $faculty = Faculty::find($request->input('faculty_id'));
-        if(!$faculty) {
+        if (!$faculty) {
             return response([
                 'message' => 'Faculty not found.'
             ], 401);
@@ -80,17 +80,17 @@ class UserController extends Controller
             $user->faculty()->associate($faculty);
         }
         $user->save();
-        
-        if($request->hasFile('image')) {
-            $user->img_path = $request->file('image')->store('img/u'.$user->id, 'public');
+
+        if ($request->hasFile('image')) {
+            $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
         }
         $user->save();
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/'.$path);
-        
+        $user['image'] = asset('storage/' . $path);
+
         return $user;
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -101,13 +101,13 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/'.$path);
+        $user['image'] = asset('storage/' . $path);
         $user['role'] = $user->role;
         $user['faculty'] = $user->faculty;
-        
+
         return response()->json($user);
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -130,7 +130,7 @@ class UserController extends Controller
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
-        
+
         $auth_user = $request->user();
         $user = User::find($id);
         if (!$this->isAdmin($auth_user)) {
@@ -142,7 +142,7 @@ class UserController extends Controller
         } else {
             if ($request->has('role_id')) {
                 $role = Role::find($request->input('role_id'));
-                if(!$role) {
+                if (!$role) {
                     return response([
                         'message' => 'Role not found.'
                     ], 401);
@@ -151,20 +151,20 @@ class UserController extends Controller
                 }
             }
         }
-        
+
         $user->update($request->all());
-        if($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
             Storage::disk('public')->delete($user->img_path);
-            $user->img_path = $request->file('image')->store('img/u'.$id, 'public');
+            $user->img_path = $request->file('image')->store('img/u' . $id, 'public');
         }
-        
+
         $user->save();
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/'.$path);
-        
+        $user['image'] = asset('storage/' . $path);
+
         return $user;
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -176,7 +176,7 @@ class UserController extends Controller
         Storage::disk('public')->delete(User::find($id)->img_path);
         return User::destroy($id);
     }
-    
+
     /**
      * Search for a email.
      *
