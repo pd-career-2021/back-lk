@@ -2,7 +2,7 @@ version: "3"
 
 services:
     nginx:
-        container_name: ${PROJECT_NAME}-nginx
+        container_name: backend-dev-nginx
         image: nginx:1.17
         environment:
             TZ: "Europe/Moscow"
@@ -17,7 +17,7 @@ services:
             - dev
 
     php-fpm:
-        container_name: ${PROJECT_NAME}-php
+        container_name: backend-dev-php
         build:
             context: .
             dockerfile: docker/php-fpm/Dockerfile
@@ -44,7 +44,7 @@ services:
             - dev
 
     percona:
-        container_name: ${PROJECT_NAME}-db
+        container_name: backend-dev-db
         image: percona:8.0
         ports:
             - "3306:3306"

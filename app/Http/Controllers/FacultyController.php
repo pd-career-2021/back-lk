@@ -25,6 +25,17 @@ class FacultyController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            
+            'title' => 'required|string|max:128',
+            'desc' => 'required|string|max:1000',
+            'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            
+        ]);
+        if ($validator->fails()) {
+        return $validator->errors()->all();
+        }
+
         return Faculty::create($request->all());
     }
 
@@ -48,6 +59,17 @@ class FacultyController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            
+            'title' => 'string|max:128',
+            'desc' => 'string|max:1000',
+            'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+            
+        ]);
+        if ($validator->fails()) {
+        return $validator->errors()->all();
+        }
+
         $faculty = Faculty::find($id);
         $faculty->update($request->all());
         return $faculty;

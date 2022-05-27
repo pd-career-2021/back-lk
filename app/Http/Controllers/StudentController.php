@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Library\ApiHelpers;
 use Illuminate\Http\Request;
+use App\Http\Library\ApiHelpers;
 use App\Models\Student;
 use App\Models\User;
-use App\Models\Speciality;
 
 class StudentController extends Controller
 {
@@ -30,6 +29,14 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'desc' => 'required|string|max:1000',
+            'id_users' => 'required|integer',
+        ]);
+        if ($validator->fails()) {
+        return $validator->errors()->all();
+        }
+
         $student = new Student($request->all());
         $user = User::find($request->input('user_id'));
         if ($user) {
@@ -75,6 +82,14 @@ class StudentController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'desc' => 'string|max:1000',
+            'id_users' => 'integer',
+        ]);
+        if ($validator->fails()) {
+        return $validator->errors()->all();
+        }
+
         $student = Student::find($id);
         $user = $request->user();
         if ($this->isStudent($user)) {
