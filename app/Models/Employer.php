@@ -51,17 +51,11 @@ class Employer extends Model
 
     public function industries(): BelongsToMany
     {
-        // return $this->belongsToMany(Industry::class)->using(CompanyIndustry::class);
-        return $this->belongsToMany(
-            Industry::class,
-            'company_industries',
-            'employer_id',
-            'industry_id'
-        );
+        return $this->belongsToMany(Industry::class, 'company_industries')->using(CompanyIndustry::class);
     }
 
     public function event(): BelongsToMany
     {
-        return $this->belongsToMany(Event::class)->using(Partner::class);
+        return $this->belongsToMany(Event::class, 'partners')->using(Partner::class);
     }
 }

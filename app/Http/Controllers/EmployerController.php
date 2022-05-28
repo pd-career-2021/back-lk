@@ -26,8 +26,8 @@ class EmployerController extends Controller
         foreach($employers as $employer) {
             $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
             $employer['image'] = asset('storage/'.$path);
-            $employer['company_type'] = $employer->companyType()->get();
-            $employer['industries'] = $employer->industries()->get();
+            $employer['company_type'] = $employer->companyType;
+            $employer['industries'] = $employer->industries;
         }
         
         return response()->json($employers);
@@ -104,8 +104,8 @@ class EmployerController extends Controller
         $employer = Employer::find($id);
         $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
         $employer['image'] = asset('storage/'.$path);
-        $employer['company_type'] = $employer->companyType()->get();
-        $employer['industries'] = $employer->industries()->get();
+        $employer['company_type'] = $employer->companyType;
+        $employer['industries'] = $employer->industries;
         
         return response()->json($employer);
     }

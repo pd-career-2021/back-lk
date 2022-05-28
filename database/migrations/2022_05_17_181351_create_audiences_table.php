@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAudienceTable extends Migration
+class CreateAudiencesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAudienceTable extends Migration
      */
     public function up()
     {
-        Schema::create('audience', function (Blueprint $table) {
+        Schema::create('audiences', function (Blueprint $table) {
             $table->id();
             $table->string('name', 45)->unique();
             $table->timestamps();
@@ -27,6 +27,6 @@ class CreateAudienceTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('audience');
+        Schema::dropIfExists('audiences');
     }
 }
