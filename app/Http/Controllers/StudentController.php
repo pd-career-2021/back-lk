@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Library\ApiHelpers;
 use App\Models\Student;
 use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -18,7 +19,12 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return Student::all();
+        $students = Student::all();
+        foreach ($students as $student) {
+            $student->user;
+        }
+
+        return $students;
     }
 
     /**
@@ -31,10 +37,10 @@ class StudentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'desc' => 'required|string|max:1000',
-            'id_users' => 'required|integer',
+            'user_id' => 'required|integer',
         ]);
         if ($validator->fails()) {
-        return $validator->errors()->all();
+            return $validator->errors()->all();
         }
 
         $student = new Student($request->all());
@@ -48,16 +54,8 @@ class StudentController extends Controller
                 $student->user()->associate($user);
             }
         }
-
-        $student->user()->associate($user);
         $student->save();
-
-        $validated = array();
-        foreach ($request->input('speciality_ids') as $id) {
-            if (Speciality::find($id))
-                array_push($validated, $id);
-        }
-        $student->speciality()->sync($validated);
+        $student->user;
 
         return $student;
     }
@@ -70,7 +68,10 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        return Student::find($id);
+        $student = Student::find($id);
+        $student->user;
+
+        return $student;
     }
 
     /**
@@ -84,20 +85,21 @@ class StudentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'desc' => 'string|max:1000',
-            'id_users' => 'integer',
+            'user_id' => 'integer',
         ]);
         if ($validator->fails()) {
-        return $validator->errors()->all();
+            return $validator->errors()->all();
         }
 
         $student = Student::find($id);
         $user = $request->user();
+
         if ($this->isStudent($user)) {
             $student_id = Student::where('user_id', $user->id)->first()->id;
             if ($id == $student_id) {
                 $student->update($request->all());
-
                 $student->save();
+                $student->user;
                 return $student;
             } else {
                 return response([
@@ -105,7 +107,7 @@ class StudentController extends Controller
                 ], 401);
             }
         }
-        
+
         if ($request->has('user_id')) {
             $user = User::find($request->input('user_id'));
             if ($user) {
@@ -118,19 +120,11 @@ class StudentController extends Controller
                 }
             }
         }
-                
-        $student->update($request->all());
 
-        if ($request->has('speciality_ids')) {
-            $validated = array();
-            foreach ($request->input('speciality_ids') as $id) {
-                if (Speciality::find($id))
-                    array_push($validated, $id);
-            }
-            $student->speciality()->sync($validated);
-        }
-        
+        $student->update($request->all());
         $student->save();
+        $student->user;
+
         return $student;
     }
 
@@ -142,9 +136,6 @@ class StudentController extends Controller
      */
     public function destroy($id)
     {
-        $student = Student::find($id);
-        $student->speciality()->detach();
-
         return Student::destroy($id);
     }
 }

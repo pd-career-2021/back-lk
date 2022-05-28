@@ -2,65 +2,174 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\News;
+use App\Http\Library\ApiHelpers;
 use App\Models\Employer;
+use App\Models\News;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class NewsController extends Controller
 {
+    use ApiHelpers;
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        return News::all();
+        $news = News::all();
+        foreach ($news as $item) {
+            $path = ($item->img_path) ? $item->img_path : 'img/blank.jpg';
+            $item['image'] = asset('storage/' . $path);
+            $item->employer;
+        }
+
+        return response()->json($news);
     }
 
-    public function show($id)
-    {
-        return News::find($id);
-    }
-    
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            
             'title' => 'required|string|max:45',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'preview_text' => 'required|string|max:255',
             'detail_text' => 'required|string|max:1000',
-            'id_employers' => 'required|integer',
-            
-            
+            'employer_id' => 'integer',
         ]);
         if ($validator->fails()) {
-        return $validator->errors()->all();
+            return $validator->errors()->all();
         }
 
-        return News::create($request->all());
+        $news = new News($request->all());
+        $user = $request->user();
+
+        if ($this->isEmployer($user)) {
+            $employer = Employer::find($user->id);
+        } else {
+            $employer = Employer::find($request->input('employer_id'));
+        }
+
+        if (!$employer) {
+            return response([
+                'message' => 'Employer not found.'
+            ], 401);
+        } else {
+            $news->employer()->associate($employer);
+        }
+        $news->save();
+
+        if ($request->hasFile('image')) {
+            $news->img_path = $request->file('image')->store('img/news' . $news->id, 'public');
+        }
+        $news->save();
+        $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
+        $news['image'] = asset('storage/' . $path);
+        $news->employer;
+
+        return $news;
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        $news = News::find();
+        $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
+        $news['image'] = asset('storage/' . $path);
+        $news->employer;
+
+        return response()->json($news);
     }
 
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            
             'title' => 'string|max:45',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'preview_text' => 'string|max:255',
             'detail_text' => 'string|max:1000',
-            'id_employers' => 'integer',
-            
-            
+            'employer_id' => 'integer',
         ]);
         if ($validator->fails()) {
-        return $validator->errors()->all();
+            return $validator->errors()->all();
         }
+
+        $news = News::find($id);
+        $user = $request->user();
+
+        if ($this->isEmployer($user)) {
+            $employer_id = Employer::where('user_id', $user->id)->first()->id;
+            if (News::where('id', $id)->first()->employer_id != $employer_id) {
+                return response([
+                    'message' => 'You do not have permission to do this.'
+                ], 401);
+            }
+        }
+
+        if ($this->isAdmin($user)) {
+            if ($request->has('employer_id')) {
+                $employer = Employer::find($request->input('employer_id'));
+                if (!$employer) {
+                    return response([
+                        'message' => 'Employer not found.'
+                    ], 401);
+                } else {
+                    $news->employer()->associate($employer);
+                }
+            }
+        }
+
+        $news->update($request->all());
+
+        if ($request->hasFile('image')) {
+            Storage::disk('public')->delete($news->img_path);
+            $news->img_path = $request->file('image')->store('img/news' . $news->id, 'public');
+        }
+
+        $news->save();
+        $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
+        $news['image'] = asset('storage/' . $path);
+        $news->employer;
+
+        return $news;
     }
+
     /**
      * Remove the specified resource from storage.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        return News::destroy($id);
+        $user = $request->user();
+        if ($this->isEmployer($user)) {
+            $employer_id = Employer::where('user_id', $user->id)->first()->id;
+            if (News::where('id', $id)->first()->employer_id != $employer_id) {
+                return response([
+                    'message' => 'You do not have permission to do this.'
+                ], 401);
+            } else {
+                Storage::disk('public')->delete(News::find($id)->img_path);
+                return News::destroy($id);
+            }
+        } else if ($this->isAdmin($user)) {
+            Storage::disk('public')->delete(News::find($id)->img_path);
+            return News::destroy($id);
+        }
     }
 }

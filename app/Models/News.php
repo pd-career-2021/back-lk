@@ -12,12 +12,28 @@ class News extends Model
 
     protected $table = 'news';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'title',
         'img_path',
         'preview_text',
         'detail_text',
     ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'employer_id',
+        'img_path',
+    ];
+
 
     public function employer(): BelongsTo
     {

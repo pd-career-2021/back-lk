@@ -22,6 +22,15 @@ class Faculty extends Model
         'img_path',
     ];
 
+        /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'img_path',
+    ];
+
     public function user(): HasMany
     {
         return $this->hasMany(User::class);

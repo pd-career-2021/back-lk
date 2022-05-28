@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Faculty;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class FacultyController extends Controller
 {
@@ -14,7 +16,13 @@ class FacultyController extends Controller
      */
     public function index()
     {
-        return Faculty::all();
+        $faculties = Faculty::all();
+        foreach ($faculties as $faculty) {
+            $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
+            $faculty['image'] = asset('storage/' . $path);
+        }
+
+        return response()->json($faculties);
     }
 
     /**
@@ -26,17 +34,24 @@ class FacultyController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            
             'title' => 'required|string|max:128',
             'desc' => 'required|string|max:1000',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            
         ]);
         if ($validator->fails()) {
-        return $validator->errors()->all();
+            return $validator->errors()->all();
         }
 
-        return Faculty::create($request->all());
+        $faculty = new Faculty($request->all());
+
+        if ($request->hasFile('image')) {
+            $faculty->img_path = $request->file('image')->store('img/faculty' . $faculty->id, 'public');
+        }
+        $faculty->save();
+        $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
+        $faculty['image'] = asset('storage/' . $path);
+
+        return $faculty;
     }
 
     /**
@@ -47,7 +62,11 @@ class FacultyController extends Controller
      */
     public function show($id)
     {
-        return Faculty::find($id);
+        $faculty = Faculty::find();
+        $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
+        $faculty['image'] = asset('storage/' . $path);
+
+        return response()->json($faculty);
     }
 
     /**
@@ -60,18 +79,25 @@ class FacultyController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            
-            'title' => 'string|max:128',
-            'desc' => 'string|max:1000',
+            'title' => 'required|string|max:128',
+            'desc' => 'required|string|max:1000',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            
         ]);
         if ($validator->fails()) {
-        return $validator->errors()->all();
+            return $validator->errors()->all();
         }
 
         $faculty = Faculty::find($id);
         $faculty->update($request->all());
+
+        if ($request->hasFile('image')) {
+            Storage::disk('public')->delete($faculty->img_path);
+            $faculty->img_path = $request->file('image')->store('img/faculty' . $faculty->id, 'public');
+        }
+        $faculty->save();
+        $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
+        $faculty['image'] = asset('storage/' . $path);
+
         return $faculty;
     }
 
@@ -83,6 +109,7 @@ class FacultyController extends Controller
      */
     public function destroy($id)
     {
+        Storage::disk('public')->delete(Faculty::find($id)->img_path);
         return Faculty::destroy($id);
     }
 }

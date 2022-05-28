@@ -15,6 +15,8 @@ use App\Http\Controllers\StageController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\EventController;
+use App\Http\Controllers\NewsController;
 
 /*
 |--------------------------------------------------------------------------
@@ -79,6 +81,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Vacancies
     Route::get('/vacancies', [VacancyController::class, 'index']);
     Route::get('/vacancies/{id}', [VacancyController::class, 'show']);
+    // Events
+    Route::get('/events', [EventController::class, 'index']);
+    Route::get('/events/{id}', [EventController::class, 'show']);
+    // News
+    Route::get('/news', [NewsController::class, 'index']);
+    Route::get('/news/{id}', [NewsController::class, 'show']);
 });
 
 // Admin routes
@@ -126,6 +134,14 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
     // Users
     Route::post('/users', [UserController::class, 'store']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
+    // Events
+    Route::post('/events', [EventController::class, 'store']);
+    Route::put('/events/{id}', [EventController::class, 'update']);
+    Route::delete('/events/{id}', [EventController::class, 'destroy']);
+    // News
+    Route::post('/news', [NewsController::class, 'store']);
+    Route::put('/news/{id}', [NewsController::class, 'update']);
+    Route::delete('/news/{id}', [NewsController::class, 'destroy']);
 });
 
 // Employer routes
