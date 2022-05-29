@@ -54,13 +54,8 @@ class UserController extends Controller
             return $validator->errors()->all();
         }
 
-        $user = new User([
-            'name' => $request->input('name'),
-            'surname' => $request->input('surname'),
-            'email' => $request->input('email'),
-            'password' => bcrypt($request->input('password')),
-            'sex' => $request->input('sex'),
-        ]);
+        $user = new User($request->all());
+        $user->password = bcrypt($request->input('password'));
 
         $role = Role::find($request->input('role_id'));
         if (!$role) {

@@ -8,38 +8,46 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\Role;
 use App\Models\Faculty;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-    public function register(Request $request) {
-        if ((\DB::table('roles')->count() == 0) && (\DB::table('users')->count() == 0)) {
-            $this -> registerAdmin($request);
-        }
-        $fields = $request->validate([
-            'surname' => 'string|max:45',
-            'name' => 'string|max:45',
+    public function register(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'surname' => 'required|string|max:45',
+            'name' => 'required|string|max:45',
             'email' => 'required|email|unique:users,email',
             'sex' => 'required|string|in:male,female',
             'password' => 'required|string|confirmed',
             'faculty_id' => 'required|integer',
+            'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
         ]);
+        if ($validator->fails()) {
+            return $validator->errors()->all();
+        }
 
-        $user = new User([
-            'surname' => $fields['surname'],
-            'name' => $fields['name'],
-            'email' => $fields['email'],
-            'sex' => $fields['sex'],
-            'password' => bcrypt($fields['password']),
-        ]);
+        if (\DB::table('users')->count() == 0) {
+            $this->registerAdmin($request);
+        }
+
+        $user = new User($request->all());
+        $user->password = bcrypt($request->input('password'));
 
         $role = Role::find(4);
         $user->role()->associate($role);
-        $faculty = Faculty::find($fields['faculty_id']);
+        $faculty = Faculty::find($request->input('faculty_id'));
         $user->faculty()->associate($faculty);
+
+        if ($request->hasFile('image')) {
+            $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
+        }
         $user->save();
+        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+        $user['image'] = asset('storage/' . $path);
 
         $token = $user->createToken('polytoken', ['user'])->plainTextToken;
-
         $response = [
             'user' => $user,
             'token' => $token
@@ -48,30 +56,32 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
-    public function login(Request $request) {
-        $fields = $request->validate([
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
             'email' => 'required|email',
             'password' => 'required|string'
         ]);
+        if ($validator->fails()) {
+            return $validator->errors()->all();
+        }
 
-        $user = User::where('email', $fields['email'])->first();
+        $user = User::where('email', $request->input('email'))->first();
 
-        if (!$user || !Hash::check($fields['password'], $user->password)) {
+        if (!$user || !Hash::check($request->input('password'), $user->password)) {
             return response([
                 'message' => 'Wrong credentials.'
             ], 401);
         }
 
         $role = $user->role_id;
-        if ($role === 1) {
-            $token = $user->createToken('polytoken', ['admin'])->plainTextToken;
-        } else if ($role === 2) {
-            $token = $user->createToken('polytoken', ['student'])->plainTextToken;
-        } else if ($role === 3) {
-            $token = $user->createToken('polytoken', ['employer'])->plainTextToken;
-        } else if ($role === 4) {
-            $token = $user->createToken('polytoken', ['user'])->plainTextToken;
+        $abilities = ['', 'admin', 'student', 'employer', 'user'];
+        if ($role) {
+            $token = $user->createToken('polytoken', [$abilities[$role]])->plainTextToken;
         }
+
+        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+        $user['image'] = asset('storage/' . $path);
 
         $response = [
             'user' => $user,
@@ -81,33 +91,19 @@ class AuthController extends Controller
         return response($response, 201);
     }
 
-    public function logout(Request $request) {
+    public function logout()
+    {
         auth()->user()->tokens()->delete();
-
-        return [
+        return response([
             'message' => 'Logged out.'
-        ];
+        ], 200);
     }
 
-    private function registerAdmin(Request $request) {
-        $fields = $request->validate([
-            'surname' => 'string|max:45',
-            'name' => 'string|max:45',
-            'email' => 'required|email|unique:users,email',
-            'sex' => 'required|string|in:male,female',
-            'password' => 'required|string|confirmed',
-            'faculty_id' => 'integer'
-        ]);
+    private function registerAdmin(Request $request)
+    {
+        $user = new User($request->all());
+        $user->password = bcrypt($request->input('password'));
 
-        $user = new User([
-            'surname' => $fields['surname'],
-            'name' => $fields['name'],
-            'email' => $fields['email'],
-            'sex' => $fields['sex'],
-            'password' => bcrypt($fields['password']),
-            'faculty_id' => $fields['faculty_id'],
-        ]);
-        
         $role = Role::find(1);
         $user->role()->associate($role);
 
@@ -115,10 +111,14 @@ class AuthController extends Controller
         $faculty = Faculty::find(1);
         $user->faculty()->associate($faculty);
 
+        if ($request->hasFile('image')) {
+            $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
+        }
         $user->save();
+        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+        $user['image'] = asset('storage/' . $path);
 
         $token = $user->createToken('polytoken', ['admin'])->plainTextToken;
-
         $response = [
             'user' => $user,
             'token' => $token
