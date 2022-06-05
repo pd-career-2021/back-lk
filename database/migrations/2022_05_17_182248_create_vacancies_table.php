@@ -19,11 +19,14 @@ class CreateVacanciesTable extends Migration
             $table->id();
             $table->string('title', 64);
             $table->string('desc', 1000);
+            $table->string('short_desc', 255);
             $table->string('img_path')->nullable();
             $table->string('link', 255);
             $table->decimal('salary', 10);
             $table->string('workplace', 255);
             $table->string('level', 64);
+            $table->string('skills', 1000);
+            $table->string('map', 50)->nullable();
             $table->foreignIdFor(VacancyType::class);
             $table->foreignIdFor(Employer::class);
             $table->timestamps();

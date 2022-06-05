@@ -19,11 +19,14 @@ class Vacancy extends Model
     protected $fillable = [
         'title',
         'desc',
+        'short_desc',
         'img_path',
         'link',
         'salary',
         'workplace',
-        'level'
+        'level',
+        'skills',
+        'map'
     ];
 
     public function employer(): BelongsTo

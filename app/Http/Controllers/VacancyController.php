@@ -42,6 +42,7 @@ class VacancyController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:64|unique:vacancies,title',
+            'short_desc' => 'required|string|max:255',
             'desc' => 'required|string|max:1000',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'link' => 'required|string|max:255',
@@ -49,6 +50,8 @@ class VacancyController extends Controller
             'workplace' => 'required|string|max:255',
             'level' => 'required|string|max:64',
             'vacancy_type_id' => 'required|integer',
+            'skills' => 'required|string|max:1000',
+            'map' => 'string|max:1000',
             'employer_id' => 'integer',
             'faculty_ids' => 'required|array',
             'faculty_ids.*' => 'integer',
@@ -141,11 +144,14 @@ class VacancyController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'string|max:64|unique:vacancies,title',
             'desc' => 'string|max:1000',
+            'short_desc' => 'string|max:255',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'link' => 'string|max:255',
             'salary' => 'numeric|max:13',
             'workplace' => 'string|max:255',
             'level' => 'string|max:64',
+            'skills' => 'string|max:1000',
+            'map' => 'string|max:1000',
             'vacancy_type_id' => 'integer',
             'employer_id' => 'integer',
             'faculty_ids' => 'array',
