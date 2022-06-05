@@ -22,7 +22,7 @@ class FacultyController extends Controller
             $faculty['image'] = asset('storage/' . $path);
         }
 
-        return response()->json($faculties);
+        return $faculties;
     }
 
     /**
@@ -66,7 +66,7 @@ class FacultyController extends Controller
         $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
         $faculty['image'] = asset('storage/' . $path);
 
-        return response()->json($faculty);
+        return $faculty;
     }
 
     /**

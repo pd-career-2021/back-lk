@@ -19,12 +19,7 @@ class StudentController extends Controller
      */
     public function index()
     {
-        $students = Student::all();
-        foreach ($students as $student) {
-            $student->user;
-        }
-
-        return $students;
+        return Student::all();
     }
 
     /**
@@ -55,7 +50,6 @@ class StudentController extends Controller
             }
         }
         $student->save();
-        $student->user;
 
         return $student;
     }

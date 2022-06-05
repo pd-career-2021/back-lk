@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
-use Illuminate\Http\Request;
-use App\Models\User;
-use App\Models\Role;
 use App\Models\Faculty;
+use App\Models\Role;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -25,11 +25,9 @@ class UserController extends Controller
         foreach ($users as $user) {
             $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
             $user['image'] = asset('storage/' . $path);
-            $user['role'] = $user->role;
-            $user['faculty'] = $user->faculty;
         }
 
-        return response()->json($users);
+        return $users;
     }
 
     /**
@@ -97,10 +95,10 @@ class UserController extends Controller
         $user = User::find($id);
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
         $user['image'] = asset('storage/' . $path);
-        $user['role'] = $user->role;
-        $user['faculty'] = $user->faculty;
+        $user->role;
+        $user->faculty;
 
-        return response()->json($user);
+        return $user;
     }
 
     /**
@@ -156,6 +154,8 @@ class UserController extends Controller
         $user->save();
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
         $user['image'] = asset('storage/' . $path);
+        $user->role;
+        $user->faculty;
 
         return $user;
     }

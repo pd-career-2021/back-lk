@@ -19,10 +19,9 @@ class Faculty extends Model
     protected $fillable = [
         'title',
         'desc',
-        'img_path',
     ];
 
-        /**
+    /**
      * The attributes that should be hidden for serialization.
      *
      * @var array<int, string>
@@ -38,12 +37,6 @@ class Faculty extends Model
 
     public function vacancies(): BelongsToMany
     {
-        // return $this->belongsToMany(Vacancy::class)->using(FacultyVacancy::class);
-        return $this->belongsToMany(
-            Vacancy::class,
-            'faculties_vacancies',
-            'vacancy_id',
-            'faculty_id'
-        );
+        return $this->belongsToMany(Vacancy::class, 'faculties_vacancies')->using(FacultyVacancy::class);
     }
 }

@@ -6,9 +6,9 @@ use App\Http\Library\ApiHelpers;
 use Illuminate\Http\Request;
 use App\Models\Application;
 use App\Models\ApplicationStatus;
-use App\Models\Vacancy;
-use App\Models\Student;
 use App\Models\Employer;
+use App\Models\Student;
+use App\Models\Vacancy;
 use Illuminate\Support\Facades\Validator;
 
 class ApplicationController extends Controller
@@ -22,14 +22,7 @@ class ApplicationController extends Controller
      */
     public function index()
     {
-        $applications = Application::all();
-        foreach ($applications as $application) {
-            $application['student'] = $application->student;
-            $application['vacancy'] = $application->vacancy;
-            $application['application_status'] = $application->application_status;
-        }
-
-        return response()->json($applications);
+        return Application::all();
     }
 
     public function indexStudentApplications(Request $request)
@@ -62,7 +55,7 @@ class ApplicationController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'desc' => 'required|string|max:1000',
-            'student_id' => 'required|integer',
+            'student_id' => 'integer',
             'vacancy_id' => 'required|integer',
             'application_status_id' => 'required|integer',
         ]);
@@ -72,8 +65,9 @@ class ApplicationController extends Controller
 
         $application = new Application($request->all());
         $user = $request->user();
+
         if ($this->isStudent($user)) {
-            $student = Student::find($user->id);
+            $student = Student::where('user_id', $user->id)->first();
         } else {
             $student = Student::find($request->input('student_id'));
         }
@@ -117,9 +111,9 @@ class ApplicationController extends Controller
     public function show($id)
     {
         $application = Application::find($id);
-        $application['student'] = $application->student;
-        $application['vacancy'] = $application->vacancy;
-        $application['application_status'] = $application->application_status;
+        $application->student;
+        $application->vacancy;
+        $application->application_status;
 
         return $application;
     }
@@ -204,11 +198,11 @@ class ApplicationController extends Controller
         }
 
         $application->update($request->all());
-
         $application->save();
-        $application['student'] = $application->student;
-        $application['vacancy'] = $application->vacancy;
-        $application['application_status'] = $application->application_status;
+        $application->student;
+        $application->vacancy;
+        $application->application_status;
+
         return $application;
     }
 

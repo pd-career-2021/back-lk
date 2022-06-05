@@ -24,10 +24,9 @@ class NewsController extends Controller
         foreach ($news as $item) {
             $path = ($item->img_path) ? $item->img_path : 'img/blank.jpg';
             $item['image'] = asset('storage/' . $path);
-            $item->employer;
         }
 
-        return response()->json($news);
+        return $news;
     }
 
     /**
@@ -53,7 +52,7 @@ class NewsController extends Controller
         $user = $request->user();
 
         if ($this->isEmployer($user)) {
-            $employer = Employer::find($user->id);
+            $employer = Employer::where('user_id', $user->id)->first();
         } else {
             $employer = Employer::find($request->input('employer_id'));
         }
@@ -73,7 +72,6 @@ class NewsController extends Controller
         $news->save();
         $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
         $news['image'] = asset('storage/' . $path);
-        $news->employer;
 
         return $news;
     }
@@ -86,14 +84,21 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        $news = News::find();
+        $news = News::find($id);
         $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
         $news['image'] = asset('storage/' . $path);
         $news->employer;
 
-        return response()->json($news);
+        return $news;
     }
 
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [

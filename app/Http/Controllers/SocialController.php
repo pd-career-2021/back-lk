@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
-use Illuminate\Http\Request;
 use App\Models\Social;
 use App\Models\Employer;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 class SocialController extends Controller
@@ -69,9 +69,9 @@ class SocialController extends Controller
     public function show($id)
     {
         $social = Social::find($id);
-        // $social->employer;
+        $social->employer;
 
-        return response()->json($social);
+        return $social;
     }
 
     /**

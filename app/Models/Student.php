@@ -19,18 +19,8 @@ class Student extends Model
         'desc',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'user_id',
-    ];
-
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-
 }

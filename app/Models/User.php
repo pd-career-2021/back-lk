@@ -24,7 +24,6 @@ class User extends Authenticatable
         'password',
         'surname',
         'name',
-        'img_path',
         'sex',
     ];
 
@@ -37,8 +36,6 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'img_path',
-        'role_id',
-        'faculty_id'
     ];
 
     public function role(): BelongsTo
@@ -61,12 +58,12 @@ class User extends Authenticatable
         return $this->hasOne(Employer::class);
     }
 
-//    /**
-//     * The attributes that should be cast.
-//     *
-//     * @var array<string, string>
-//     */
-//    protected $casts = [
-//        'email_verified_at' => 'datetime',
-//    ];
+    //    /**
+    //     * The attributes that should be cast.
+    //     *
+    //     * @var array<string, string>
+    //     */
+    //    protected $casts = [
+    //        'email_verified_at' => 'datetime',
+    //    ];
 }

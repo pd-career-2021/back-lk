@@ -3,18 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
-use Illuminate\Http\Request;
-use App\Models\Employer;
-use App\Models\User;
 use App\Models\CompanyType;
+use App\Models\Employer;
 use App\Models\Industry;
+use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class EmployerController extends Controller
 {
     use ApiHelpers;
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -23,16 +23,14 @@ class EmployerController extends Controller
     public function index()
     {
         $employers = Employer::all();
-        foreach($employers as $employer) {
+        foreach ($employers as $employer) {
             $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-            $employer['image'] = asset('storage/'.$path);
-            $employer['company_type'] = $employer->companyType;
-            $employer['industries'] = $employer->industries;
+            $employer['image'] = asset('storage/' . $path);
         }
-        
-        return response()->json($employers);
+
+        return $employers;
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -40,7 +38,7 @@ class EmployerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {        
+    {
         $validator = Validator::make($request->all(), [
             'full_name' => 'required|string|max:128',
             'short_name' => 'string|max:64',
@@ -53,21 +51,21 @@ class EmployerController extends Controller
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
-        
+
         $employer = new Employer($request->all());
         $user = User::find($request->input('user_id'));
         if ($user) {
             if ($user->student()->exists() || $user->employer()->exists()) {
                 return response([
                     'message' => 'User already associated.'
-                ], 401); 
+                ], 401);
             } else {
                 $employer->user()->associate($user);
             }
         }
-        
+
         $companyType = CompanyType::find($request->input('company_type_id'));
-        if(!$companyType) {
+        if (!$companyType) {
             return response([
                 'message' => 'Company type not found.'
             ], 401);
@@ -75,24 +73,24 @@ class EmployerController extends Controller
             $employer->companyType()->associate($companyType);
         }
         $employer->save();
-        
+
         $validated = array();
         foreach ($request->input('industry_ids') as $id) {
             if (Industry::find($id))
                 array_push($validated, $id);
         }
         $employer->industries()->sync($validated);
-        
-        if($request->hasFile('image')) {
-            $employer->img_path = $request->file('image')->store('img/e'.$employer->id, 'public');
+
+        if ($request->hasFile('image')) {
+            $employer->img_path = $request->file('image')->store('img/e' . $employer->id, 'public');
         }
         $employer->save();
         $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('storage/'.$path);
-        
+        $employer['image'] = asset('storage/' . $path);
+
         return $employer;
     }
-    
+
     /**
      * Display the specified resource.
      *
@@ -103,13 +101,14 @@ class EmployerController extends Controller
     {
         $employer = Employer::find($id);
         $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('storage/'.$path);
-        $employer['company_type'] = $employer->companyType;
-        $employer['industries'] = $employer->industries;
-        
-        return response()->json($employer);
+        $employer['image'] = asset('storage/' . $path);
+        $employer->companyType;
+        $employer->industries;
+        $employer->socials;
+
+        return $employer;
     }
-    
+
     /**
      * Update the specified resource in storage.
      *
@@ -131,17 +130,17 @@ class EmployerController extends Controller
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
-        
+
         $employer = Employer::find($id);
         $user = $request->user();
-        
-        if (!$this->isAdmin($user)) { 
-            if ($user->id != $id) { 
+
+        if (!$this->isAdmin($user)) {
+            if ($user->id != $employer->user_id) {
                 return response([
                     'message' => 'You do not have permission to do this.'
                 ], 401);
             }
-        } else { 
+        } else {
             if ($request->has('user_id')) {
                 $user = User::find($request->input('user_id'));
                 if ($user) {
@@ -155,16 +154,16 @@ class EmployerController extends Controller
                 }
             }
         }
-        
+
         $employer->update($request->all());
-        if($request->hasFile('image')) {
+        if ($request->hasFile('image')) {
             Storage::disk('public')->delete($employer->img_path);
-            $employer->img_path = $request->file('image')->store('img/e'.$id, 'public');
+            $employer->img_path = $request->file('image')->store('img/e' . $id, 'public');
         }
-        
+
         if ($request->has('company_type_id')) {
             $companyType = CompanyType::find($request->input('company_type_id'));
-            if(!$companyType) {
+            if (!$companyType) {
                 return response([
                     'message' => 'Company type not found.'
                 ], 401);
@@ -172,7 +171,7 @@ class EmployerController extends Controller
                 $employer->companyType()->associate($companyType);
             }
         }
-        
+
         if ($request->has('industry_ids')) {
             $validated = array();
             foreach ($request->input('industry_ids') as $id) {
@@ -181,15 +180,17 @@ class EmployerController extends Controller
             }
             $employer->industries()->sync($validated);
         }
-        
+
         $employer->save();
         $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('storage/'.$path);
+        $employer['image'] = asset('storage/' . $path);
         $employer['industries'] = $employer->industries()->get();
-        
+        $employer->companyType;
+        $employer->industries;
+
         return $employer;
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *

@@ -25,11 +25,9 @@ class EventController extends Controller
         foreach ($events as $event) {
             $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
             $event['image'] = asset('storage/' . $path);
-            $event->audience;
-            $event->employers;
         }
 
-        return response()->json($events);
+        return $events;
     }
 
     /**
@@ -54,6 +52,20 @@ class EventController extends Controller
         }
 
         $event = new Event($request->all());
+        $user = $request->user;
+
+        if ($this->isEmployer($user)) {
+            $validated = array();
+            $employer_id = Employer::where('user_id', $user->id)->first()->id;
+            if (!in_array($employer_id, $request->input('employer_ids'))) {
+                array_push($validated, $employer_id);
+            }
+            foreach ($request->input('employer_ids') as $id) {
+                if (Employer::find($id))
+                    array_push($validated, $id);
+            }
+            $event->employers()->sync($validated);
+        }
 
         $audience = Audience::find($request->input('audience_id'));
         if (!$audience) {
@@ -64,13 +76,6 @@ class EventController extends Controller
             $event->audience()->associate($audience);
         }
         $event->save();
-
-        $validated = array();
-        foreach ($request->input('employer_ids') as $id) {
-            if (Employer::find($id))
-                array_push($validated, $id);
-        }
-        $event->employers()->sync($validated);
 
         if ($request->hasFile('image')) {
             $event->img_path = $request->file('image')->store('img/event' . $event->id, 'public');
@@ -91,13 +96,13 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        $event = Event::find();
+        $event = Event::find($id);
         $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
         $event['image'] = asset('storage/' . $path);
         $event->audience;
         $event->employers;
 
-        return response()->json($event);
+        return $event;
     }
 
     /**
@@ -123,6 +128,7 @@ class EventController extends Controller
         }
 
         $event = Event::find($id);
+
         if ($request->has('employer_ids')) {
             $user = $request->user();
             if ($this->isEmployer($user)) {

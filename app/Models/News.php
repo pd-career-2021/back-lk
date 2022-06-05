@@ -19,7 +19,6 @@ class News extends Model
      */
     protected $fillable = [
         'title',
-        'img_path',
         'preview_text',
         'detail_text',
     ];
@@ -30,7 +29,6 @@ class News extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'employer_id',
         'img_path',
     ];
 

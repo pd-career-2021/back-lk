@@ -45,5 +45,4 @@ class Vacancy extends Model
     {
         return $this->belongsToMany(VacancyFunction::class, 'vacancies_functions')->using(VacanciesFunctions::class);
     }
-
 }

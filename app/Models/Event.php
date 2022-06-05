@@ -29,7 +29,6 @@ class Event extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'audience_id',
         'img_path',
     ];
 

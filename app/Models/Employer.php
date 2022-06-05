@@ -30,7 +30,6 @@ class Employer extends Model
      * @var array<int, string>
      */
     protected $hidden = [
-        'company_type_id',
         'img_path',
     ];
 
@@ -47,6 +46,11 @@ class Employer extends Model
     public function news(): HasMany
     {
         return $this->hasMany(News::class);
+    }
+
+    public function socials(): HasMany
+    {
+        return $this->hasMany(Social::class);
     }
 
     public function industries(): BelongsToMany
