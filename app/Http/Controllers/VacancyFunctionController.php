@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
-
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Models\VacancyFunction;
+use Illuminate\Support\Facades\Validator;
 
-
-class RoleController extends Controller
+class VacancyFunctionController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() // отображение списка элементов
+    public function index()
     {
-        return Role::all();
+        return VacancyFunction::all();
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -26,22 +25,20 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) 
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45',
-            'desc' => 'required|string|max:1000',
+            'title' => 'required|string|max:64'
         ]);
 
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
 
-        $role = new Role($request->all());
+        $vacancyFunction = new VacancyFunction($request->all());
+        $vacancyFunction->save();
 
-        $role->save();
-
-        return $role;
+        return $vacancyFunction;
     }
 
     /**
@@ -50,10 +47,11 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) 
+    public function show($id)
     {
-        return Role::find($id);
+        return VacancyFunction::find($id);
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -62,21 +60,21 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45',
-            'desc' => 'required|string|max:1000',
+            'title' => 'required|string|max:64'
         ]);
 
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
+        
+        $vacancyFunction = VacancyFunction::find($id);
+        $vacancyFunction->update($request->all());
+        $vacancyFunction->save();
 
-        $role = Role::find($id);
-        $role->update($request->all());
-        $role->save();
-        return $role;
+        return $vacancyFunction;
     }
 
     /**
@@ -85,8 +83,8 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) // удаление записи из базы
+    public function destroy($id)
     {
-        return Role::destroy($id);
+        return VacancyFunction::destroy($id);
     }
 }

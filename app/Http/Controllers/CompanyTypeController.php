@@ -2,46 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
-
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Models\CompanyType;
+use Illuminate\Support\Facades\Validator;
 
-
-class RoleController extends Controller
+class CompanyTypeController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() // отображение списка элементов
+    public function index()
     {
-        return Role::all();
+        $companyType = CompanyType::all();
+        return $companyType;
     }
 
+   
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) 
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45',
-            'desc' => 'required|string|max:1000',
+            'title' => 'required|string|max:45'
         ]);
 
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
 
-        $role = new Role($request->all());
+        $companyType = new CompanyType($request->all());
 
-        $role->save();
+        $companyType->save();
 
-        return $role;
+        return $companyType;
     }
 
     /**
@@ -50,10 +49,12 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) 
+    public function show($id)
     {
-        return Role::find($id);
+        $companyType = CompanyType::find($id);
+        return $companyType;
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -62,21 +63,21 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45',
-            'desc' => 'required|string|max:1000',
+            'title' => 'string|max:45'
         ]);
 
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
 
-        $role = Role::find($id);
-        $role->update($request->all());
-        $role->save();
-        return $role;
+        $companyType = CompanyType::find($id);
+        $companyType->update($request->all());
+        $companyType->save();
+
+        return $companyType;
     }
 
     /**
@@ -85,8 +86,8 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) // удаление записи из базы
+    public function destroy($id)
     {
-        return Role::destroy($id);
+        return CompanyType::destroy($id);
     }
 }

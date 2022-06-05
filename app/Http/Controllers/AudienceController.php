@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Role;
-
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use App\Models\Audience;
+use Illuminate\Support\Facades\Validator;
 
-
-class RoleController extends Controller
+class AudienceController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() // отображение списка элементов
+    public function index()
     {
-        return Role::all();
+        $audience = Audience::all();
+        return $audience;
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -26,22 +26,20 @@ class RoleController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) 
+    public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45',
-            'desc' => 'required|string|max:1000',
+            'name' => 'required|string|max:45'
         ]);
 
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
 
-        $role = new Role($request->all());
+        $audience = new Audience($request->all());
+        $audience->save();
 
-        $role->save();
-
-        return $role;
+        return $audience;
     }
 
     /**
@@ -50,10 +48,11 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) 
+    public function show($id)
     {
-        return Role::find($id);
+        return Audience::find($id);
     }
+
 
     /**
      * Update the specified resource in storage.
@@ -62,21 +61,21 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:45',
-            'desc' => 'required|string|max:1000',
+            'name' => 'required|string|max:45'
         ]);
 
         if ($validator->fails()) {
             return $validator->errors()->all();
         }
 
-        $role = Role::find($id);
-        $role->update($request->all());
-        $role->save();
-        return $role;
+        $audience = Audience::find($id);
+        $audience->update($request->all());
+        $audience->save();
+
+        return $audience;
     }
 
     /**
@@ -85,8 +84,8 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) // удаление записи из базы
+    public function destroy($id)
     {
-        return Role::destroy($id);
+        return Audience::destroy($id);
     }
 }

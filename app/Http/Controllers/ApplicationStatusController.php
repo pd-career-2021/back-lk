@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\ApplicationStatus;
+use Illuminate\Support\Facades\Validator;
 
 class ApplicationStatusController extends Controller
 {
@@ -25,7 +26,21 @@ class ApplicationStatusController extends Controller
      */
     public function store(Request $request)
     {
-        return ApplicationStatus::create($request->all());
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:45',
+            'desc' => 'required|string|max:1000'
+        ]);
+
+        if ($validator->fails()) {
+            return $validator->errors()->all();
+        }
+
+        $applicationStatus = new ApplicationStatus($request->all());
+        $applicationStatus->save();
+
+        return $applicationStatus;
+
+        // return ApplicationStatus::create($request->all());
     }
 
     /**
@@ -48,6 +63,15 @@ class ApplicationStatusController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:45',
+            'desc' => 'required|string|max:1000'
+        ]);
+
+        if ($validator->fails()) {
+            return $validator->errors()->all();
+        }
+        
         $applicationStatus = ApplicationStatus::find($id);
         $applicationStatus->update($request->all());
         return $applicationStatus;
