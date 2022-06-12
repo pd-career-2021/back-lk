@@ -46,7 +46,7 @@ class VacancyController extends Controller
             'desc' => 'required|string|max:1000',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'link' => 'required|string|max:255',
-            'salary' => 'required|numeric|max:13',
+            'salary' => 'required|regex:/^\d{1,13}(\.\d{1,4})?$/',
             'workplace' => 'required|string|max:255',
             'level' => 'required|string|max:64',
             'vacancy_type_id' => 'required|integer',
@@ -55,8 +55,10 @@ class VacancyController extends Controller
             'employer_id' => 'integer',
             'faculty_ids' => 'required|array',
             'faculty_ids.*' => 'integer',
-            'function_ids' => 'required|array',
-            'function_ids.*' => 'integer',
+            'functions' => 'required|array',
+            'functions.*' => 'required|string|max:64',
+            // 'function_ids' => 'required|array',
+            // 'function_ids.*' => 'integer',
         ]);
         if ($validator->fails()) {
             return $validator->errors()->all();
@@ -97,9 +99,12 @@ class VacancyController extends Controller
         $vacancy->faculties()->sync($validated);
 
         $validated = array();
-        foreach ($request->input('function_ids') as $id) {
-            if (VacancyFunction::find($id))
-                array_push($validated, $id);
+        foreach ($request->input('functions') as $functionTitle) {
+            $function = new VacancyFunction([
+                'title' => $functionTitle,
+            ]);
+            $function->save();
+            array_push($validated, $function->id);
         }
         $vacancy->functions()->sync($validated);
 
@@ -109,6 +114,8 @@ class VacancyController extends Controller
         $vacancy->save();
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
         $vacancy['image'] = asset('storage/' . $path);
+        $vacancy->faculties;
+        $vacancy->functions;
 
         return $vacancy;
     }
@@ -147,7 +154,7 @@ class VacancyController extends Controller
             'short_desc' => 'string|max:255',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'link' => 'string|max:255',
-            'salary' => 'numeric|max:13',
+            'salary' => 'regex:/^\d{1,13}(\.\d{1,4})?$/',
             'workplace' => 'string|max:255',
             'level' => 'string|max:64',
             'skills' => 'string|max:1000',
@@ -156,8 +163,10 @@ class VacancyController extends Controller
             'employer_id' => 'integer',
             'faculty_ids' => 'array',
             'faculty_ids.*' => 'integer',
-            'function_ids' => 'array',
-            'function_ids.*' => 'integer',
+            'functions' => 'array',
+            'functions.*' => 'string|max:64',
+            // 'function_ids' => 'array',
+            // 'function_ids.*' => 'integer',
         ]);
         if ($validator->fails()) {
             return $validator->errors()->all();
@@ -220,11 +229,14 @@ class VacancyController extends Controller
             $vacancy->faculties()->sync($validated);
         }
 
-        if ($request->has('function_ids')) {
+        if ($request->has('functions')) {
             $validated = array();
-            foreach ($request->input('function_ids') as $id) {
-                if (VacancyFunction::find($id))
-                    array_push($validated, $id);
+            foreach ($request->input('functions') as $functionTitle) {
+                $function = new VacancyFunction([
+                    'title' => $functionTitle,
+                ]);
+                $function->save();
+                array_push($validated, $function->id);
             }
             $vacancy->functions()->sync($validated);
         }

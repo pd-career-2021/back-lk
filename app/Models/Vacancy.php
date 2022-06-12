@@ -20,13 +20,21 @@ class Vacancy extends Model
         'title',
         'desc',
         'short_desc',
-        'img_path',
         'link',
         'salary',
         'workplace',
         'level',
         'skills',
-        'map'
+        'map',
+    ];
+
+    /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var array<int, string>
+     */
+    protected $hidden = [
+        'img_path',
     ];
 
     public function employer(): BelongsTo

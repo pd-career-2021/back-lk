@@ -15,7 +15,7 @@ class CreateVacancyFunctionsTable extends Migration
     {
         Schema::create('vacancy_functions', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 64)->unique();
+            $table->string('title', 64);
             $table->timestamps();
         });
     }
