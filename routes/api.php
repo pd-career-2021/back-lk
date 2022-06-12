@@ -6,19 +6,19 @@ use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\ApplicationStatusController;
 use App\Http\Controllers\AudienceController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanyTypeController;
 use App\Http\Controllers\EmployerController;
-use App\Http\Controllers\EmployerStatusController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\FacultyController;
+use App\Http\Controllers\IndustryController;
 use App\Http\Controllers\NewsController;
-use App\Http\Controllers\OrganizationController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SocialController;
-use App\Http\Controllers\SpecialityController;
-use App\Http\Controllers\StageController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VacancyController;
+use App\Http\Controllers\VacancyFunctionController;
+use App\Http\Controllers\VacancyTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +57,7 @@ Route::get('/vacancies', [VacancyController::class, 'index']);
 Route::get('/vacancies/{id}', [VacancyController::class, 'show']);
 // Vacancy types
 Route::get('/vacancy-types', [VacancyTypeController::class, 'index']);
-Route::get('/vacancy-types/{id}', [IndustryController::class, 'show']);
+Route::get('/vacancy-types/{id}', [VacancyTypeController::class, 'show']);
 // Vacancy function
 Route::get('/vacancy-functions', [VacancyFunctionController::class, 'index']);
 Route::get('/vacancy-functions/{id}', [VacancyFunctionController::class, 'show']);
@@ -65,8 +65,8 @@ Route::get('/vacancy-functions/{id}', [VacancyFunctionController::class, 'show']
 Route::get('/employers', [EmployerController::class, 'index']);
 Route::get('/employers/{id}', [EmployerController::class, 'show']);
 // Socials
-Route::get('/employers', [EmployerController::class, 'index']);
-Route::get('/employers/{id}', [EmployerController::class, 'show']);
+Route::get('/socials', [SocialController::class, 'index']);
+Route::get('/socials/{id}', [SocialController::class, 'show']);
 // Industries
 Route::get('/industries', [IndustryController::class, 'index']);
 Route::get('/industries/{id}', [IndustryController::class, 'show']);
@@ -129,9 +129,9 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
     Route::put('/users/{id}', [UserController::class, 'update']);
     Route::delete('/users/{id}', [UserController::class, 'destroy']);
     // Vacancy types
-    Route::post('/vacancy-types', [IndustryController::class, 'store']);
-    Route::put('/vacancy-types/{id}', [IndustryController::class, 'update']);
-    Route::delete('/vacancy-types/{id}', [IndustryController::class, 'destroy']);
+    Route::post('/vacancy-types', [VacancyTypeController::class, 'store']);
+    Route::put('/vacancy-types/{id}', [VacancyTypeController::class, 'update']);
+    Route::delete('/vacancy-types/{id}', [VacancyTypeController::class, 'destroy']);
     // Vacancy functions
     Route::post('/vacancy-functions', [VacancyFunctionController::class, 'store']);
     Route::put('/vacancy-functions/{id}', [VacancyFunctionController::class, 'update']);
