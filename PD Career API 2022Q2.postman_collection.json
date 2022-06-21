@@ -1,0 +1,2369 @@
+{
+	"info": {
+		"_postman_id": "9f3543c1-2de1-4d91-97b9-273477d25e4a",
+		"name": "PD Career API 2022Q2",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "18551424"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "email",
+									"value": "admin@mail.ru",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "1234",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/login",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "8|859t3z4by3EvddxiuAdgC98jbKWEJCj0Z8NYwDls",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/logout",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Register",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "admin@mail.ru",
+									"type": "text"
+								},
+								{
+									"key": "sex",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "1234",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "1234",
+									"type": "text"
+								},
+								{
+									"key": "faculty_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/register",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Get users",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{host}}/api/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show user",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Александр",
+									"type": "text"
+								},
+								{
+									"key": "surname",
+									"value": "Пушкин",
+									"type": "text"
+								},
+								{
+									"key": "email",
+									"value": "example@example.com",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "password_confirmation",
+									"value": "123456",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "sex",
+									"value": "male",
+									"type": "text"
+								},
+								{
+									"key": "role_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "faculty_id",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/users/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Александр",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "surname",
+									"value": "Пушкин",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "email",
+									"value": "example@example.com",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "password",
+									"value": "123456",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "password_confirmation",
+									"value": "123456",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "sex",
+									"value": "male",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "role_id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "faculty_id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/users/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/users/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Roles",
+			"item": [
+				{
+					"name": "Get roles",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/roles",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show role",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/roles/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create role",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Employer",
+									"type": "text"
+								},
+								{
+									"key": "desc",
+									"value": "Роль представителя организации",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/roles",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"roles"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update role",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Роль",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "desc",
+									"value": "Описание",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/roles/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete role",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/roles/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"roles",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Faculties",
+			"item": [
+				{
+					"name": "Get faculties",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/faculties",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"faculties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show faculty",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/faculties/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"faculties",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create faculty",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Факультет информационных технологий",
+									"type": "text"
+								},
+								{
+									"key": "desc",
+									"value": "Описание факультета",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/faculties",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"faculties"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update faculty",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Факультет информационных технологий",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "desc",
+									"value": "Описание факультета",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/faculties/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"faculties",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete faculty",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/faculties/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"faculties",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Students",
+			"item": [
+				{
+					"name": "Get students",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/students",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show student",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/students/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create student",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "desc",
+									"value": "Описание",
+									"type": "text"
+								},
+								{
+									"key": "user_id",
+									"value": "3",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/students",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"students"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update student",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "desc",
+									"value": "Описание",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "user_id",
+									"value": "3",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/students/2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete student",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/students/4",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"students",
+								"4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vacancies",
+			"item": [
+				{
+					"name": "Get vacancies",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancies",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show vacancy",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancies/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancies",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create vacancy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Программист JavaScript",
+									"type": "text"
+								},
+								{
+									"key": "short_desc",
+									"value": "Краткое описание",
+									"type": "text"
+								},
+								{
+									"key": "desc",
+									"value": "Требования, условия, обязанности",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "link",
+									"value": "https://companywebsite.com",
+									"type": "text"
+								},
+								{
+									"key": "salary",
+									"value": "123000.99",
+									"type": "text"
+								},
+								{
+									"key": "workplace",
+									"value": "ул. Удаленная 28, кв. 1",
+									"type": "text"
+								},
+								{
+									"key": "level",
+									"value": "Junior",
+									"type": "text"
+								},
+								{
+									"key": "vacancy_type_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "skills",
+									"value": "Опыт работы с MS Paint",
+									"type": "text"
+								},
+								{
+									"key": "map",
+									"value": "https://maps.google.com/ulitsa_udalennaya_28",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "employer_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "faculty_ids[0]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "faculty_ids[1]",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "functions[0]",
+									"value": "Функция 4",
+									"type": "text"
+								},
+								{
+									"key": "functions[1]",
+									"value": "Функция 5",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/vacancies",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update vacancy",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "UI/UX дизайнер",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "short_desc",
+									"value": "Краткое описание",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "desc",
+									"value": "Требования, условия, обязанности",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "link",
+									"value": "https://companywebsite.com",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "salary",
+									"value": "123000.99",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "workplace",
+									"value": "ул. Удаленная 28, кв. 1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "level",
+									"value": "Junior",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "vacancy_type_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "skills",
+									"value": "Опыт работы с MS Paint",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "map",
+									"value": "https://maps.google.com/ulitsa_udalennaya_28",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "employer_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "faculty_ids[0]",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "faculty_ids[1]",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "functions[0]",
+									"value": "Функция 1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "functions[1]",
+									"value": "Функция 2",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/vacancies",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancies"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete vacancy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancies/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancies",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vacancy types",
+			"item": [
+				{
+					"name": "Get vacancy types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancy-types",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show vacancy type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancy-types/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-types",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create vacancy type",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Подработка",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/vacancy-types",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update vacancy type",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "Подработка",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/vacancy-types/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-types",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete vacancy type",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancy-types/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-types",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vacancy functions",
+			"item": [
+				{
+					"name": "Get vacancy functions",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancy-functions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-functions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show vacancy function",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancy-functions/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-functions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create vacancy function",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "string64",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/vacancy-functions",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-functions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update vacancy function",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "title",
+									"value": "string64",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/vacancy-functions/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-functions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete vacancy function",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/vacancy-functions/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"vacancy-functions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Applications",
+			"item": [
+				{
+					"name": "Get applications",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/applications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get my applications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "9|JNRzBNg7mjcSwO7pVojvXabzNfXHzvaM1f78jRhM",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/my-applications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"my-applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get my vacancies applications",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "8|859t3z4by3EvddxiuAdgC98jbKWEJCj0Z8NYwDls",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/my-vacancies-applications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"my-vacancies-applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show application",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/applications/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create application",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "desc",
+									"value": "Комментарий к отклику",
+									"type": "text"
+								},
+								{
+									"key": "student_id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "vacancy_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "application_status_id",
+									"value": "1",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/applications",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"applications"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update application",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "desc",
+									"value": "Комментарий к отклику",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "student_id",
+									"value": "3",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "vacancy_id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "application_status_id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/applications/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete application",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/applications/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"applications",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Application statuses",
+			"item": [
+				{
+					"name": "Get application statuses",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/application-statuses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"application-statuses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show application status",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/application-statuses/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"application-statuses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create application status",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "На рассмотрении",
+									"type": "text"
+								},
+								{
+									"key": "desc",
+									"value": "Ответственное лицо компании занимается рассмотрением вашего резюме",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/application-statuses",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"application-statuses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update application status",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Отклонено",
+									"type": "text"
+								},
+								{
+									"key": "desc",
+									"value": "Ваше резюме отклонено",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/application-statuses/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"application-statuses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete application status",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/application-statuses/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"application-statuses",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Employers",
+			"item": [
+				{
+					"name": "Get employers",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/employers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"employers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show employer",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/employers/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"employers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create employer",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "full_name",
+									"value": "Московский политехнический университет",
+									"type": "text"
+								},
+								{
+									"key": "short_name",
+									"value": "Московский Политех",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								},
+								{
+									"key": "user_id",
+									"value": "2",
+									"type": "text"
+								},
+								{
+									"key": "company_type_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "industry_ids[0]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "industry_ids[1]",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/employers",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"employers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update employer",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "full_name",
+									"value": "Московский политехнический университет",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "short_name",
+									"value": "Московский Политех",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "user_id",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "company_type_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "industry_ids[0]",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "industry_ids[1]",
+									"value": "2",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/employers/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"employers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete employer",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/employers/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"employers",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Socials",
+			"item": [
+				{
+					"name": "Get socials",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/socials",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"socials"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show social",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/socials/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"socials",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create social",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "VK",
+									"type": "text"
+								},
+								{
+									"key": "link",
+									"value": "https://vk.com/public1010101012943",
+									"type": "text"
+								},
+								{
+									"key": "employer_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/socials",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"socials"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update social",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "name",
+									"value": "Facebook",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "link",
+									"value": "facebook.com/group12334534569043",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "employer_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/socials/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"socials",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete social",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/socials/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"socials",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Events",
+			"item": [
+				{
+					"name": "Get events",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/events",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show event",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/events/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create event",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Мероприятие",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "date",
+									"value": "2022-05-30 12:00:00",
+									"type": "text"
+								},
+								{
+									"key": "desc",
+									"value": "Описание",
+									"type": "text"
+								},
+								{
+									"key": "audience_id",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "employer_ids[0]",
+									"value": "1",
+									"type": "text"
+								},
+								{
+									"key": "employer_ids[1]",
+									"value": "2",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/events",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"events"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update event",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Название",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "date",
+									"value": "2022-02-22 15:00:00",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "desc",
+									"value": "Описание",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "audience_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "employer_ids[0]",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/events/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete event",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/events/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"events",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "News",
+			"item": [
+				{
+					"name": "Get news",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/news",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"news"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Show news",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/news/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"news",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create news",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Мероприятие",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "preview_text",
+									"value": "Предварительный текст",
+									"type": "text"
+								},
+								{
+									"key": "detail_text",
+									"value": "Детальное описание",
+									"type": "text"
+								},
+								{
+									"key": "employer_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/news",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"news"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update news",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "title",
+									"value": "Название",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": [],
+									"disabled": true
+								},
+								{
+									"key": "preview_text",
+									"value": "Предварительный текст",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "detail_text",
+									"value": "Детальное описание",
+									"type": "text",
+									"disabled": true
+								},
+								{
+									"key": "employer_id",
+									"value": "1",
+									"type": "text",
+									"disabled": true
+								}
+							]
+						},
+						"url": {
+							"raw": "{{host}}/api/news/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"news",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete news",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/news/1",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"news",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{admin}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "http://127.0.0.1:8005"
+		},
+		{
+			"key": "admin",
+			"value": "2|k59owEdVD8UFmIY2v3Oe0F9ZLzOvVOMpnqMLJ6BC",
+			"type": "string"
+		},
+		{
+			"key": "student",
+			"value": "3|HTqfe8rMRItty9i807QYQRHPZX3fqrGem61j55CS",
+			"type": "string"
+		},
+		{
+			"key": "employer",
+			"value": "4|qE0ab04Jr8TsEdxPdrTSeHjDLdXrjxhSQQP3GeSD",
+			"type": "string"
+		}
+	]
+}
