@@ -99,6 +99,19 @@ class AuthController extends Controller
         ], 200);
     }
 
+    public function user()
+    {
+        $user = auth()->user();
+        $user->role;
+        $user->faculty;
+        $user->employer;
+        $user->student;
+        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+        $user['image'] = asset('storage/' . $path);
+
+        return $user;
+    }
+
     private function registerAdmin(Request $request)
     {
         $user = new User($request->all());
