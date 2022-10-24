@@ -22,10 +22,32 @@ class CreateRolesTable extends Migration
         });
 
         DB::table('roles')->insert(
-            ['name' => 'Admin', 'desc' => 'Роль администратора'],
-            ['name' => 'Student', 'desc' => 'Роль студента'],
-            ['name' => 'Employer', 'desc' => 'Роль представителя организации'],
-            ['name' => 'User', 'desc' => 'Временная роль']
+            [
+                [
+                    'name' => 'Admin',
+                    'desc' => 'Администратор',
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'name' => 'Student',
+                    'desc' => 'Студент',
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'name' => 'Employer',
+                    'desc' => 'Представитель организации',
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ],
+                [
+                    'name' => 'User',
+                    'desc' => 'Временная роль',
+                    'created_at' =>  date('Y-m-d H:i:s'),
+                    'updated_at' => date('Y-m-d H:i:s')
+                ]
+            ]
         );
     }
 

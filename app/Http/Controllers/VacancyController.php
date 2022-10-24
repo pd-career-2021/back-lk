@@ -32,6 +32,13 @@ class VacancyController extends Controller
         return $vacancies;
     }
 
+    public function indexEmployerVacancies(Request $request) {
+        $employer_id = Employer::where('user_id', $request->user()->id)->first()->id;
+        $vacancies = Vacancy::where('employer_id', $employer_id)->get();
+
+        return $vacancies;
+    }
+
     /**
      * Store a newly created resource in storage.
      *

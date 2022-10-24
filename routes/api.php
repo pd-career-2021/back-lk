@@ -83,6 +83,7 @@ Route::get('/company-types/{id}', [CompanyTypeController::class, 'show']);
 // Authorized user routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // Auth
+    Route::get('/user', [AuthController::class, 'us er']);
     Route::post('/logout', [AuthController::class, 'logout']);
     // Users
     Route::get('/users', [UserController::class, 'index']);
@@ -155,6 +156,7 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:admin,employer']], funct
     // Employers
     Route::put('/employers/{id}', [EmployerController::class, 'update']);
     // Vacancies
+    Route::get('/my-vacancies', [VacancyController::class, 'indexEmployerVacancies']);
     Route::post('/vacancies', [VacancyController::class, 'store']);
     Route::put('/vacancies/{id}', [VacancyController::class, 'update']);
     Route::delete('/vacancies/{id}', [VacancyController::class, 'destroy']);
@@ -182,8 +184,4 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:admin,student']], functi
     Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);
     // Students 
     Route::put('/students/{id}', [StudentController::class, 'update']);
-});
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
 });
