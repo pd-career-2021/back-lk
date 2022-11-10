@@ -19,7 +19,7 @@ class FacultyController extends Controller
         $faculties = Faculty::all();
         foreach ($faculties as $faculty) {
             $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-            $faculty['image'] = asset('storage/' . $path);
+            $faculty['image'] = asset('public/storage/' . $path);
         }
 
         return $faculties;
@@ -49,7 +49,7 @@ class FacultyController extends Controller
         }
         $faculty->save();
         $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        $faculty['image'] = asset('storage/' . $path);
+        $faculty['image'] = asset('public/storage/' . $path);
 
         return $faculty;
     }
@@ -64,7 +64,7 @@ class FacultyController extends Controller
     {
         $faculty = Faculty::find();
         $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        $faculty['image'] = asset('storage/' . $path);
+        $faculty['image'] = asset('public/storage/' . $path);
 
         return $faculty;
     }
@@ -96,7 +96,7 @@ class FacultyController extends Controller
         }
         $faculty->save();
         $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        $faculty['image'] = asset('storage/' . $path);
+        $faculty['image'] = asset('public/storage/' . $path);
 
         return $faculty;
     }

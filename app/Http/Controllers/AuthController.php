@@ -45,7 +45,7 @@ class AuthController extends Controller
         }
         $user->save();
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/' . $path);
+        $user['image'] = asset('public/storage/' . $path);
 
         $token = $user->createToken('polytoken', ['user'])->plainTextToken;
         $response = [
@@ -81,7 +81,7 @@ class AuthController extends Controller
         }
 
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/' . $path);
+        $user['image'] = asset('public/storage/' . $path);
 
         $response = [
             'user' => $user,
@@ -107,7 +107,7 @@ class AuthController extends Controller
         $user->employer;
         $user->student;
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/' . $path);
+        $user['image'] = asset('public/storage/' . $path);
 
         return $user;
     }
@@ -129,7 +129,7 @@ class AuthController extends Controller
         }
         $user->save();
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/' . $path);
+        $user['image'] = asset('public/storage/' . $path);
 
         $token = $user->createToken('polytoken', ['admin'])->plainTextToken;
         $response = [

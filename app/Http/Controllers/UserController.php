@@ -24,7 +24,7 @@ class UserController extends Controller
         $users = User::all();
         foreach ($users as $user) {
             $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-            $user['image'] = asset('storage/' . $path);
+            $user['image'] = asset('public/storage/' . $path);
         }
 
         return $users;
@@ -79,7 +79,7 @@ class UserController extends Controller
         }
         $user->save();
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/' . $path);
+        $user['image'] = asset('public/storage/' . $path);
 
         return $user;
     }
@@ -94,7 +94,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/' . $path);
+        $user['image'] = asset('public/storage/' . $path);
         $user->role;
         $user->faculty;
 
@@ -153,7 +153,7 @@ class UserController extends Controller
 
         $user->save();
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('storage/' . $path);
+        $user['image'] = asset('public/storage/' . $path);
         $user->role;
         $user->faculty;
 
