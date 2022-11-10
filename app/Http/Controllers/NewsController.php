@@ -23,7 +23,7 @@ class NewsController extends Controller
         $news = News::all();
         foreach ($news as $item) {
             $path = ($item->img_path) ? $item->img_path : 'img/blank.jpg';
-            $item['image'] = asset('storage/' . $path);
+            $item['image'] = asset('public/storage/' . $path);
         }
 
         return $news;
@@ -71,7 +71,7 @@ class NewsController extends Controller
         }
         $news->save();
         $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
-        $news['image'] = asset('storage/' . $path);
+        $news['image'] = asset('public/storage/' . $path);
 
         return $news;
     }
@@ -86,7 +86,7 @@ class NewsController extends Controller
     {
         $news = News::find($id);
         $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
-        $news['image'] = asset('storage/' . $path);
+        $news['image'] = asset('public/storage/' . $path);
         $news->employer;
 
         return $news;
@@ -146,7 +146,7 @@ class NewsController extends Controller
 
         $news->save();
         $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
-        $news['image'] = asset('storage/' . $path);
+        $news['image'] = asset('public/storage/' . $path);
         $news->employer;
 
         return $news;

@@ -24,7 +24,7 @@ class EventController extends Controller
         $events = Event::all();
         foreach ($events as $event) {
             $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-            $event['image'] = asset('storage/' . $path);
+            $event['image'] = asset('public/storage/' . $path);
         }
 
         return $events;
@@ -82,7 +82,7 @@ class EventController extends Controller
         }
         $event->save();
         $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        $event['image'] = asset('storage/' . $path);
+        $event['image'] = asset('public/storage/' . $path);
         $event->employers;
 
         return $event;
@@ -98,7 +98,7 @@ class EventController extends Controller
     {
         $event = Event::find($id);
         $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        $event['image'] = asset('storage/' . $path);
+        $event['image'] = asset('public/storage/' . $path);
         $event->audience;
         $event->employers;
 
@@ -174,7 +174,7 @@ class EventController extends Controller
 
         $event->save();
         $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        $event['image'] = asset('storage/' . $path);
+        $event['image'] = asset('public/storage/' . $path);
         $event->audience;
         $event->employers;
 

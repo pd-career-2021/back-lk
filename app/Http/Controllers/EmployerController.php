@@ -25,7 +25,7 @@ class EmployerController extends Controller
         $employers = Employer::all();
         foreach ($employers as $employer) {
             $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-            $employer['image'] = asset('storage/' . $path);
+            $employer['image'] = asset('public/storage/' . $path);
         }
 
         return $employers;
@@ -86,7 +86,7 @@ class EmployerController extends Controller
         }
         $employer->save();
         $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('storage/' . $path);
+        $employer['image'] = asset('public/storage/' . $path);
 
         return $employer;
     }
@@ -101,7 +101,7 @@ class EmployerController extends Controller
     {
         $employer = Employer::find($id);
         $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('storage/' . $path);
+        $employer['image'] = asset('public/storage/' . $path);
         $employer->companyType;
         $employer->industries;
         $employer->socials;
@@ -183,7 +183,7 @@ class EmployerController extends Controller
 
         $employer->save();
         $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('storage/' . $path);
+        $employer['image'] = asset('public/storage/' . $path);
         $employer['industries'] = $employer->industries()->get();
         $employer->companyType;
         $employer->industries;

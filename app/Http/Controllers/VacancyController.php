@@ -26,7 +26,7 @@ class VacancyController extends Controller
         $vacancies = Vacancy::all();
         foreach ($vacancies as $vacancy) {
             $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
-            $vacancy['image'] = asset('storage/' . $path);
+            $vacancy['image'] = asset('public/storage/' . $path);
         }
 
         return $vacancies;
@@ -120,7 +120,7 @@ class VacancyController extends Controller
         }
         $vacancy->save();
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
-        $vacancy['image'] = asset('storage/' . $path);
+        $vacancy['image'] = asset('public/storage/' . $path);
         $vacancy->faculties;
         $vacancy->functions;
 
@@ -137,7 +137,7 @@ class VacancyController extends Controller
     {
         $vacancy = Vacancy::find($id);
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
-        $vacancy['image'] = asset('storage/' . $path);
+        $vacancy['image'] = asset('public/storage/' . $path);
         $vacancy->vacancyType;
         $vacancy->employer->socials;
         $vacancy->faculties;
@@ -250,7 +250,7 @@ class VacancyController extends Controller
 
         $vacancy->save();
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
-        $vacancy['image'] = asset('storage/' . $path);
+        $vacancy['image'] = asset('public/storage/' . $path);
         $vacancy->vacancyType;
         $vacancy->employer;
         $vacancy->faculties;
