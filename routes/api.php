@@ -83,7 +83,7 @@ Route::get('/company-types/{id}', [CompanyTypeController::class, 'show']);
 // Authorized user routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // Auth
-    Route::get('/user', [AuthController::class, 'us er']);
+    Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
     // Users
     Route::get('/users', [UserController::class, 'index']);
