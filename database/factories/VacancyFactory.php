@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Employer;
-use App\Models\VacancyType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 class VacancyFactory extends Factory
@@ -15,18 +14,36 @@ class VacancyFactory extends Factory
      */
     public function definition()
     {
+        $salary_type = $this->faker->randomElement(['От', 'До', 'По договоренности']);
         return [
             'title' => ucfirst($this->faker->words(random_int(3, 5), true)),
             'desc' => $this->faker->text(),
-            'short_desc' => $this->faker->text(100),
-            'skills' => $this->faker->paragraph(),
-            'link' => $this->faker->url(),
-            'map' => 'https://goo.gl/maps/agvMe9vLuvg6TKDR6',
-            'salary' => $this->faker->randomFloat(2, 10000, 250000),
+            'salary' => $salary_type == 'По договоренности' ? 0 : $this->ceilCoefficient($this->faker->numberBetween(10000, 250000)),
+            'salary_type' => $salary_type,
+            'employment_type' => $this->faker->randomElement([
+                'Проектная работа',
+                'Стажировка',
+                'Частичная занятость',
+                'Полная занятость'
+            ]),
+            'work_experience' => $this->faker->randomElement([
+                'Без опыта',
+                'Не имеет значения',
+                'От 1 года до 3 лет',
+                'От 3 до 6 лет',
+                'Более 6 лет'
+            ]),
+            'duties' => implode("\n", $this->faker->sentences(3)),
+            'conditions' => implode("\n", $this->faker->sentences(3)),
+            'requirements' => implode("\n", $this->faker->sentences(3)),
             'workplace' => $this->faker->address(),
-            'level' => ucfirst($this->faker->word()),
-            'vacancy_type_id' => VacancyType::inRandomOrder()->first()->id,
+            'map_link' => 'https://goo.gl/maps/agvMe9vLuvg6TKDR6',
             'employer_id' => Employer::inRandomOrder()->first()->id,
         ];
+    }
+
+    private function ceilCoefficient($number, $rate = 1000)
+    {
+        return ceil(ceil($number) / $rate) * $rate;
     }
 }

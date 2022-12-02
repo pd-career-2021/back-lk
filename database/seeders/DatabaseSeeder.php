@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\{Application, CompanyType, Employer, Event, User, Student, Industry, News, Social, Vacancy, VacancyFunction};
+use App\Models\{Application, CompanyType, CoreSkill, Employer, Event, User, Student, Industry, News, Social, Vacancy};
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -20,7 +20,6 @@ class DatabaseSeeder extends Seeder
             IndustrySeeder::class, // B4 Employers
             AudienceSeeder::class, // B4 Events
             ApplicationStatusSeeder::class, // B4 Applications
-            VacancyTypeSeeder::class, // B4 Vacancies
         ]);
 
         DB::table('users')->insert([
@@ -54,10 +53,10 @@ class DatabaseSeeder extends Seeder
             $event->employers()->sync(DB::table('employers')->inRandomOrder()->take(random_int(1, 2))->pluck('id')->toArray());
         }); 
         News::factory(20)->create();
-        VacancyFunction::factory(20)->create(); // B4 Vacancies
+        CoreSkill::factory(20)->create(); // B4 Vacancies
         Vacancy::factory(20)->create()->each(function($vacancy) {
             $vacancy->faculties()->sync(DB::table('faculties')->inRandomOrder()->take(random_int(1, 2))->pluck('id')->toArray());
-            $vacancy->functions()->sync(DB::table('vacancy_functions')->inRandomOrder()->take(random_int(3, 6))->pluck('id')->toArray());
+            $vacancy->skills()->sync(DB::table('core_skills')->inRandomOrder()->take(random_int(3, 6))->pluck('id')->toArray());
         }); // B4 Applications 
         Application::factory(40)->create();
     }

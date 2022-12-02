@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class VacancyFunction extends Model
+class CoreSkill extends Model
 {
     use HasFactory;
 
@@ -21,11 +21,11 @@ class VacancyFunction extends Model
 
     public function vacancies(): BelongsToMany
     {
-        // return $this->belongsToMany(Vacancy::class)->using(VacanciesFunctions::class);
+        // return $this->belongsToMany(Vacancy::class)->using(CoreSkill::class);
         return $this->belongsToMany(
             Vacancy::class,
-            'vacancies_functions',
-            'vacancy_function_id',
+            'vacancies_skills',
+            'core_skill_id',
             'vacancy_id'
         );
     }

@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\VacancyFunction;
+use App\Models\CoreSkill;
 use Illuminate\Support\Facades\Validator;
 
-class VacancyFunctionController extends Controller
+class CoreSkillController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,7 +15,7 @@ class VacancyFunctionController extends Controller
      */
     public function index()
     {
-        return VacancyFunction::all();
+        return CoreSkill::all();
     }
 
 
@@ -35,10 +35,10 @@ class VacancyFunctionController extends Controller
             return $validator->errors()->all();
         }
 
-        $vacancyFunction = new VacancyFunction($request->all());
-        $vacancyFunction->save();
+        $coreSkill = new CoreSkill($request->all());
+        $coreSkill->save();
 
-        return $vacancyFunction;
+        return $coreSkill;
     }
 
     /**
@@ -49,7 +49,7 @@ class VacancyFunctionController extends Controller
      */
     public function show($id)
     {
-        return VacancyFunction::find($id);
+        return CoreSkill::find($id);
     }
 
 
@@ -70,11 +70,11 @@ class VacancyFunctionController extends Controller
             return $validator->errors()->all();
         }
         
-        $vacancyFunction = VacancyFunction::find($id);
-        $vacancyFunction->update($request->all());
-        $vacancyFunction->save();
+        $coreSkill = CoreSkill::find($id);
+        $coreSkill->update($request->all());
+        $coreSkill->save();
 
-        return $vacancyFunction;
+        return $coreSkill;
     }
 
     /**
@@ -85,6 +85,6 @@ class VacancyFunctionController extends Controller
      */
     public function destroy($id)
     {
-        return VacancyFunction::destroy($id);
+        return CoreSkill::destroy($id);
     }
 }
