@@ -19,13 +19,15 @@ class Vacancy extends Model
     protected $fillable = [
         'title',
         'desc',
-        'short_desc',
-        'link',
         'salary',
+        'salary_type',
+        'employment_type',
+        'work_experience',
+        'duties',
+        'conditions',
+        'requirements',
         'workplace',
-        'level',
-        'skills',
-        'map',
+        'map_link',
     ];
 
     /**
@@ -42,18 +44,13 @@ class Vacancy extends Model
         return $this->belongsTo(Employer::class);
     }
 
-    public function vacancyType(): BelongsTo
-    {
-        return $this->belongsTo(VacancyType::class);
-    }
-
     public function faculties(): BelongsToMany
     {
         return $this->belongsToMany(Faculty::class, 'faculties_vacancies')->using(FacultyVacancy::class);
     }
 
-    public function functions(): BelongsToMany
+    public function skills(): BelongsToMany
     {
-        return $this->belongsToMany(VacancyFunction::class, 'vacancies_functions')->using(VacanciesFunctions::class);
+        return $this->belongsToMany(CoreSkill::class, 'vacancies_skills')->using(VacanciesCoreSkills::class);
     }
 }

@@ -6,8 +6,7 @@ use App\Http\Library\ApiHelpers;
 use App\Models\Employer;
 use App\Models\Faculty;
 use App\Models\Vacancy;
-use App\Models\VacancyFunction;
-use App\Models\VacancyType;
+use App\Models\CoreSkill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -27,12 +26,14 @@ class VacancyController extends Controller
         foreach ($vacancies as $vacancy) {
             $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
             $vacancy['image'] = asset('public/storage/' . $path);
+            $vacancy['company_name'] = $vacancy->employer->full_name;
         }
 
-        return $vacancies;
+        return $vacancies->makeHidden('employer');
     }
 
-    public function indexEmployerVacancies(Request $request) {
+    public function indexEmployerVacancies(Request $request)
+    {
         $employer_id = Employer::where('user_id', $request->user()->id)->first()->id;
         $vacancies = Vacancy::where('employer_id', $employer_id)->get();
 
@@ -48,24 +49,25 @@ class VacancyController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'required|string|max:64|unique:vacancies,title',
-            'short_desc' => 'required|string|max:255',
+            'title' => 'required|string|max:128',
             'desc' => 'required|string|max:1000',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            'link' => 'required|string|max:255',
-            'salary' => 'required|regex:/^\d{1,13}(\.\d{1,4})?$/',
+            'salary' => 'integer',
+            'salary_type' => 'required|string|in:От,До,По договоренности',
+            'employment_type' => 'required|string|in:Проектная работа,Стажировка,Частичная занятость,Полная занятость',
+            'work_experience' => 'required|string|in:Без опыта,Не имеет значения,От 1 года до 3 лет,От 3 до 6 лет,Более 6 лет',
+            'duties' => 'required|string|max:1000',
+            'conditions' => 'required|string|max:1000',
+            'requirements' => 'required|string|max:1000',
             'workplace' => 'required|string|max:255',
-            'level' => 'required|string|max:64',
-            'vacancy_type_id' => 'required|integer',
-            'skills' => 'required|string|max:1000',
-            'map' => 'string|max:1000',
+            'map_link' => 'string|max:1000',
             'employer_id' => 'integer',
             'faculty_ids' => 'required|array',
             'faculty_ids.*' => 'integer',
-            'functions' => 'required|array',
-            'functions.*' => 'required|string|max:64',
-            // 'function_ids' => 'required|array',
-            // 'function_ids.*' => 'integer',
+            'core_skills' => 'required|array',
+            'core_skills.*' => 'string|max:64',
+            // 'core_skills_ids' => 'required|array',
+            // 'core_skills_ids.*' => 'integer',
         ]);
         if ($validator->fails()) {
             return $validator->errors()->all();
@@ -87,15 +89,6 @@ class VacancyController extends Controller
         } else {
             $vacancy->employer()->associate($employer);
         }
-
-        $vacancy_type = VacancyType::find($request->input('vacancy_type_id'));
-        if (!$vacancy_type) {
-            return response([
-                'message' => 'Vacancy type not found.'
-            ], 401);
-        } else {
-            $vacancy->vacancyType()->associate($vacancy_type);
-        }
         $vacancy->save();
 
         $validated = array();
@@ -106,23 +99,23 @@ class VacancyController extends Controller
         $vacancy->faculties()->sync($validated);
 
         $validated = array();
-        foreach ($request->input('functions') as $functionTitle) {
-            $function = new VacancyFunction([
-                'title' => $functionTitle,
+        foreach ($request->input('core_skills') as $coreSkillTitle) {
+            $coreSkill = new CoreSkill([
+                'title' => $coreSkillTitle,
             ]);
-            $function->save();
-            array_push($validated, $function->id);
+            $coreSkill->save();
+            array_push($validated, $coreSkill->id);
         }
-        $vacancy->functions()->sync($validated);
+        $vacancy->skills()->sync($validated);
 
         if ($request->hasFile('image')) {
-            $employer->img_path = $request->file('image')->store('img/e' . $employer->id, 'public');
+            $employer->img_path = $request->file('image')->store('img/v' . $employer->id, 'public');
         }
         $vacancy->save();
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
         $vacancy['image'] = asset('public/storage/' . $path);
         $vacancy->faculties;
-        $vacancy->functions;
+        $vacancy->skills;
 
         return $vacancy;
     }
@@ -141,7 +134,7 @@ class VacancyController extends Controller
         $vacancy->vacancyType;
         $vacancy->employer->socials;
         $vacancy->faculties;
-        $vacancy->functions;
+        $vacancy->skills;
 
         return $vacancy;
     }
@@ -156,24 +149,25 @@ class VacancyController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'title' => 'string|max:64|unique:vacancies,title',
-            'desc' => 'string|max:1000',
-            'short_desc' => 'string|max:255',
+            'title' => 'required|string|max:128',
+            'desc' => 'required|string|max:1000',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-            'link' => 'string|max:255',
-            'salary' => 'regex:/^\d{1,13}(\.\d{1,4})?$/',
-            'workplace' => 'string|max:255',
-            'level' => 'string|max:64',
-            'skills' => 'string|max:1000',
-            'map' => 'string|max:1000',
-            'vacancy_type_id' => 'integer',
+            'salary' => 'integer',
+            'salary_type' => 'required|string|in:От,До,По договоренности',
+            'employment_type' => 'required|string|in:Проектная работа,Стажировка,Частичная занятость,Полная занятость',
+            'work_experience' => 'required|string|in:Без опыта,Не имеет значения,От 1 года до 3 лет,От 3 до 6 лет,Более 6 лет',
+            'duties' => 'required|string|max:1000',
+            'conditions' => 'required|string|max:1000',
+            'requirements' => 'required|string|max:1000',
+            'workplace' => 'required|string|max:255',
+            'map_link' => 'string|max:1000',
             'employer_id' => 'integer',
-            'faculty_ids' => 'array',
+            'faculty_ids' => 'required|array',
             'faculty_ids.*' => 'integer',
-            'functions' => 'array',
-            'functions.*' => 'string|max:64',
-            // 'function_ids' => 'array',
-            // 'function_ids.*' => 'integer',
+            'core_skills' => 'required|array',
+            'core_skills.*' => 'required|string|max:64',
+            // 'core_skills_ids' => 'required|array',
+            // 'core_skills_ids.*' => 'integer',
         ]);
         if ($validator->fails()) {
             return $validator->errors()->all();
@@ -213,18 +207,7 @@ class VacancyController extends Controller
         $vacancy->update($request->all());
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($vacancy->img_path);
-            $vacancy->img_path = $request->file('image')->store('img/e' . $employer->id, 'public');
-        }
-
-        if ($request->has('stage_id')) {
-            $vacancy_type = VacancyType::find($request->input('vacancy_type_id'));
-            if (!$vacancy_type) {
-                return response([
-                    'message' => 'Vacancy type not found.'
-                ], 401);
-            } else {
-                $vacancy->vacancyType()->associate($vacancy_type);
-            }
+            $vacancy->img_path = $request->file('image')->store('img/v' . $employer->id, 'public');
         }
 
         if ($request->has('faculty_ids')) {
@@ -236,16 +219,16 @@ class VacancyController extends Controller
             $vacancy->faculties()->sync($validated);
         }
 
-        if ($request->has('functions')) {
+        if ($request->has('core_skills')) {
             $validated = array();
-            foreach ($request->input('functions') as $functionTitle) {
-                $function = new VacancyFunction([
-                    'title' => $functionTitle,
+            foreach ($request->input('core_skills') as $coreSkillTitle) {
+                $coreSkill = new CoreSkill([
+                    'title' => $coreSkillTitle,
                 ]);
-                $function->save();
-                array_push($validated, $function->id);
+                $coreSkill->save();
+                array_push($validated, $coreSkill->id);
             }
-            $vacancy->functions()->sync($validated);
+            $vacancy->skills()->sync($validated);
         }
 
         $vacancy->save();
@@ -254,7 +237,7 @@ class VacancyController extends Controller
         $vacancy->vacancyType;
         $vacancy->employer;
         $vacancy->faculties;
-        $vacancy->functions;
+        $vacancy->skills;
 
         return $vacancy;
     }
@@ -270,24 +253,23 @@ class VacancyController extends Controller
     {
         $user = $request->user();
         if ($this->isEmployer($user)) {
-            $employer_id = Employer::where('user_id', $request->user()->id)->first()->id;
+            $employer_id = Employer::where('user_id', $user->id)->first()->id;
             if (Vacancy::where('id', $id)->first()->employer_id == $employer_id) {
                 $vacancy = Vacancy::find($id);
                 $vacancy->faculties()->detach();
-                $vacancy->functions()->detach();
+                $vacancy->skills()->detach();
 
                 return Vacancy::destroy($id);
-            } else {
-                return response([
-                    'message' => 'You do not have permission to do this.'
-                ], 401);
             }
         } else if ($this->isAdmin($user)) {
             $vacancy = Vacancy::find($id);
             $vacancy->faculties()->detach();
-            $vacancy->functions()->detach();
+            $vacancy->skills()->detach();
 
             return Vacancy::destroy($id);
         }
+        return response([
+            'message' => 'You do not have permission to do this.'
+        ], 401);
     }
 }

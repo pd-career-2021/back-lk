@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\Vacancy;
+use App\Models\CoreSkill;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateVacancyFunctionsTable extends Migration
+class CreateVacanciesSkillsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +15,10 @@ class CreateVacancyFunctionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('vacancy_functions', function (Blueprint $table) {
+        Schema::create('vacancies_skills', function (Blueprint $table) {
             $table->id();
-            $table->string('title', 64);
+            $table->foreignIdFor(Vacancy::class);
+            $table->foreignIdFor(CoreSkill::class);
             $table->timestamps();
         });
     }
@@ -27,6 +30,6 @@ class CreateVacancyFunctionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('vacancy_functions');
+        Schema::dropIfExists('vacancies_skills');
     }
 }

@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
-class VacanciesFunctions extends Pivot
+class VacanciesCoreSkills extends Pivot
 {
-    protected $table = 'vacancies_functions';
+    protected $table = 'vacancies_skills';
 }
