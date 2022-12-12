@@ -21,40 +21,41 @@ use App\Http\Controllers\{ApplicationController, ApplicationStatusController, Au
 |--------------------------------------------------------------------------
 */
 
-// Auth
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/login', [AuthController::class, 'login']);
-// Audience
-Route::get('/audience', [AudienceController::class, 'index']);
-Route::get('/audience/{id}', [AudienceController::class, 'show']);
-// Events
-Route::get('/events', [EventController::class, 'index']);
-Route::get('/events/{id}', [EventController::class, 'show']);
-// News
-Route::get('/news', [NewsController::class, 'index']);
-Route::get('/news/{id}', [NewsController::class, 'show']);
-// Faculties
-Route::get('/faculties', [FacultyController::class, 'index']);
-Route::get('/faculties/{id}', [FacultyController::class, 'show']);
-// Vacancies
-Route::get('/vacancies', [VacancyController::class, 'index']);
-Route::get('/vacancies/{id}', [VacancyController::class, 'show']);
-// Core skills
-Route::get('/core-skills', [CoreSkillController::class, 'index']);
-Route::get('/core-skills/{id}', [CoreSkillController::class, 'show']);
-// Employers
-Route::get('/employers', [EmployerController::class, 'index']);
-Route::get('/employers/{id}', [EmployerController::class, 'show']);
-// Socials
-Route::get('/socials', [SocialController::class, 'index']);
-Route::get('/socials/{id}', [SocialController::class, 'show']);
-// Industries
-Route::get('/industries', [IndustryController::class, 'index']);
-Route::get('/industries/{id}', [IndustryController::class, 'show']);
-// Company types
-Route::get('/company-types', [CompanyTypeController::class, 'index']);
-Route::get('/company-types/{id}', [CompanyTypeController::class, 'show']);
-
+Route::group(['middleware' => ['cors']], function () {
+    // Auth
+    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/login', [AuthController::class, 'login']);
+    // Audience
+    Route::get('/audience', [AudienceController::class, 'index']);
+    Route::get('/audience/{id}', [AudienceController::class, 'show']);
+    // Events
+    Route::get('/events', [EventController::class, 'index']);
+    Route::get('/events/{id}', [EventController::class, 'show']);
+    // News
+    Route::get('/news', [NewsController::class, 'index']);
+    Route::get('/news/{id}', [NewsController::class, 'show']);
+    // Faculties
+    Route::get('/faculties', [FacultyController::class, 'index']);
+    Route::get('/faculties/{id}', [FacultyController::class, 'show']);
+    // Vacancies
+    Route::get('/vacancies', [VacancyController::class, 'index']);
+    Route::get('/vacancies/{id}', [VacancyController::class, 'show']);
+    // Core skills
+    Route::get('/core-skills', [CoreSkillController::class, 'index']);
+    Route::get('/core-skills/{id}', [CoreSkillController::class, 'show']);
+    // Employers
+    Route::get('/employers', [EmployerController::class, 'index']);
+    Route::get('/employers/{id}', [EmployerController::class, 'show']);
+    // Socials
+    Route::get('/socials', [SocialController::class, 'index']);
+    Route::get('/socials/{id}', [SocialController::class, 'show']);
+    // Industries
+    Route::get('/industries', [IndustryController::class, 'index']);
+    Route::get('/industries/{id}', [IndustryController::class, 'show']);
+    // Company types
+    Route::get('/company-types', [CompanyTypeController::class, 'index']);
+    Route::get('/company-types/{id}', [CompanyTypeController::class, 'show']);
+});
 /*
 |--------------------------------------------------------------------------
 |                             Protected routes
@@ -62,7 +63,7 @@ Route::get('/company-types/{id}', [CompanyTypeController::class, 'show']);
 */
 
 // Authorized user routes
-Route::group(['middleware' => ['auth:sanctum']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'cors']], function () {
     // Auth
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -83,7 +84,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 });
 
 // Admin routes
-Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'ability:admin', 'cors']], function () {
     // Application statuses
     Route::post('/application-statuses', [ApplicationStatusController::class, 'store']);
     Route::put('/application-statuses/{id}', [ApplicationStatusController::class, 'update']);
@@ -125,7 +126,7 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
 });
 
 // Employer routes
-Route::group(['middleware' => ['auth:sanctum', 'ability:admin,employer']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'ability:admin,employer', 'cors']], function () {
     // Applications
     Route::get('/my-vacancies-applications', [ApplicationController::class, 'indexVacanciesApplications']);
     Route::get('/applications', [ApplicationController::class, 'index']);
@@ -152,7 +153,7 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:admin,employer']], funct
 });
 
 // Student routes
-Route::group(['middleware' => ['auth:sanctum', 'ability:admin,student']], function () {
+Route::group(['middleware' => ['auth:sanctum', 'ability:admin,student', 'cors']], function () {
     // Applications
     Route::get('/my-applications', [ApplicationController::class, 'indexStudentApplications']);
     Route::get('/applications', [ApplicationController::class, 'index']);
