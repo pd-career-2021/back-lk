@@ -27,17 +27,17 @@ install: build-dev up-dev ## Install project - all you need for quick start
 .PHONY: build-dev up-dev stop-dev down-dev clear-dev
 build-dev up-dev stop-dev restart-dev down-dev clear-dev: COMPOSE_FILE=./docker-compose.yml
 build-dev: ## Build current version images for dev
-	VERSION=$(VERSION) docker-compose -f $(COMPOSE_FILE) build --pull $(SERVICE)
+	docker-compose -f $(COMPOSE_FILE) build --pull $(SERVICE)
 up-dev: ## Up current version containers for dev
-	VERSION=$(VERSION) docker-compose -f $(COMPOSE_FILE) up -d
+	docker-compose -f $(COMPOSE_FILE) up -d
 stop-dev: ## Stop current version containers for dev
-	VERSION=$(VERSION) docker-compose -f $(COMPOSE_FILE) stop
+	docker-compose -f $(COMPOSE_FILE) stop
 restart-dev: ## Restart current version containers for dev
-	VERSION=$(VERSION) docker-compose -f $(COMPOSE_FILE) restart
+	docker-compose -f $(COMPOSE_FILE) restart
 down-dev: ## Down current version containers for dev and remove network
-	VERSION=$(VERSION) docker-compose -f $(COMPOSE_FILE) down
+	docker-compose -f $(COMPOSE_FILE) down
 clear-dev: ## Stop and clear all current version containers for dev
-	VERSION=$(VERSION) docker-compose -f $(COMPOSE_FILE) rm -s -f -v
+	docker-compose -f $(COMPOSE_FILE) rm -s -f -v
 
 ### Commands that will give you vendor folder
 .PHONY: install-vendor echo-version composer-dev

@@ -6,9 +6,10 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+// use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Orchid\Platform\Models\User as Authenticatable;
 
 class User extends Authenticatable
 {
@@ -25,6 +26,7 @@ class User extends Authenticatable
         'surname',
         'name',
         'sex',
+        'permissions',
     ];
 
     /**
@@ -36,8 +38,46 @@ class User extends Authenticatable
         'password',
         'remember_token',
         'img_path',
+        'permissions',
     ];
 
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'permissions'          => 'array',
+        // 'email_verified_at'    => 'datetime',
+    ];
+
+    /**
+     * The attributes for which you can use filters in url.
+     *
+     * @var array<string, string>
+     */
+    protected $allowedFilters = [
+        'id',
+        'name',
+        'surname',
+        'email',
+        'sex',
+        'permissions',
+    ];
+
+    /**
+     * The attributes for which can use sort in url.
+     *
+     * @var array
+     */
+    protected $allowedSorts = [
+        'id',
+        'name',
+        'email',
+        'updated_at',
+        'created_at',
+    ];
+    
     public function role(): BelongsTo
     {
         return $this->belongsTo(Role::class);
@@ -58,12 +98,4 @@ class User extends Authenticatable
         return $this->hasOne(Employer::class);
     }
 
-    //    /**
-    //     * The attributes that should be cast.
-    //     *
-    //     * @var array<string, string>
-    //     */
-    //    protected $casts = [
-    //        'email_verified_at' => 'datetime',
-    //    ];
 }
