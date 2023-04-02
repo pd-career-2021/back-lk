@@ -39,6 +39,6 @@ class Event extends Model
 
     public function employers(): BelongsToMany
     {
-        return $this->belongsToMany(Employer::class, 'partners')->using(Partner::class);
+        return $this->belongsToMany(Employer::class, 'partners')->using(Partner::class)->withTimestamps();
     }
 }

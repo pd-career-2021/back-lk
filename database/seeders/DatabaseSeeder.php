@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\{Application, CompanyType, CoreSkill, Employer, Event, User, Student, Industry, News, Social, Vacancy};
+use App\Models\{Application, CompanyType, CoreSkill, Employer, Event, User, Student, Industry, News, Role, Social, Vacancy};
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -16,21 +16,35 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $this->call([
+            RoleSeeder::class,
             FacultySeeder::class, // B4 Users/Employers/Students/Vacanies
             IndustrySeeder::class, // B4 Employers
             AudienceSeeder::class, // B4 Events
             ApplicationStatusSeeder::class, // B4 Applications
         ]);
 
-        DB::table('users')->insert([
+        User::factory()->state([
             'email' => 'career@mospolytech.ru',
             'password' => bcrypt('mospolypass'),
             'name' => 'Администратор',
             'surname' => 'Центра Карьеры',
             'sex' => 'male',
-            'role_id' => 1,
             'faculty_id' => 1,
-        ]);
+        ])->create()->roles()->sync(Role::find(1));
+
+        // DB::table('users')->insert([
+        //     'email' => 'career@mospolytech.ru',
+        //     'password' => bcrypt('mospolypass'),
+        //     'name' => 'Администратор',
+        //     'surname' => 'Центра Карьеры',
+        //     'sex' => 'male',
+        //     'faculty_id' => 1,
+        // ]);
+
+        // DB::table('role_users')->insert([
+        //     'user_id' => 1,
+        //     'role_id' => 1
+        // ]);
 
         // User::factory()->create(); // B4 Students/Employers. Create users with a temporary role. USE STUDENT/EMPLOYER FACTORY INSTEAD
         // Industry::factory(10)->create(); // B4 Employers. USE SEEDER INSTEAD

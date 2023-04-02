@@ -46,11 +46,11 @@ class Vacancy extends Model
 
     public function faculties(): BelongsToMany
     {
-        return $this->belongsToMany(Faculty::class, 'faculties_vacancies')->using(FacultyVacancy::class);
+        return $this->belongsToMany(Faculty::class, 'faculties_vacancies')->using(FacultyVacancy::class)->withTimestamps();
     }
 
     public function skills(): BelongsToMany
     {
-        return $this->belongsToMany(CoreSkill::class, 'vacancies_skills')->using(VacanciesCoreSkills::class);
+        return $this->belongsToMany(CoreSkill::class, 'vacancies_skills')->using(VacanciesCoreSkills::class)->withTimestamps();
     }
 }

@@ -32,7 +32,6 @@ class UserFactory extends Factory
             'surname' => $this->faker->lastName($gender == 0 ? 'male' : 'female'),
             'sex' => $gender == 0 ? 'male' : 'female',
             'remember_token' => Str::random(10),
-            'role_id' => 4,
             'faculty_id' => Faculty::inRandomOrder()->first()->id,
         ];
     }

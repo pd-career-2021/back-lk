@@ -23,7 +23,6 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->enum('sex', ['male', 'female']);
             $table->string('img_path')->nullable();
-            $table->foreignIdFor(Role::class); // TODO: разрешить конфликт с таблицей role_users из Orchid
             $table->foreignIdFor(Faculty::class);
             $table->rememberToken();
             $table->timestamps();

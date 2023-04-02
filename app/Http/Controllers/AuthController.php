@@ -28,15 +28,15 @@ class AuthController extends Controller
             return $validator->errors()->all();
         }
 
-        if (\DB::table('users')->count() == 0) {
-            $this->registerAdmin($request);
-        }
+        // if (\DB::table('users')->count() == 0) {
+        //     $this->registerAdmin($request);
+        // }
 
         $user = new User($request->all());
         $user->password = bcrypt($request->input('password'));
 
         $role = Role::find(4);
-        $user->role()->associate($role);
+        $user->roles()->sync($role);
         $faculty = Faculty::find($request->input('faculty_id'));
         $user->faculty()->associate($faculty);
 
@@ -49,7 +49,8 @@ class AuthController extends Controller
 
         $token = $user->createToken('polytoken', ['user'])->plainTextToken;
         $response = [
-            'user' => $user,
+            'user' => $user->makeHidden(['roles']),
+            'roles' => $user->roles()->pluck('name'),
             'token' => $token
         ];
 
@@ -74,17 +75,14 @@ class AuthController extends Controller
             ], 401);
         }
 
-        $role = $user->role_id;
-        $abilities = ['', 'admin', 'student', 'employer', 'user'];
-        if ($role) {
-            $token = $user->createToken('polytoken', [$abilities[$role]])->plainTextToken;
-        }
+        $token = $user->createToken('polytoken', $user->roles->pluck('slug')->toArray())->plainTextToken;
 
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
         $user['image'] = asset('public/storage/' . $path);
 
         $response = [
-            'user' => $user,
+            'user' => $user->makeHidden(['roles']),
+            'roles' => $user->roles()->pluck('name'),
             'token' => $token
         ];
 
@@ -102,7 +100,7 @@ class AuthController extends Controller
     public function user()
     {
         $user = auth()->user();
-        $user->role;
+        $user['roles'] = $user->roles()->pluck('name');
         $user->faculty;
         $user->employer;
         $user->student;
@@ -112,31 +110,31 @@ class AuthController extends Controller
         return $user;
     }
 
-    private function registerAdmin(Request $request)
-    {
-        $user = new User($request->all());
-        $user->password = bcrypt($request->input('password'));
+    // private function registerAdmin(Request $request)
+    // {
+    //     $user = new User($request->all());
+    //     $user->password = bcrypt($request->input('password'));
 
-        $role = Role::find(1);
-        $user->role()->associate($role);
+    //     $role = Role::find(1);
+    //     $user->roles()->sync($role);
 
-        Faculty::create(['title' => 'Факультет информационных технологий', 'desc' => 'Описание факультета']);
-        $faculty = Faculty::find(1);
-        $user->faculty()->associate($faculty);
+    //     Faculty::create(['title' => 'Факультет информационных технологий', 'desc' => 'Описание факультета']);
+    //     $faculty = Faculty::find(1);
+    //     $user->faculty()->associate($faculty);
 
-        if ($request->hasFile('image')) {
-            $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
-        }
-        $user->save();
-        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('public/storage/' . $path);
+    //     if ($request->hasFile('image')) {
+    //         $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
+    //     }
+    //     $user->save();
+    //     $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+    //     $user['image'] = asset('public/storage/' . $path);
 
-        $token = $user->createToken('polytoken', ['admin'])->plainTextToken;
-        $response = [
-            'user' => $user,
-            'token' => $token
-        ];
+    //     $token = $user->createToken('polytoken', ['admin'])->plainTextToken;
+    //     $response = [
+    //         'user' => $user,
+    //         'token' => $token
+    //     ];
 
-        return response($response, 201);
-    }
+    //     return response($response, 201);
+    // }
 }
