@@ -20,7 +20,15 @@ class RoleSeeder extends Seeder
                     'name' => 'Администратор',
                     'slug' => 'admin',
                     'desc' => 'Администратор',
-                    'permissions' => '{"platform.index": true, "platform.systems.roles": true, "platform.systems.users": true, "platform.systems.attachment": true}',
+                    'permissions' => '{
+                        "platform.index": "1", 
+                        "platform.systems.roles": "1", 
+                        "platform.systems.users": "1", 
+                        "platform.systems.faculties": "1", 
+                        "platform.systems.attachment": "1", 
+                        "platform.employment.vacancies": "1", 
+                        "platform.employment.applications": "1"
+                    }',
                     'created_at' =>  date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ],
@@ -36,7 +44,7 @@ class RoleSeeder extends Seeder
                     'name' => 'Работодатель',
                     'slug' => 'employer',
                     'desc' => 'Представитель организации',
-                    'permissions' => '{"platform.index": true}',
+                    'permissions' => '{"platform.index": false}',
                     'created_at' =>  date('Y-m-d H:i:s'),
                     'updated_at' => date('Y-m-d H:i:s')
                 ],

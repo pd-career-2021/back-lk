@@ -2,19 +2,16 @@
 
 declare(strict_types=1);
 
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
-use App\Orchid\Screens\Examples\ExampleScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
 use App\Orchid\Screens\User\UserEditScreen;
 use App\Orchid\Screens\User\UserListScreen;
 use App\Orchid\Screens\User\UserProfileScreen;
+use App\Orchid\Screens\Faculty\FacultyListScreen;
+use App\Orchid\Screens\Faculty\FacultyEditScreen;
+use App\Orchid\Screens\Vacancy\VacancyListScreen;
+use App\Orchid\Screens\Vacancy\VacancyEditScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -41,6 +38,12 @@ Route::screen('profile', UserProfileScreen::class)
             ->parent('platform.index')
             ->push(__('Profile'), route('platform.profile'));
     });
+
+/*
+|--------------------------------------------------------------------------
+|                                   Users
+|--------------------------------------------------------------------------
+*/
 
 // Platform > System > Users
 Route::screen('users/{user}/edit', UserEditScreen::class)
@@ -69,6 +72,12 @@ Route::screen('users', UserListScreen::class)
             ->push(__('Users'), route('platform.systems.users'));
     });
 
+/*
+|--------------------------------------------------------------------------
+|                                   Roles
+|--------------------------------------------------------------------------
+*/
+
 // Platform > System > Roles > Role
 Route::screen('roles/{role}/edit', RoleEditScreen::class)
     ->name('platform.systems.roles.edit')
@@ -96,20 +105,68 @@ Route::screen('roles', RoleListScreen::class)
             ->push(__('Roles'), route('platform.systems.roles'));
     });
 
-// Example...
-Route::screen('example', ExampleScreen::class)
-    ->name('platform.example')
+/*
+|--------------------------------------------------------------------------
+|                               Faculties
+|--------------------------------------------------------------------------
+*/
+
+// Platform > System > Faculties
+Route::screen('faculties', FacultyListScreen::class)
+    ->name('platform.systems.faculties')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Example screen');
+            ->push("Факультеты", route('platform.systems.faculties'));
     });
 
-Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');
-Route::screen('example-layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
-Route::screen('example-charts', ExampleChartsScreen::class)->name('platform.example.charts');
-Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
-Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
-Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
+// Platform > System > Faculties > Create
+Route::screen('faculties/create', FacultyEditScreen::class)
+    ->name('platform.systems.faculties.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.faculties')
+            ->push(__('Create'), route('platform.systems.faculties.create'));
+    });
 
-//Route::screen('idea', 'Idea::class','platform.screens.idea');
+// Platform > System > Faculties > Faculty
+Route::screen('faculties/{faculty}/edit', FacultyEditScreen::class)
+    ->name('platform.systems.faculties.edit')
+    ->breadcrumbs(function (Trail $trail, $faculty) {
+        return $trail
+            ->parent('platform.systems.faculties')
+            ->push("Факультет", route('platform.systems.faculties.edit', $faculty));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                                Vacancies
+|--------------------------------------------------------------------------
+*/
+
+// Platform > Employment > Vacancies
+Route::screen('vacancies', VacancyListScreen::class)
+    ->name('platform.employment.vacancies')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Вакансии", route('platform.employment.vacancies'));
+    });
+
+// Platform > Employment > Vacancies > Create
+Route::screen('vacancies/create', VacancyEditScreen::class)
+    ->name('platform.employment.vacancies.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.employment.vacancies')
+            ->push(__('Create'), route('platform.employment.vacancies.create'));
+    });
+
+// Platform > Employment > Vacancies > Vacancy
+Route::screen('vacancies/{vacancy}/edit', VacancyEditScreen::class)
+    ->name('platform.employment.vacancies.edit')
+    ->breadcrumbs(function (Trail $trail, $vacancy) {
+        return $trail
+            ->parent('platform.employment.vacancies')
+            ->push($vacancy->title, route('platform.employment.vacancies.edit', $vacancy));
+    });

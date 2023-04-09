@@ -142,9 +142,13 @@ class VacancyController extends Controller
     public function show($id)
     {
         $vacancy = Vacancy::find($id);
+        if (!$vacancy) 
+            return response([
+                'message' => 'Vacancy not found.'
+            ], 401);
+        
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
         $vacancy['image'] = asset('public/storage/' . $path);
-        $vacancy->vacancyType;
         $vacancy->employer->socials;
         $vacancy->faculties;
         $vacancy->skills;

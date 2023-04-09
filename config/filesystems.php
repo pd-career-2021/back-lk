@@ -70,4 +70,17 @@ return [
         public_path('storage') => storage_path('app/public'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Default configuration for attachments.
+    |--------------------------------------------------------------------------
+    |
+    | Strategy properties for the file and storage used.
+    |
+    */
+
+    'attachment' => [
+        'disk'      => 'public',
+        'generator' => \Orchid\Attachment\Engines\Generator::class,
+    ],
 ];

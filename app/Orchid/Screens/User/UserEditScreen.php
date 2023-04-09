@@ -61,7 +61,7 @@ class UserEditScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Details such as name, email and password';
+        return '';
     }
 
     /**
@@ -109,7 +109,7 @@ class UserEditScreen extends Screen
 
             Layout::block(UserEditLayout::class)
                 ->title(__('Profile Information'))
-                ->description(__('Update your account\'s profile information and email address.'))
+                ->description('Основная информация о пользователе')
                 ->commands(
                     Button::make(__('Save'))
                         ->type(Color::DEFAULT())

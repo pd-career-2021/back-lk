@@ -49,6 +49,9 @@ class UserListLayout extends Table
                         ]);
                 }),
 
+            TD::make('role_id', __('Role'))
+                ->sort(),
+
             TD::make('updated_at', __('Last edit'))
                 ->sort()
                 ->render(function (User $user) {

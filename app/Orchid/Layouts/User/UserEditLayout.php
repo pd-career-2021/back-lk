@@ -6,6 +6,8 @@ namespace App\Orchid\Layouts\User;
 
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\RadioButtons;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Rows;
 
 class UserEditLayout extends Rows
@@ -20,16 +22,37 @@ class UserEditLayout extends Rows
         return [
             Input::make('user.name')
                 ->type('text')
-                ->max(255)
+                ->max(45)
                 ->required()
-                ->title(__('Name'))
-                ->placeholder(__('Name')),
+                ->title('Имя')
+                ->placeholder('Имя'),
+
+            Input::make('user.surname')
+            ->type('text')
+            ->max(45)
+            ->required()
+            ->title('Фамилия')
+            ->placeholder('Фамилия'),
 
             Input::make('user.email')
                 ->type('email')
                 ->required()
                 ->title(__('Email'))
                 ->placeholder(__('Email')),
+
+            RadioButtons::make('user.sex')
+                ->options([
+                    'male'   => 'Мужской',
+                    'female' => 'Женский',
+                ])
+                ->required()
+                ->title('Пол'),
+
+            // Select::make('user.faculty_id')
+            //     ->fromModel(Faculty::class, 'name')
+            //     ->multiple()
+            //     ->title('Факультет')
+            //     ->help('Факультет пользователя'),
         ];
     }
 }
