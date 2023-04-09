@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\Vacancy\VacancySalaryFilter;
+use Illuminate\Pipeline\Pipeline;
 use App\Http\Library\ApiHelpers;
 use App\Models\Employer;
 use App\Models\Faculty;
@@ -22,14 +24,25 @@ class VacancyController extends Controller
      */
     public function index()
     {
-        $vacancies = Vacancy::all();
-        foreach ($vacancies as $vacancy) {
+        $vacancies = Vacancy::query();
+        $response =
+            app(Pipeline::class)
+            ->send($vacancies)
+            ->through([
+                VacancySalaryFilter::class
+            ])
+            ->via('apply')
+            ->then(function ($vacancies) {
+                return $vacancies->get();
+            });
+
+        foreach ($response as $vacancy) {
             $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
             $vacancy['image'] = asset('public/storage/' . $path);
             $vacancy['company_name'] = $vacancy->employer->full_name;
         }
 
-        return $vacancies->makeHidden('employer');
+        return $response->makeHidden('employer');
     }
 
     public function indexEmployerVacancies(Request $request)
