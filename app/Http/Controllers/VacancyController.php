@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\Vacancy\VacancyCompanyTypeFilter;
+use App\Filters\Vacancy\VacancyCoreSkillsFilter;
+use App\Filters\Vacancy\VacancyEmploymentTypeFilter;
 use App\Filters\Vacancy\VacancySalaryFilter;
+use App\Filters\Vacancy\VacancyWorkExperienceFilter;
 use Illuminate\Pipeline\Pipeline;
 use App\Http\Library\ApiHelpers;
 use App\Models\Employer;
@@ -29,7 +33,11 @@ class VacancyController extends Controller
             app(Pipeline::class)
             ->send($vacancies)
             ->through([
-                VacancySalaryFilter::class
+                VacancyCompanyTypeFilter::class,
+                VacancyCoreSkillsFilter::class,
+                VacancyEmploymentTypeFilter::class,
+                VacancySalaryFilter::class,
+                VacancyWorkExperienceFilter::class,
             ])
             ->via('apply')
             ->then(function ($vacancies) {
@@ -142,11 +150,11 @@ class VacancyController extends Controller
     public function show($id)
     {
         $vacancy = Vacancy::find($id);
-        if (!$vacancy) 
+        if (!$vacancy)
             return response([
                 'message' => 'Vacancy not found.'
             ], 401);
-        
+
         $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
         $vacancy['image'] = asset('public/storage/' . $path);
         $vacancy->employer->socials;
