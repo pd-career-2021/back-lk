@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Filters\Event\EventAudienceFilter;
+use App\Filters\Event\EventDateFilter;
+use Illuminate\Pipeline\Pipeline;
 use App\Http\Library\ApiHelpers;
 use App\Models\Audience;
 use App\Models\Employer;
@@ -21,13 +24,25 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::all();
-        foreach ($events as $event) {
+        $events = Event::query();
+        $response =
+            app(Pipeline::class)
+            ->send($events)
+            ->through([
+                EventAudienceFilter::class,
+                EventDateFilter::class,
+            ])
+            ->via('apply')
+            ->then(function ($events) {
+                return $events->get();
+            });
+            
+        foreach ($response as $event) {
             $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
             $event['image'] = asset('public/storage/' . $path);
         }
-
-        return $events;
+        
+        return $response;
     }
 
     /**
