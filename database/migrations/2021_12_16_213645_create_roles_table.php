@@ -20,35 +20,6 @@ class CreateRolesTable extends Migration
             $table->string('desc', 1000)->nullable();
             $table->timestamps();
         });
-
-        DB::table('roles')->insert(
-            [
-                [
-                    'name' => 'Admin',
-                    'desc' => 'Администратор',
-                    'created_at' =>  date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
-                ],
-                [
-                    'name' => 'Student',
-                    'desc' => 'Студент',
-                    'created_at' =>  date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
-                ],
-                [
-                    'name' => 'Employer',
-                    'desc' => 'Представитель организации',
-                    'created_at' =>  date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
-                ],
-                [
-                    'name' => 'User',
-                    'desc' => 'Временная роль',
-                    'created_at' =>  date('Y-m-d H:i:s'),
-                    'updated_at' => date('Y-m-d H:i:s')
-                ]
-            ]
-        );
     }
 
     /**

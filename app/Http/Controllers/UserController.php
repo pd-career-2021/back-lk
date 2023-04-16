@@ -25,6 +25,7 @@ class UserController extends Controller
         foreach ($users as $user) {
             $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
             $user['image'] = asset('public/storage/' . $path);
+            $user['roles'] = $user->roles()->pluck('name');
         }
 
         return $users;
@@ -45,7 +46,8 @@ class UserController extends Controller
             'password' => 'required|string|confirmed',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'sex' => 'required|string|in:male,female',
-            'role_id' => 'required|integer',
+            'role_ids' => 'required|array',
+            'role_ids.*' => 'integer',
             'faculty_id' => 'required|integer',
         ]);
         if ($validator->fails()) {
@@ -55,14 +57,12 @@ class UserController extends Controller
         $user = new User($request->all());
         $user->password = bcrypt($request->input('password'));
 
-        $role = Role::find($request->input('role_id'));
-        if (!$role) {
-            return response([
-                'message' => 'Role not found.'
-            ], 401);
-        } else {
-            $user->role()->associate($role);
+        $validated = array();
+        foreach ($request->input('role_ids') as $id) {
+            if (Role::find($id))
+                array_push($validated, $id);
         }
+        $user->roles()->sync($validated);
 
         $faculty = Faculty::find($request->input('faculty_id'));
         if (!$faculty) {
@@ -95,7 +95,7 @@ class UserController extends Controller
         $user = User::find($id);
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
         $user['image'] = asset('public/storage/' . $path);
-        $user->role;
+        $user['roles'] = $user->roles()->pluck('name');
         $user->faculty;
 
         return $user;
@@ -117,7 +117,8 @@ class UserController extends Controller
             'password' => 'string|confirmed',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
             'sex' => 'string|in:male,female',
-            'role_id' => 'integer',
+            'role_ids' => 'array',
+            'role_ids.*' => 'integer',
             'faculty_id' => 'integer',
         ]);
         if ($validator->fails()) {
@@ -133,15 +134,13 @@ class UserController extends Controller
                 ], 401);
             }
         } else {
-            if ($request->has('role_id')) {
-                $role = Role::find($request->input('role_id'));
-                if (!$role) {
-                    return response([
-                        'message' => 'Role not found.'
-                    ], 401);
-                } else {
-                    $user->role()->associate($role);
+            if ($request->has('role_ids')) {
+                $validated = array();
+                foreach ($request->input('role_ids') as $id) {
+                    if (Role::find($id))
+                        array_push($validated, $id);
                 }
+                $user->roles()->sync($validated);
             }
         }
 
@@ -154,7 +153,7 @@ class UserController extends Controller
         $user->save();
         $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
         $user['image'] = asset('public/storage/' . $path);
-        $user->role;
+        $user['roles'] = $user->roles()->pluck('name');
         $user->faculty;
 
         return $user;
