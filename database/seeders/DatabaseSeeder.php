@@ -30,14 +30,7 @@ class DatabaseSeeder extends Seeder
             'surname' => 'Центра Карьеры',
             'sex' => 'male',
             'faculty_id' => 1,
-            'permissions' => '{
-                "platform.index": "1", 
-                "platform.systems.roles": "1", 
-                "platform.systems.users": "1", 
-                "platform.systems.faculties": "1", 
-                "platform.systems.attachment": "1", 
-                "platform.employment.vacancies": "1", 
-                "platform.employment.applications": "1"
+            'permissions' => '{"platform.index": "1", "platform.systems.roles": "1", "platform.systems.users": "1", "platform.systems.faculties": "1", "platform.systems.attachment": "1", "platform.employment.vacancies": "1", "platform.employment.applications": "1"
             }',
         ])->create()->roles()->sync(Role::find(1));
 

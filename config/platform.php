@@ -109,8 +109,8 @@ return [
     */
 
     'resource' => [
-        'stylesheets' => [],
-        'scripts'     => [],
+        'stylesheets' => ['/public/vendor/orchid/css/orchid.css'],
+        'scripts'     => ['/public/vendor/orchid/js/manifest.js', '/public/vendor/orchid/js/orchid.js', '/public/vendor/orchid/js/vendor.js'],
     ],
 
     /*
