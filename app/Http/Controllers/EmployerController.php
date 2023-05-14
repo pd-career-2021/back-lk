@@ -22,13 +22,13 @@ class EmployerController extends Controller
      */
     public function index()
     {
-        $employers = Employer::all();
-        foreach ($employers as $employer) {
-            $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-            $employer['image'] = asset('public/storage/' . $path);
-        }
+        // $employers = Employer::all();
+        // foreach ($employers as $employer) {
+        //     $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
+        //     $employer['image'] = asset('public/storage/' . $path);
+        // }
 
-        return $employers;
+        return new CompanyTypeCollection(Employer::all();)
     }
 
     /**
@@ -85,10 +85,10 @@ class EmployerController extends Controller
             $employer->img_path = $request->file('image')->store('img/e' . $employer->id, 'public');
         }
         $employer->save();
-        $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('public/storage/' . $path);
+        // $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
+        // $employer['image'] = asset('public/storage/' . $path);
 
-        return $employer;
+        return new EmployerResource($employer);
     }
 
     /**
@@ -99,14 +99,14 @@ class EmployerController extends Controller
      */
     public function show($id)
     {
-        $employer = Employer::find($id);
-        $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('public/storage/' . $path);
-        $employer->companyType;
-        $employer->industries;
-        $employer->socials;
+        // $employer = Employer::find($id);
+        // $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
+        // $employer['image'] = asset('public/storage/' . $path);
+        // $employer->companyType;
+        // $employer->industries;
+        // $employer->socials;
 
-        return $employer;
+        return new CoreSkillCollection(CoreSkill::find($id));
     }
 
     /**
@@ -131,8 +131,8 @@ class EmployerController extends Controller
             return $validator->errors()->all();
         }
 
-        $employer = Employer::find($id);
-        $user = $request->user();
+        // $employer = Employer::find($id);
+        // $user = $request->user();
 
         if (!$this->isAdmin($user)) {
             if ($user->id != $employer->user_id) {
@@ -182,13 +182,13 @@ class EmployerController extends Controller
         }
 
         $employer->save();
-        $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('public/storage/' . $path);
-        $employer['industries'] = $employer->industries()->get();
-        $employer->companyType;
-        $employer->industries;
+        // $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
+        // $employer['image'] = asset('public/storage/' . $path);
+        // $employer['industries'] = $employer->industries()->get();
+        // $employer->companyType;
+        // $employer->industries;
 
-        return $employer;
+        return new EmployerResource($employer);
     }
 
     /**

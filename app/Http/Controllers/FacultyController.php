@@ -17,14 +17,14 @@ class FacultyController extends Controller
     public function index()
     {
         $faculties = Faculty::all();
-        foreach ($faculties as $faculty) {
-            $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-            // $faculty['image'] = asset('public/storage/' . $path);
-            if ($faculty->attachment()->first())
-                $faculty['image'] = $faculty->attachment()->first()->url();
-        }
+        // foreach ($faculties as $faculty) {
+        //     $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
+        //     // $faculty['image'] = asset('public/storage/' . $path);
+        //     if ($faculty->attachment()->first())
+        //         $faculty['image'] = $faculty->attachment()->first()->url();
+        // }
 
-        return $faculties;
+        return new FacultyCollection(Faculty::all();)
     }
 
     /**
@@ -50,10 +50,10 @@ class FacultyController extends Controller
             $faculty->img_path = $request->file('image')->store('img/faculty' . $faculty->id, 'public');
         }
         $faculty->save();
-        $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        $faculty['image'] = asset('public/storage/' . $path);
+        // $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
+        // $faculty['image'] = asset('public/storage/' . $path);
 
-        return $faculty;
+        return new FacultyResource($coreSkill);
     }
 
     /**
@@ -64,11 +64,11 @@ class FacultyController extends Controller
      */
     public function show($id)
     {
-        $faculty = Faculty::find();
-        $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        $faculty['image'] = asset('public/storage/' . $path);
+       
+        // $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
+        // $faculty['image'] = asset('public/storage/' . $path);
 
-        return $faculty;
+        return new FacultyCollection(Faculty::find($id));
     }
 
     /**
@@ -97,10 +97,10 @@ class FacultyController extends Controller
             $faculty->img_path = $request->file('image')->store('img/faculty' . $faculty->id, 'public');
         }
         $faculty->save();
-        $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        $faculty['image'] = asset('public/storage/' . $path);
+        // $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
+        // $faculty['image'] = asset('public/storage/' . $path);
 
-        return $faculty;
+        return new FacultyResource($coreSkill);
     }
 
     /**

@@ -15,8 +15,8 @@ class CompanyTypeController extends Controller
      */
     public function index()
     {
-        $companyType = CompanyType::all();
-        return $companyType;
+        return new CompanyTypeCollection(CompanyType::all();)
+        //return $companyType;
     }
 
    
@@ -40,7 +40,7 @@ class CompanyTypeController extends Controller
 
         $companyType->save();
 
-        return $companyType;
+        return new CompanyTypeResource($companyType);
     }
 
     /**
@@ -51,8 +51,9 @@ class CompanyTypeController extends Controller
      */
     public function show($id)
     {
-        $companyType = CompanyType::find($id);
-        return $companyType;
+        return new CompanyTypeCollection(CompanyType::find($id));
+        //$companyType = CompanyType::find($id);
+        //return $companyType;
     }
 
 
@@ -77,7 +78,7 @@ class CompanyTypeController extends Controller
         $companyType->update($request->all());
         $companyType->save();
 
-        return $companyType;
+        return new CompanyTypeResource($companyType);
     }
 
     /**

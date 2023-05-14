@@ -58,21 +58,6 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make("Новости")
                 ->icon('text-left')
                 ->route('platform.publications.news'),
-                
-            Menu::make('Example screen')
-                ->icon('monitor')
-                ->route('platform.example')
-                ->title('Navigation')
-                ->badge(function () {
-                    return 6;
-                }),
-
-            Menu::make('Dropdown menu')
-                ->icon('code')
-                ->list([
-                    Menu::make('Sub element item 1')->icon('bag'),
-                    Menu::make('Sub element item 2')->icon('heart'),
-                ]),
         ];
     }
 
