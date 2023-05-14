@@ -24,25 +24,27 @@ class EventController extends Controller
      */
     public function index()
     {
-        $events = Event::query();
-        $response =
-            app(Pipeline::class)
-            ->send($events)
-            ->through([
-                EventAudienceFilter::class,
-                EventDateFilter::class,
-            ])
-            ->via('apply')
-            ->then(function ($events) {
-                return $events->get();
-            });
+        // $events = Event::query();
+        // $response =
+        //     app(Pipeline::class)
+        //     ->send($events)
+        //     ->through([
+        //         EventAudienceFilter::class,
+        //         EventDateFilter::class,
+        //     ])
+        //     ->via('apply')
+        //     ->then(function ($events) {
+        //         return $events->get();
+        //     });
             
-        foreach ($response as $event) {
-            $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-            $event['image'] = asset('public/storage/' . $path);
-        }
+        // foreach ($response as $event) {
+        //     $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
+        //     $event['image'] = asset('public/storage/' . $path);
+        // }
         
-        return $response;
+        // return $response;
+
+        return new EventCollection(Event::all());
     }
 
     /**
@@ -96,11 +98,12 @@ class EventController extends Controller
             $event->img_path = $request->file('image')->store('img/event' . $event->id, 'public');
         }
         $event->save();
-        $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        $event['image'] = asset('public/storage/' . $path);
-        $event->employers;
+        // $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
+        // $event['image'] = asset('public/storage/' . $path);
+        // $event->employers;
 
-        return $event;
+        // return $event;
+        return new EventResource($event);
     }
 
     /**
@@ -111,13 +114,14 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        $event = Event::find($id);
-        $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        $event['image'] = asset('public/storage/' . $path);
-        $event->audience;
-        $event->employers;
+        // $event = Event::find($id);
+        // $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
+        // $event['image'] = asset('public/storage/' . $path);
+        // $event->audience;
+        // $event->employers;
 
-        return $event;
+        // return $event;
+        return new EventResource(Event::find($id));
     }
 
     /**
@@ -188,12 +192,13 @@ class EventController extends Controller
         }
 
         $event->save();
-        $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        $event['image'] = asset('public/storage/' . $path);
+        // $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
+        // $event['image'] = asset('public/storage/' . $path);
         $event->audience;
         $event->employers;
 
-        return $event;
+        // return $event;
+        return new EventResource($event);
     }
 
     /**
