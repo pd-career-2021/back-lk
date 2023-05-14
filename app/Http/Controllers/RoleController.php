@@ -17,7 +17,7 @@ class RoleController extends Controller
      */
     public function index() // отображение списка элементов
     {
-        return Role::all();
+        return new RoleCollection(Role::all());
     }
 
     /**
@@ -41,7 +41,7 @@ class RoleController extends Controller
 
         $role->save();
 
-        return $role;
+        return new UserResource($role);
     }
 
     /**
@@ -52,7 +52,7 @@ class RoleController extends Controller
      */
     public function show($id) 
     {
-        return Role::find($id);
+        return new RoleResource(Role::find($id));
     }
 
     /**
@@ -76,7 +76,7 @@ class RoleController extends Controller
         $role = Role::find($id);
         $role->update($request->all());
         $role->save();
-        return $role;
+        return new RoleResource($role);
     }
 
     /**

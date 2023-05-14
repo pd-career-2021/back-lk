@@ -19,7 +19,8 @@ class SocialController extends Controller
      */
     public function index()
     {
-        return Social::all();
+        // return Social::all();
+        return new SocialCollection(Social::all());
     }
 
     /**
@@ -57,7 +58,8 @@ class SocialController extends Controller
         }
 
         $social->save();
-        return $social;
+        // return $social;
+        return new SocialResource($social);
     }
 
     /**
@@ -68,10 +70,11 @@ class SocialController extends Controller
      */
     public function show($id)
     {
-        $social = Social::find($id);
-        $social->employer;
+        // $social = Social::find($id);
+        // $social->employer;
 
-        return $social;
+        // return $social;
+        return new SocialResource(Social::find($id));
     }
 
     /**
@@ -121,7 +124,8 @@ class SocialController extends Controller
         $social->save();
         $social->employer;
 
-        return $social;
+        // return $social;
+        return new SocialResource($social);
     }
 
     /**
