@@ -42,7 +42,7 @@ class Vacancy extends Model
         'img_path',
     ];
 
-        /**
+    /**
      * The attributes for which you can use filters in url.
      *
      * @var array<string, string>
