@@ -15,7 +15,7 @@ class CoreSkillController extends Controller
      */
     public function index()
     {
-        return CoreSkill::all();
+        return new CoreSkillCollection(CoreSkill::all();)
     }
 
 
@@ -38,7 +38,7 @@ class CoreSkillController extends Controller
         $coreSkill = new CoreSkill($request->all());
         $coreSkill->save();
 
-        return $coreSkill;
+        return new CoreSkillResource($coreSkill);
     }
 
     /**
@@ -49,7 +49,7 @@ class CoreSkillController extends Controller
      */
     public function show($id)
     {
-        return CoreSkill::find($id);
+        return new CoreSkillCollection(CoreSkill::find($id));
     }
 
 
@@ -74,7 +74,7 @@ class CoreSkillController extends Controller
         $coreSkill->update($request->all());
         $coreSkill->save();
 
-        return $coreSkill;
+        return new CoreSkillResource($coreSkill);
     }
 
     /**

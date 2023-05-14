@@ -4,6 +4,18 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
+use App\Models\Application;
+use App\Models\ApplicationStatus;
+use App\Models\Event;
+use App\Models\News;
+use App\Models\Vacancy;
+use App\Orchid\Layouts\Charts\ChartApplications;
+use App\Orchid\Layouts\Charts\ChartVacancies;
+use App\Orchid\Layouts\Event\EventListLayout;
+use App\Orchid\Layouts\News\NewsListLayout;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -17,7 +29,16 @@ class PlatformScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'percentageApplications' => Application::countForGroup('application_status_id')->toChart(static function ($id) {
+                return ApplicationStatus::find($id)->name;
+            }),
+            'vacanciesChart' => [
+                Vacancy::countByDays(Carbon::now()->subDays(45), null, 'created_at')->toChart("Опубликовано вакансий")
+            ],
+            'events' => Event::filters()->paginate(10),
+            'news' => News::filters()->paginate(10),
+        ];
     }
 
     /**
@@ -27,7 +48,7 @@ class PlatformScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Get Started';
+        return 'С возвращением, ' . Auth::user()->name;
     }
 
     /**
@@ -37,7 +58,7 @@ class PlatformScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Welcome to your Orchid application.';
+        return 'Сегодня ' . date('d M') . ', ' . getdate()['weekday'];
     }
 
     /**
@@ -48,17 +69,13 @@ class PlatformScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make('Website')
-                ->href('http://orchid.software')
-                ->icon('globe-alt'),
+            Link::make('Профиль')
+                ->href('./profile')
+                ->icon('user'),
 
-            Link::make('Documentation')
-                ->href('https://orchid.software/en/docs')
-                ->icon('docs'),
-
-            Link::make('GitHub')
-                ->href('https://github.com/orchidsoftware/platform')
-                ->icon('social-github'),
+            Button::make("Выход")
+                ->icon('logout')
+                ->method('logout'),
         ];
     }
 
@@ -70,7 +87,23 @@ class PlatformScreen extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::view('platform::partials.welcome'),
+            Layout::columns([
+                ChartVacancies::class,
+                ChartApplications::class,
+            ]),
+            Layout::tabs([
+                'Мероприятия' => [
+                    EventListLayout::class,
+                ],
+                'Новости'     => [
+                    NewsListLayout::class,
+                ],
+            ]),
         ];
+    }
+
+    public function logout()
+    {
+        Auth::user()->logout();
     }
 }
