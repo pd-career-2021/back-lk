@@ -19,7 +19,8 @@ class StudentController extends Controller
      */
     public function index()
     {
-        return Student::all();
+        // return Student::all();
+        return new StudentCollection(Student::all());
     }
 
     /**
@@ -51,7 +52,8 @@ class StudentController extends Controller
         }
         $student->save();
 
-        return $student;
+        // return $student;
+        return new StudentResource($student);
     }
 
     /**
@@ -62,10 +64,11 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        $student = Student::find($id);
-        $student->user;
+        // $student = Student::find($id);
+        // $student->user;
 
-        return $student;
+        // return $student;
+        return new StudentResource(Student::find($id));
     }
 
     /**
@@ -119,7 +122,8 @@ class StudentController extends Controller
         $student->save();
         $student->user;
 
-        return $student;
+        // return $student;
+        return new StudentResource($student);
     }
 
     /**
