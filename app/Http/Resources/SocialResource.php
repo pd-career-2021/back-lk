@@ -19,7 +19,7 @@ class SocialResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'link' => $this->link,
-            'employers' => $this->employer()->pluck('title'),
+            'employers' => $this->employers(),
         ];
     }
 }
