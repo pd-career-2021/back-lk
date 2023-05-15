@@ -84,6 +84,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
 // Admin routes
 Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
+    // Applications
+    Route::get('/applications', [ApplicationController::class, 'index']);
+    Route::get('/applications/{id}', [ApplicationController::class, 'show']);
     // Application statuses
     Route::post('/application-statuses', [ApplicationStatusController::class, 'store']);
     Route::put('/application-statuses/{id}', [ApplicationStatusController::class, 'update']);
@@ -128,7 +131,6 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:admin']], function () {
 Route::group(['middleware' => ['auth:sanctum', 'ability:admin,employer']], function () {
     // Applications
     Route::get('/my-vacancies-applications', [ApplicationController::class, 'indexVacanciesApplications']);
-    Route::get('/applications', [ApplicationController::class, 'index']);
     Route::put('/applications/{id}', [ApplicationController::class, 'update']);
     // Employers
     Route::put('/employers/{id}', [EmployerController::class, 'update']);
@@ -155,7 +157,6 @@ Route::group(['middleware' => ['auth:sanctum', 'ability:admin,employer']], funct
 Route::group(['middleware' => ['auth:sanctum', 'ability:admin,student']], function () {
     // Applications
     Route::get('/my-applications', [ApplicationController::class, 'indexStudentApplications']);
-    Route::get('/applications', [ApplicationController::class, 'index']);
     Route::post('/applications', [ApplicationController::class, 'store']);
     Route::put('/applications/{id}', [ApplicationController::class, 'update']);
     Route::delete('/applications/{id}', [ApplicationController::class, 'destroy']);

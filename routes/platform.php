@@ -12,6 +12,12 @@ use App\Orchid\Screens\Faculty\FacultyListScreen;
 use App\Orchid\Screens\Faculty\FacultyEditScreen;
 use App\Orchid\Screens\Vacancy\VacancyListScreen;
 use App\Orchid\Screens\Vacancy\VacancyEditScreen;
+use App\Orchid\Screens\Application\ApplicationListScreen;
+use App\Orchid\Screens\Application\ApplicationEditScreen;
+use App\Orchid\Screens\Event\EventListScreen;
+use App\Orchid\Screens\Event\EventEditScreen;
+use App\Orchid\Screens\News\NewsListScreen;
+use App\Orchid\Screens\News\NewsEditScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -135,7 +141,7 @@ Route::screen('faculties/{faculty}/edit', FacultyEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $faculty) {
         return $trail
             ->parent('platform.systems.faculties')
-            ->push("Факультет", route('platform.systems.faculties.edit', $faculty));
+            ->push($faculty->title, route('platform.systems.faculties.edit', $faculty));
     });
 
 /*
@@ -169,4 +175,103 @@ Route::screen('vacancies/{vacancy}/edit', VacancyEditScreen::class)
         return $trail
             ->parent('platform.employment.vacancies')
             ->push($vacancy->title, route('platform.employment.vacancies.edit', $vacancy));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                              Applications
+|--------------------------------------------------------------------------
+*/
+
+// Platform > Employment > Applications
+Route::screen('applications', ApplicationListScreen::class)
+    ->name('platform.employment.applications')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Отклики", route('platform.employment.applications'));
+    });
+
+// Platform > Employment > Applications > Create
+Route::screen('vacancies/create', ApplicationEditScreen::class)
+    ->name('platform.employment.applications.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.employment.applications')
+            ->push(__('Create'), route('platform.employment.applications.create'));
+    });
+
+// Platform > Employment > Applications > Application
+Route::screen('applications/{application}/edit', ApplicationEditScreen::class)
+    ->name('platform.employment.applications.edit')
+    ->breadcrumbs(function (Trail $trail, $application) {
+        return $trail
+            ->parent('platform.employment.applications')
+            ->push("Отклик", route('platform.employment.applications.edit', $application));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                                 Events
+|--------------------------------------------------------------------------
+*/
+
+// Platform > Publications > Events
+Route::screen('events', EventListScreen::class)
+    ->name('platform.publications.events')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Мероприятия", route('platform.publications.events'));
+    });
+
+// Platform > Publications > Events > Create
+Route::screen('events/create', EventEditScreen::class)
+    ->name('platform.publications.events.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.publications.events')
+            ->push(__('Create'), route('platform.publications.events.create'));
+    });
+
+// Platform > Publications > Events > Event
+Route::screen('events/{event}/edit', EventEditScreen::class)
+    ->name('platform.publications.events.edit')
+    ->breadcrumbs(function (Trail $trail, $event) {
+        return $trail
+            ->parent('platform.publications.events')
+            ->push($event->title, route('platform.publications.events.edit', $event));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                                   News
+|--------------------------------------------------------------------------
+*/
+
+// Platform > Publications > News
+Route::screen('news', NewsListScreen::class)
+    ->name('platform.publications.news')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Новости", route('platform.publications.news'));
+    });
+
+// Platform > Publications > News > Create
+Route::screen('news/create', NewsEditScreen::class)
+    ->name('platform.publications.news.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.publications.news')
+            ->push(__('Create'), route('platform.publications.news.create'));
+    });
+
+// Platform > Publications > News > News
+Route::screen('news/{news}/edit', NewsEditScreen::class)
+    ->name('platform.publications.news.edit')
+    ->breadcrumbs(function (Trail $trail, $news) {
+        return $trail
+            ->parent('platform.publications.news')
+            ->push($news->title, route('platform.publications.news.edit', $news));
     });

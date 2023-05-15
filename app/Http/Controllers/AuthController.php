@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Hash;
@@ -49,8 +50,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('polytoken', ['user'])->plainTextToken;
         $response = [
-            'user' => $user->makeHidden(['roles']),
-            'roles' => $user->roles()->pluck('name'),
+            'user' => new UserResource($user),
             'token' => $token
         ];
 
@@ -81,8 +81,7 @@ class AuthController extends Controller
         $user['image'] = asset('public/storage/' . $path);
 
         $response = [
-            'user' => $user->makeHidden(['roles']),
-            'roles' => $user->roles()->pluck('name'),
+            'user' => new UserResource($user),
             'token' => $token
         ];
 
@@ -99,15 +98,7 @@ class AuthController extends Controller
 
     public function user()
     {
-        $user = auth()->user();
-        $user['roles'] = $user->roles()->pluck('name');
-        $user->faculty;
-        $user->employer;
-        $user->student;
-        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('public/storage/' . $path);
-
-        return $user;
+        return new UserResource(auth()->user());
     }
 
     // private function registerAdmin(Request $request)

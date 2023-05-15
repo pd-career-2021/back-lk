@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\NewsCollection;
+use App\Http\Resources\NewsResource;
 use App\Models\Employer;
 use App\Models\News;
 use Illuminate\Http\Request;
@@ -20,13 +22,7 @@ class NewsController extends Controller
      */
     public function index()
     {
-        $news = News::all();
-        foreach ($news as $item) {
-            $path = ($item->img_path) ? $item->img_path : 'img/blank.jpg';
-            $item['image'] = asset('public/storage/' . $path);
-        }
-
-        return $news;
+        return new NewsCollection(News::all());
     }
 
     /**
@@ -70,10 +66,8 @@ class NewsController extends Controller
             $news->img_path = $request->file('image')->store('img/news' . $news->id, 'public');
         }
         $news->save();
-        $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
-        $news['image'] = asset('public/storage/' . $path);
 
-        return $news;
+        return new NewsResource($news);
     }
 
     /**
@@ -84,12 +78,7 @@ class NewsController extends Controller
      */
     public function show($id)
     {
-        $news = News::find($id);
-        $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
-        $news['image'] = asset('public/storage/' . $path);
-        $news->employer;
-
-        return $news;
+        return new NewsResource(News::find($id));
     }
 
     /**
@@ -145,11 +134,8 @@ class NewsController extends Controller
         }
 
         $news->save();
-        $path = ($news->img_path) ? $news->img_path : 'img/blank.jpg';
-        $news['image'] = asset('public/storage/' . $path);
-        $news->employer;
 
-        return $news;
+        return new NewsResource($news);
     }
 
     /**

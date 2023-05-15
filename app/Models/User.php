@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -48,8 +48,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'permissions'          => 'array',
-        // 'email_verified_at'    => 'datetime',
+        'permissions' => 'array',
     ];
 
     /**
@@ -78,11 +77,14 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
-    
-    // public function role(): BelongsTo
-    // {
-    //     return $this->belongsTo(Role::class);
-    // }
+
+    /**
+     * @return string
+     */
+    public function getFullNameAttribute(): string
+    {
+        return $this->attributes['name'] . ' ' . $this->attributes['surname'];
+    }
 
     public function roles(): BelongsToMany
     {
@@ -103,5 +105,4 @@ class User extends Authenticatable
     {
         return $this->hasOne(Employer::class);
     }
-
 }

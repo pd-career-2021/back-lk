@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\UserCollection;
+use App\Http\Resources\UserResource;
 use App\Models\Faculty;
 use App\Models\Role;
 use App\Models\User;
@@ -21,14 +23,14 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::all();
-        foreach ($users as $user) {
-            $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-            $user['image'] = asset('public/storage/' . $path);
-            $user['roles'] = $user->roles()->pluck('name');
-        }
+        // $users = User::all();
+        // foreach ($users as $user) {
+        //     $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+        //     $user['image'] = asset('public/storage/' . $path);
+        //     $user['roles'] = $user->roles()->pluck('name');
+        // }
 
-        return $users;
+        return new UserCollection(User::all());
     }
 
     /**
@@ -78,10 +80,10 @@ class UserController extends Controller
             $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
         }
         $user->save();
-        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('public/storage/' . $path);
+        // $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+        // $user['image'] = asset('public/storage/' . $path);
 
-        return $user;
+        return new UserResource($user);
     }
 
     /**
@@ -92,13 +94,13 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
-        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('public/storage/' . $path);
-        $user['roles'] = $user->roles()->pluck('name');
-        $user->faculty;
+        // $user = User::find($id);
+        // $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+        // $user['image'] = asset('public/storage/' . $path);
+        // $user['roles'] = $user->roles()->pluck('name');
+        // $user->faculty;
 
-        return $user;
+        return new UserResource(User::find($id));
     }
 
     /**
@@ -151,12 +153,12 @@ class UserController extends Controller
         }
 
         $user->save();
-        $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        $user['image'] = asset('public/storage/' . $path);
-        $user['roles'] = $user->roles()->pluck('name');
-        $user->faculty;
+        // $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
+        // $user['image'] = asset('public/storage/' . $path);
+        // $user['roles'] = $user->roles()->pluck('name');
+        // $user->faculty;
 
-        return $user;
+        return new UserResource($user);
     }
 
     /**

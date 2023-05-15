@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\RoleCollection;
+use App\Http\Resources\RoleResource;
 use App\Models\Role;
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
@@ -15,9 +16,9 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index() // отображение списка элементов
+    public function index()
     {
-        return Role::all();
+        return new RoleCollection(Role::all());
     }
 
     /**
@@ -41,7 +42,7 @@ class RoleController extends Controller
 
         $role->save();
 
-        return $role;
+        return new RoleResource($role);
     }
 
     /**
@@ -52,7 +53,7 @@ class RoleController extends Controller
      */
     public function show($id) 
     {
-        return Role::find($id);
+        return new RoleResource(Role::find($id));
     }
 
     /**
@@ -74,9 +75,9 @@ class RoleController extends Controller
         }
 
         $role = Role::find($id);
-        $role->update($request->all());
-        $role->save();
-        return $role;
+        $role->update($request->all())->save();
+
+        return new RoleResource($role);
     }
 
     /**
@@ -85,7 +86,7 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id) // удаление записи из базы
+    public function destroy($id)
     {
         return Role::destroy($id);
     }

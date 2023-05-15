@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ApplicationStatusCollection;
+use App\Http\Resources\ApplicationStatusResource;
 use Illuminate\Http\Request;
 use App\Models\ApplicationStatus;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +17,7 @@ class ApplicationStatusController extends Controller
      */
     public function index()
     {
-        return ApplicationStatus::all();
+        return new ApplicationStatusCollection(ApplicationStatus::all());
     }
 
     /**
@@ -38,9 +40,7 @@ class ApplicationStatusController extends Controller
         $applicationStatus = new ApplicationStatus($request->all());
         $applicationStatus->save();
 
-        return $applicationStatus;
-
-        // return ApplicationStatus::create($request->all());
+        return new ApplicationStatusResource($applicationStatus);
     }
 
     /**
@@ -51,7 +51,7 @@ class ApplicationStatusController extends Controller
      */
     public function show($id)
     {
-        return ApplicationStatus::find($id);
+        return new ApplicationStatusResource(ApplicationStatus::find($id));
     }
 
     /**
@@ -73,8 +73,9 @@ class ApplicationStatusController extends Controller
         }
         
         $applicationStatus = ApplicationStatus::find($id);
-        $applicationStatus->update($request->all());
-        return $applicationStatus;
+        $applicationStatus->update($request->all())->save();
+
+        return new ApplicationStatusResource($applicationStatus);
     }
 
     /**

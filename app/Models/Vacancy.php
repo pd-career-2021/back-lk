@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Orchid\Attachment\Attachable;
 use Orchid\Filters\Filterable;
+use Orchid\Metrics\Chartable;
 use Orchid\Screen\AsSource;
 
 class Vacancy extends Model
 {
-    use HasFactory, AsSource, Filterable, Attachable;
+    use HasFactory, AsSource, Filterable, Attachable, Chartable;
 
     /**
      * The attributes that are mass assignable.
@@ -42,7 +43,7 @@ class Vacancy extends Model
         'img_path',
     ];
 
-        /**
+    /**
      * The attributes for which you can use filters in url.
      *
      * @var array<string, string>

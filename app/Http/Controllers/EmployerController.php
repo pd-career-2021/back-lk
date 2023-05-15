@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\EmployerCollection;
+use App\Http\Resources\EmployerResource;
 use App\Models\CompanyType;
 use App\Models\Employer;
 use App\Models\Industry;
@@ -22,13 +24,7 @@ class EmployerController extends Controller
      */
     public function index()
     {
-        $employers = Employer::all();
-        foreach ($employers as $employer) {
-            $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-            $employer['image'] = asset('public/storage/' . $path);
-        }
-
-        return $employers;
+        return new EmployerCollection(Employer::all());
     }
 
     /**
@@ -85,10 +81,8 @@ class EmployerController extends Controller
             $employer->img_path = $request->file('image')->store('img/e' . $employer->id, 'public');
         }
         $employer->save();
-        $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('public/storage/' . $path);
 
-        return $employer;
+        return new EmployerResource($employer);
     }
 
     /**
@@ -99,14 +93,7 @@ class EmployerController extends Controller
      */
     public function show($id)
     {
-        $employer = Employer::find($id);
-        $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('public/storage/' . $path);
-        $employer->companyType;
-        $employer->industries;
-        $employer->socials;
-
-        return $employer;
+        return new EmployerResource(Employer::find($id));
     }
 
     /**
@@ -180,15 +167,9 @@ class EmployerController extends Controller
             }
             $employer->industries()->sync($validated);
         }
-
         $employer->save();
-        $path = ($employer->img_path) ? $employer->img_path : 'img/blank.jpg';
-        $employer['image'] = asset('public/storage/' . $path);
-        $employer['industries'] = $employer->industries()->get();
-        $employer->companyType;
-        $employer->industries;
 
-        return $employer;
+        return new EmployerResource($employer);
     }
 
     /**
