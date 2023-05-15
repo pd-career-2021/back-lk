@@ -15,8 +15,9 @@ class AudienceController extends Controller
      */
     public function index()
     {
-        $audience = Audience::all();
-        return $audience;
+        // $audience = Audience::all();
+        // return $audience;
+        return new AudienceCollection(Audience::all());
     }
 
 
@@ -39,7 +40,8 @@ class AudienceController extends Controller
         $audience = new Audience($request->all());
         $audience->save();
 
-        return $audience;
+        //return $audience;
+        return new AudienceResourse($audience);
     }
 
     /**
@@ -50,7 +52,8 @@ class AudienceController extends Controller
      */
     public function show($id)
     {
-        return Audience::find($id);
+        //return Audience::find($id);
+        return new AudienceResourse(Audience::find($id));
     }
 
 
@@ -75,7 +78,8 @@ class AudienceController extends Controller
         $audience->update($request->all());
         $audience->save();
 
-        return $audience;
+        //return $audience;
+        return new AudienceResourse($audience);
     }
 
     /**

@@ -15,7 +15,8 @@ class ApplicationStatusController extends Controller
      */
     public function index()
     {
-        return ApplicationStatus::all();
+        //return ApplicationStatus::all();
+        return new ApplicationStatusCollection(ApplicationStatus::all());
     }
 
     /**
@@ -38,8 +39,8 @@ class ApplicationStatusController extends Controller
         $applicationStatus = new ApplicationStatus($request->all());
         $applicationStatus->save();
 
-        return $applicationStatus;
-
+        //return $applicationStatus;
+        return new ApplicationStatusRecourse($applicationStatus);
         // return ApplicationStatus::create($request->all());
     }
 
@@ -51,7 +52,8 @@ class ApplicationStatusController extends Controller
      */
     public function show($id)
     {
-        return ApplicationStatus::find($id);
+        //return ApplicationStatus::find($id);
+        return new ApplicationStatusRecourse(ApplicationStatus::find($id));
     }
 
     /**
@@ -74,7 +76,8 @@ class ApplicationStatusController extends Controller
         
         $applicationStatus = ApplicationStatus::find($id);
         $applicationStatus->update($request->all());
-        return $applicationStatus;
+        //return $applicationStatus;
+        return new ApplicationStatusResourse($applicationStatus);
     }
 
     /**
