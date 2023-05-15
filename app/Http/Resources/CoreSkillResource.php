@@ -14,11 +14,9 @@ class CoreSkillResource extends JsonResource
      */
     public function toArray($request)
     {
-        $path = ($this->img_path) ? $this->img_path : 'img/blank.jpg';
-        
         return [
             'id' => $this->id,
             'title' => $this->title,
-        ]
+        ];
     }
 }

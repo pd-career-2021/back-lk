@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CompanyTypeCollection;
+use App\Http\Resources\CompanyTypeResource;
 use Illuminate\Http\Request;
 use App\Models\CompanyType;
 use Illuminate\Support\Facades\Validator;
@@ -15,8 +17,7 @@ class CompanyTypeController extends Controller
      */
     public function index()
     {
-        return new CompanyTypeCollection(CompanyType::all();)
-        //return $companyType;
+        return new CompanyTypeCollection(CompanyType::all());
     }
 
    
@@ -51,9 +52,7 @@ class CompanyTypeController extends Controller
      */
     public function show($id)
     {
-        return new CompanyTypeCollection(CompanyType::find($id));
-        //$companyType = CompanyType::find($id);
-        //return $companyType;
+        return new CompanyTypeResource(CompanyType::find($id));
     }
 
 
@@ -75,8 +74,7 @@ class CompanyTypeController extends Controller
         }
 
         $companyType = CompanyType::find($id);
-        $companyType->update($request->all());
-        $companyType->save();
+        $companyType->update($request->all())->save();
 
         return new CompanyTypeResource($companyType);
     }

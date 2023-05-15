@@ -13,12 +13,10 @@ class CompanyTypeResource extends JsonResource
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
-    {
-        $path = ($this->img_path) ? $this->img_path : 'img/blank.jpg';
-        
+    {     
         return [
             'id' => $this->id,
-            'title' => $this->title
-        ]
+            'title' => $this->title,
+        ];
     }
 }

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\FacultyCollection;
+use App\Http\Resources\FacultyResource;
 use App\Models\Faculty;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,15 +18,7 @@ class FacultyController extends Controller
      */
     public function index()
     {
-        $faculties = Faculty::all();
-        // foreach ($faculties as $faculty) {
-        //     $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        //     // $faculty['image'] = asset('public/storage/' . $path);
-        //     if ($faculty->attachment()->first())
-        //         $faculty['image'] = $faculty->attachment()->first()->url();
-        // }
-
-        return new FacultyCollection(Faculty::all();)
+        return new FacultyCollection(Faculty::all());
     }
 
     /**
@@ -50,10 +44,8 @@ class FacultyController extends Controller
             $faculty->img_path = $request->file('image')->store('img/faculty' . $faculty->id, 'public');
         }
         $faculty->save();
-        // $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        // $faculty['image'] = asset('public/storage/' . $path);
 
-        return new FacultyResource($coreSkill);
+        return new FacultyResource($faculty);
     }
 
     /**
@@ -64,11 +56,7 @@ class FacultyController extends Controller
      */
     public function show($id)
     {
-       
-        // $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        // $faculty['image'] = asset('public/storage/' . $path);
-
-        return new FacultyCollection(Faculty::find($id));
+        return new FacultyResource(Faculty::find($id));
     }
 
     /**
@@ -97,10 +85,8 @@ class FacultyController extends Controller
             $faculty->img_path = $request->file('image')->store('img/faculty' . $faculty->id, 'public');
         }
         $faculty->save();
-        // $path = ($faculty->img_path) ? $faculty->img_path : 'img/blank.jpg';
-        // $faculty['image'] = asset('public/storage/' . $path);
 
-        return new FacultyResource($coreSkill);
+        return new FacultyResource($faculty);
     }
 
     /**

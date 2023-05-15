@@ -14,13 +14,11 @@ class FacultyResource extends JsonResource
      */
     public function toArray($request)
     {
-        $path = ($this->img_path) ? $this->img_path : 'img/blank.jpg';
-        
         return [
             'id' => $this->id,
             'title' => $this->title,
             'desc' => $this->desc,
-            'image' => asset('public/storage/' . $path),
-        ]
+            'image' => ($this->attachment()->first()) ? $this->attachment()->first()->url() : asset('public/storage/img/blank.jpg'),
+        ];
     }
 }

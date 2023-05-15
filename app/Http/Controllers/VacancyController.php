@@ -9,6 +9,8 @@ use App\Filters\Vacancy\VacancySalaryFilter;
 use App\Filters\Vacancy\VacancyWorkExperienceFilter;
 use Illuminate\Pipeline\Pipeline;
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\VacancyCollection;
+use App\Http\Resources\VacancyResource;
 use App\Models\Employer;
 use App\Models\Faculty;
 use App\Models\Vacancy;
@@ -44,13 +46,7 @@ class VacancyController extends Controller
                 return $vacancies->get();
             });
 
-        foreach ($response as $vacancy) {
-            $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
-            $vacancy['image'] = asset('public/storage/' . $path);
-            $vacancy['company_name'] = $vacancy->employer->full_name;
-        }
-
-        return $response->makeHidden('employer');
+        return new VacancyCollection($response);
     }
 
     public function indexEmployerVacancies(Request $request)
@@ -58,7 +54,7 @@ class VacancyController extends Controller
         $employer_id = Employer::where('user_id', $request->user()->id)->first()->id;
         $vacancies = Vacancy::where('employer_id', $employer_id)->get();
 
-        return $vacancies;
+        return new VacancyCollection($vacancies);
     }
 
     /**
@@ -133,12 +129,8 @@ class VacancyController extends Controller
             $employer->img_path = $request->file('image')->store('img/v' . $employer->id, 'public');
         }
         $vacancy->save();
-        $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
-        $vacancy['image'] = asset('public/storage/' . $path);
-        $vacancy->faculties;
-        $vacancy->skills;
 
-        return $vacancy;
+        return new VacancyResource($vacancy);
     }
 
     /**
@@ -155,13 +147,7 @@ class VacancyController extends Controller
                 'message' => 'Vacancy not found.'
             ], 401);
 
-        $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
-        $vacancy['image'] = asset('public/storage/' . $path);
-        $vacancy->employer->socials;
-        $vacancy->faculties;
-        $vacancy->skills;
-
-        return $vacancy;
+        return new VacancyResource($vacancy);
     }
 
     /**
@@ -257,14 +243,8 @@ class VacancyController extends Controller
         }
 
         $vacancy->save();
-        $path = ($vacancy->img_path) ? $vacancy->img_path : 'img/blank.jpg';
-        $vacancy['image'] = asset('public/storage/' . $path);
-        $vacancy->vacancyType;
-        $vacancy->employer;
-        $vacancy->faculties;
-        $vacancy->skills;
 
-        return $vacancy;
+        return new VacancyResource($vacancy);
     }
 
     /**

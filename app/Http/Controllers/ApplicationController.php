@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\ApplicationCollection;
+use App\Http\Resources\ApplicationResource;
 use Illuminate\Http\Request;
 use App\Models\Application;
 use App\Models\ApplicationStatus;
@@ -22,13 +24,18 @@ class ApplicationController extends Controller
      */
     public function index()
     {
-        //return Application::all();
         return new ApplicationCollection(Application::all());
     }
 
     public function indexStudentApplications(Request $request)
     {
-        return new ApplicationCollection(Application::where('student_id', Student::where('user_id', $request->user()->id)->first()->id)->get());
+        return new ApplicationCollection(Application::where(
+            'student_id',
+            Student::where(
+                'user_id',
+                $request->user()->id
+            )->first()->id
+        )->get());
     }
 
     public function indexVacanciesApplications(Request $request)
@@ -43,7 +50,6 @@ class ApplicationController extends Controller
             array_push($applications, Application::where('vacancy_id', $id)->get());
         }
 
-        // return $applications;
         return new ApplicationCollection($applications);
     }
 
@@ -102,7 +108,7 @@ class ApplicationController extends Controller
 
         $application->save();
 
-        return new ApplicationResourse($application);
+        return new ApplicationResource($application);
     }
 
     /**
@@ -113,12 +119,7 @@ class ApplicationController extends Controller
      */
     public function show($id)
     {
-        // $application = Application::find($id);
-        // $application->student;
-        // $application->vacancy;
-        // $application->application_status;
-
-        return new ApplicationResourse(Application::find($id));
+        return new ApplicationResource(Application::find($id));
     }
 
     /**
@@ -200,13 +201,9 @@ class ApplicationController extends Controller
             }
         }
 
-        $application->update($request->all());
-        $application->save();
-        // $application->student;
-        // $application->vacancy;
-        // $application->application_status;
+        $application->update($request->all())->save();
 
-        return new ApplicationResourse($application);
+        return new ApplicationResource($application);
     }
 
     /**

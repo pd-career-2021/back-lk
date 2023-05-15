@@ -6,6 +6,8 @@ use App\Filters\Event\EventAudienceFilter;
 use App\Filters\Event\EventDateFilter;
 use Illuminate\Pipeline\Pipeline;
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\EventCollection;
+use App\Http\Resources\EventResource;
 use App\Models\Audience;
 use App\Models\Employer;
 use App\Models\Event;
@@ -24,27 +26,20 @@ class EventController extends Controller
      */
     public function index()
     {
-        // $events = Event::query();
-        // $response =
-        //     app(Pipeline::class)
-        //     ->send($events)
-        //     ->through([
-        //         EventAudienceFilter::class,
-        //         EventDateFilter::class,
-        //     ])
-        //     ->via('apply')
-        //     ->then(function ($events) {
-        //         return $events->get();
-        //     });
-            
-        // foreach ($response as $event) {
-        //     $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        //     $event['image'] = asset('public/storage/' . $path);
-        // }
-        
-        // return $response;
+        $events = Event::query();
+        $response =
+            app(Pipeline::class)
+            ->send($events)
+            ->through([
+                EventAudienceFilter::class,
+                EventDateFilter::class,
+            ])
+            ->via('apply')
+            ->then(function ($events) {
+                return $events->get();
+            });
 
-        return new EventCollection(Event::all());
+        return new EventCollection($response);
     }
 
     /**
@@ -98,11 +93,7 @@ class EventController extends Controller
             $event->img_path = $request->file('image')->store('img/event' . $event->id, 'public');
         }
         $event->save();
-        // $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        // $event['image'] = asset('public/storage/' . $path);
-        // $event->employers;
 
-        // return $event;
         return new EventResource($event);
     }
 
@@ -114,13 +105,6 @@ class EventController extends Controller
      */
     public function show($id)
     {
-        // $event = Event::find($id);
-        // $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        // $event['image'] = asset('public/storage/' . $path);
-        // $event->audience;
-        // $event->employers;
-
-        // return $event;
         return new EventResource(Event::find($id));
     }
 
@@ -192,12 +176,7 @@ class EventController extends Controller
         }
 
         $event->save();
-        // $path = ($event->img_path) ? $event->img_path : 'img/blank.jpg';
-        // $event['image'] = asset('public/storage/' . $path);
-        $event->audience;
-        $event->employers;
 
-        // return $event;
         return new EventResource($event);
     }
 

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\StudentCollection;
+use App\Http\Resources\StudentResource;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +21,6 @@ class StudentController extends Controller
      */
     public function index()
     {
-        // return Student::all();
         return new StudentCollection(Student::all());
     }
 
@@ -52,7 +53,6 @@ class StudentController extends Controller
         }
         $student->save();
 
-        // return $student;
         return new StudentResource($student);
     }
 
@@ -64,10 +64,6 @@ class StudentController extends Controller
      */
     public function show($id)
     {
-        // $student = Student::find($id);
-        // $student->user;
-
-        // return $student;
         return new StudentResource(Student::find($id));
     }
 
@@ -118,11 +114,8 @@ class StudentController extends Controller
             }
         }
 
-        $student->update($request->all());
-        $student->save();
-        $student->user;
+        $student->update($request->all())->save();
 
-        // return $student;
         return new StudentResource($student);
     }
 

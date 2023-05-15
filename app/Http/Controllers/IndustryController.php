@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\IndustryCollection;
+use App\Http\Resources\IndustryResource;
 use Illuminate\Http\Request;
 use App\Models\Industry;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +17,6 @@ class IndustryController extends Controller
      */
     public function index()
     {
-        // return Industry::all();
         return new IndustryCollection(Industry::all());
     }
 
@@ -40,7 +41,6 @@ class IndustryController extends Controller
 
         $industry->save();
 
-        // return $industry;
         return new IndustryResource($industry);
     }
 
@@ -52,7 +52,6 @@ class IndustryController extends Controller
      */
     public function show($id)
     {
-        // return Industry::find($id);
         return new IndustryResource(Industry::find($id));
     }
 
@@ -78,7 +77,6 @@ class IndustryController extends Controller
         $industry->update($request->all());
         $industry->save();
 
-        // return $industry;
         return new IndustryResource($industry);
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AudienceCollection;
+use App\Http\Resources\AudienceResource;
 use Illuminate\Http\Request;
 use App\Models\Audience;
 use Illuminate\Support\Facades\Validator;
@@ -15,8 +17,6 @@ class AudienceController extends Controller
      */
     public function index()
     {
-        // $audience = Audience::all();
-        // return $audience;
         return new AudienceCollection(Audience::all());
     }
 
@@ -40,8 +40,7 @@ class AudienceController extends Controller
         $audience = new Audience($request->all());
         $audience->save();
 
-        //return $audience;
-        return new AudienceResourse($audience);
+        return new AudienceResource($audience);
     }
 
     /**
@@ -52,8 +51,7 @@ class AudienceController extends Controller
      */
     public function show($id)
     {
-        //return Audience::find($id);
-        return new AudienceResourse(Audience::find($id));
+        return new AudienceResource(Audience::find($id));
     }
 
 
@@ -75,11 +73,9 @@ class AudienceController extends Controller
         }
 
         $audience = Audience::find($id);
-        $audience->update($request->all());
-        $audience->save();
+        $audience->update($request->all())->save();
 
-        //return $audience;
-        return new AudienceResourse($audience);
+        return new AudienceResource($audience);
     }
 
     /**

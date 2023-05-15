@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Library\ApiHelpers;
+use App\Http\Resources\SocialCollection;
+use App\Http\Resources\SocialResource;
 use App\Models\Social;
 use App\Models\Employer;
 use Illuminate\Http\Request;
@@ -19,7 +21,6 @@ class SocialController extends Controller
      */
     public function index()
     {
-        // return Social::all();
         return new SocialCollection(Social::all());
     }
 
@@ -58,7 +59,7 @@ class SocialController extends Controller
         }
 
         $social->save();
-        // return $social;
+
         return new SocialResource($social);
     }
 
@@ -70,10 +71,6 @@ class SocialController extends Controller
      */
     public function show($id)
     {
-        // $social = Social::find($id);
-        // $social->employer;
-
-        // return $social;
         return new SocialResource(Social::find($id));
     }
 
@@ -120,11 +117,8 @@ class SocialController extends Controller
             }
         }
 
-        $social->update($request->all());
-        $social->save();
-        $social->employer;
+        $social->update($request->all())->save();
 
-        // return $social;
         return new SocialResource($social);
     }
 

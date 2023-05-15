@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class UserResource extends JsonResource
+class EventResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,12 +19,11 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'title' => $this->title,
-            'image' => asset('public/storage/' . $path),
-            'date' => $this->date,
             'desc' => $this->desc,
-            'audiences' => $this->audiencec(),
-            'employers' => $this->employers(),
-            
+            'date' => $this->date,
+            'image' => asset('public/storage/' . $path),
+            'audience' => new AudienceResource($this->audience),
+            'partners' => new EmployerCollection($this->employers),
         ];
     }
 }

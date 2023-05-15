@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CoreSkillCollection;
+use App\Http\Resources\CoreSkillResource;
 use Illuminate\Http\Request;
 use App\Models\CoreSkill;
 use Illuminate\Support\Facades\Validator;
@@ -15,7 +17,7 @@ class CoreSkillController extends Controller
      */
     public function index()
     {
-        return new CoreSkillCollection(CoreSkill::all();)
+        return new CoreSkillCollection(CoreSkill::all());
     }
 
 
@@ -49,7 +51,7 @@ class CoreSkillController extends Controller
      */
     public function show($id)
     {
-        return new CoreSkillCollection(CoreSkill::find($id));
+        return new CoreSkillResource(CoreSkill::find($id));
     }
 
 
@@ -71,8 +73,7 @@ class CoreSkillController extends Controller
         }
         
         $coreSkill = CoreSkill::find($id);
-        $coreSkill->update($request->all());
-        $coreSkill->save();
+        $coreSkill->update($request->all())->save();
 
         return new CoreSkillResource($coreSkill);
     }
