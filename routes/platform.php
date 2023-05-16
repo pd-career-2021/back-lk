@@ -193,7 +193,7 @@ Route::screen('applications', ApplicationListScreen::class)
     });
 
 // Platform > Employment > Applications > Create
-Route::screen('vacancies/create', ApplicationEditScreen::class)
+Route::screen('applications/create', ApplicationEditScreen::class)
     ->name('platform.employment.applications.create')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
