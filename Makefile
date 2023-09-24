@@ -57,6 +57,12 @@ composer-dev: ## Run composer in docker, use arg "COMPOSER_FLAGS" to pass args
 	composer $(COMPOSER_FLAGS)
 
 ### Commands to interact with server
-.PHONY: shell-php
-shell-php: ## open shell in php container
+.PHONY: shell-php pa-cc pa-rc
+shell-php: ## Open shell in php container
 	docker exec -it $(PROJECT_NAME)-php /bin/bash
+pa-cc: ## Clear Laravel configuration cache
+	docker exec -it $(PROJECT_NAME)-php php artisan config:cache
+pa-rc: ## Clear Laravel route cache
+	docker exec -it $(PROJECT_NAME)-php php artisan route:clear
+	docker exec -it $(PROJECT_NAME)-php php artisan route:cache
+# TODO: Migrations, Seeders
