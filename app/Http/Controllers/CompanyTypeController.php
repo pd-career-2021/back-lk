@@ -15,7 +15,7 @@ class CompanyTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): CompanyTypeCollection
     {
         return new CompanyTypeCollection(CompanyType::all());
     }
@@ -27,9 +27,12 @@ class CompanyTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): CompanyTypeResource
     {
-        $validator = Validator::make($request->all(), [
+        // $validator = Validator::make($request->all(), [
+        //     'title' => 'required|string|max:45'
+        // ]);
+        $validated = $request->validate([
             'title' => 'required|string|max:45'
         ]);
 
@@ -50,7 +53,7 @@ class CompanyTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): CompanyTypeResource
     {
         return new CompanyTypeResource(CompanyType::find($id));
     }
@@ -63,9 +66,12 @@ class CompanyTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): CompanyTypeResource
     {
-        $validator = Validator::make($request->all(), [
+        // $validator = Validator::make($request->all(), [
+        //     'title' => 'string|max:45'
+        // ]);
+        $validated = $request->validate([
             'title' => 'string|max:45'
         ]);
 

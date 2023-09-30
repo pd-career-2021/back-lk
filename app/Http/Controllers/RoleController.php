@@ -16,7 +16,7 @@ class RoleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): RoleCollection
     {
         return new RoleCollection(Role::all());
     }
@@ -28,12 +28,16 @@ class RoleController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Factory $validator) 
+    public function store(Request $request, Factory $validator): RoleResource 
     {
-        $validated = $validator->make($request->all(), [
+        // $validated = $validator->make($request->all(), [
+        //     'name' => 'required|string|max:45',
+        //     'desc' => 'required|string|max:1000',
+        // ])->validated();
+        $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000',
-        ])->validated();
+        ]);
 
         $role = new Role($validated);
         $role->save();
@@ -47,7 +51,7 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id) 
+    public function show($id): RoleResource 
     {
         return new RoleResource(Role::findOrFail($id));
     }
@@ -60,12 +64,16 @@ class RoleController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, Factory $validator) 
+    public function update(Request $request, $id, Factory $validator): RoleResource 
     {
-        $validated = $validator->make($request->all(), [
+        // $validated = $validator->make($request->all(), [
+        //     'name' => 'required|string|max:45',
+        //     'desc' => 'required|string|max:1000',
+        // ])->validated();
+        $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000',
-        ])->validated();
+        ]);
 
         $role = Role::findOrFail($id);
         $role->update($validated)->save();

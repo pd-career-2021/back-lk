@@ -21,7 +21,7 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): UserCollection
     {
         return new UserCollection(User::all());
     }
@@ -33,9 +33,20 @@ class UserController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Factory $validator)
+    public function store(Request $request, Factory $validator): UserResource
     {
-        $validated = $validator->make($request->all(), [
+        // $validated = $validator->make($request->all(), [
+        //     'name' => 'required|string|max:45',
+        //     'surname' => 'required|string|max:45',
+        //     'email' => 'required|email|unique:users,email',
+        //     'password' => 'required|string|confirmed',
+        //     'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        //     'sex' => 'required|string|in:male,female',
+        //     'role_ids' => 'required|array',
+        //     'role_ids.*' => 'integer',
+        //     'faculty_id' => 'required|integer',
+        // ])->validated();
+        $validated = $request->validate( [
             'name' => 'required|string|max:45',
             'surname' => 'required|string|max:45',
             'email' => 'required|email|unique:users,email',
@@ -45,7 +56,7 @@ class UserController extends Controller
             'role_ids' => 'required|array',
             'role_ids.*' => 'integer',
             'faculty_id' => 'required|integer',
-        ])->validated();
+        ]);
 
         $user = new User($validated);
         $user->password = bcrypt($validated['password']);
@@ -68,7 +79,7 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): UserResource
     {
         return new UserResource(User::findOrFail($id));
     }
@@ -81,9 +92,21 @@ class UserController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, Factory $validator)
+    public function update(Request $request, $id, Factory $validator): UserResource
     {
-        $validated = $validator->make($request->all(), [
+        // $validated = $validator->make($request->all(), [
+        //     'name' => 'string|max:45',
+        //     'surname' => 'string|max:45',
+        //     'email' => 'email|unique:users,email',
+        //     'password' => 'string|confirmed',
+        //     'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
+        //     'sex' => 'string|in:male,female',
+        //     'role_ids' => 'array',
+        //     'role_ids.*' => 'integer',
+        //     'faculty_id' => 'integer',
+        // ])->validated();
+
+        $validated = $request->validate( [
             'name' => 'string|max:45',
             'surname' => 'string|max:45',
             'email' => 'email|unique:users,email',
@@ -93,7 +116,7 @@ class UserController extends Controller
             'role_ids' => 'array',
             'role_ids.*' => 'integer',
             'faculty_id' => 'integer',
-        ])->validated();
+        ]);
 
         $auth_user = $request->user();
         $user = User::findOrFail($id);

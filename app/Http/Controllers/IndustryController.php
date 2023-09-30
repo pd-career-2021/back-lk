@@ -15,7 +15,7 @@ class IndustryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): IndustryCollection
     {
         return new IndustryCollection(Industry::all());
     }
@@ -27,11 +27,14 @@ class IndustryController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Factory $validator)
+    public function store(Request $request, Factory $validator): IndustryResource
     {
-        $validated = $validator->make($request->all(), [
+        // $validated = $validator->make($request->all(), [
+        //     'title' => 'required|string|max:45'
+        // ])->validated();
+        $validated = $request->validate([
             'title' => 'required|string|max:45'
-        ])->validated();
+        ]);
 
         $industry = new Industry($validated);
         $industry->save();
@@ -45,7 +48,7 @@ class IndustryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($id): IndustryResource
     {
         return new IndustryResource(Industry::findOrFail($id));
     }
@@ -58,11 +61,14 @@ class IndustryController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, Factory $validator)
+    public function update(Request $request, $id, Factory $validator): IndustryResource
     {
-        $validated = $validator->make($request->all(), [
+        // $validated = $validator->make($request->all(), [
+        //     'title' => 'required|string|max:45'
+        // ])->validated();
+        $validated = $request->validate([
             'title' => 'required|string|max:45'
-        ])->validated();
+        ]);
 
         $industry = Industry::findOrFail($id);
         $industry->update($validated)->save();
