@@ -20,25 +20,20 @@ class IndustryController extends Controller
         return new IndustryCollection(Industry::all());
     }
 
-
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Factory $validator)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $validator->make($request->all(), [
             'title' => 'required|string|max:45'
-        ]);
+        ])->validated();
 
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $industry = new Industry($request->all());
-
+        $industry = new Industry($validated);
         $industry->save();
 
         return new IndustryResource($industry);
@@ -52,30 +47,25 @@ class IndustryController extends Controller
      */
     public function show($id)
     {
-        return new IndustryResource(Industry::find($id));
+        return new IndustryResource(Industry::findOrFail($id));
     }
-
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
+     * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, Factory $validator)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $validator->make($request->all(), [
             'title' => 'required|string|max:45'
-        ]);
+        ])->validated();
 
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $industry = Industry::find($id);
-        $industry->update($request->all());
-        $industry->save();
+        $industry = Industry::findOrFail($id);
+        $industry->update($validated)->save();
 
         return new IndustryResource($industry);
     }

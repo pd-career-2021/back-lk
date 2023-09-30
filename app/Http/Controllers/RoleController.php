@@ -25,21 +25,17 @@ class RoleController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request) 
+    public function store(Request $request, Factory $validator) 
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $validator->make($request->all(), [
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000',
-        ]);
+        ])->validated();
 
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $role = new Role($request->all());
-
+        $role = new Role($validated);
         $role->save();
 
         return new RoleResource($role);
@@ -53,7 +49,7 @@ class RoleController extends Controller
      */
     public function show($id) 
     {
-        return new RoleResource(Role::find($id));
+        return new RoleResource(Role::findOrFail($id));
     }
 
     /**
@@ -61,21 +57,18 @@ class RoleController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
+     * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id) 
+    public function update(Request $request, $id, Factory $validator) 
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $validator->make($request->all(), [
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000',
-        ]);
+        ])->validated();
 
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $role = Role::find($id);
-        $role->update($request->all())->save();
+        $role = Role::findOrFail($id);
+        $role->update($validated)->save();
 
         return new RoleResource($role);
     }

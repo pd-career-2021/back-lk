@@ -23,13 +23,6 @@ class UserController extends Controller
      */
     public function index()
     {
-        // $users = User::all();
-        // foreach ($users as $user) {
-        //     $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        //     $user['image'] = asset('public/storage/' . $path);
-        //     $user['roles'] = $user->roles()->pluck('name');
-        // }
-
         return new UserCollection(User::all());
     }
 
@@ -37,11 +30,12 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Factory $validator)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $validator->make($request->all(), [
             'name' => 'required|string|max:45',
             'surname' => 'required|string|max:45',
             'email' => 'required|email|unique:users,email',
@@ -51,37 +45,19 @@ class UserController extends Controller
             'role_ids' => 'required|array',
             'role_ids.*' => 'integer',
             'faculty_id' => 'required|integer',
-        ]);
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
+        ])->validated();
 
-        $user = new User($request->all());
-        $user->password = bcrypt($request->input('password'));
-
-        $validated = array();
-        foreach ($request->input('role_ids') as $id) {
-            if (Role::find($id))
-                array_push($validated, $id);
-        }
-        $user->roles()->sync($validated);
-
-        $faculty = Faculty::find($request->input('faculty_id'));
-        if (!$faculty) {
-            return response([
-                'message' => 'Faculty not found.'
-            ], 401);
-        } else {
-            $user->faculty()->associate($faculty);
-        }
+        $user = new User($validated);
+        $user->password = bcrypt($validated['password']);
+        $user->roles()->sync($validated['role_ids']);
+        $faculty = Faculty::findOrFail($validated['faculty_id']);
+        $user->faculty()->associate($faculty);
         $user->save();
 
         if ($request->hasFile('image')) {
             $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
+            $user->save();
         }
-        $user->save();
-        // $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        // $user['image'] = asset('public/storage/' . $path);
 
         return new UserResource($user);
     }
@@ -94,13 +70,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        // $user = User::find($id);
-        // $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        // $user['image'] = asset('public/storage/' . $path);
-        // $user['roles'] = $user->roles()->pluck('name');
-        // $user->faculty;
-
-        return new UserResource(User::find($id));
+        return new UserResource(User::findOrFail($id));
     }
 
     /**
@@ -108,11 +78,12 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
+     * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id, Factory $validator)
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $validator->make($request->all(), [
             'name' => 'string|max:45',
             'surname' => 'string|max:45',
             'email' => 'email|unique:users,email',
@@ -122,13 +93,11 @@ class UserController extends Controller
             'role_ids' => 'array',
             'role_ids.*' => 'integer',
             'faculty_id' => 'integer',
-        ]);
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
+        ])->validated();
 
         $auth_user = $request->user();
-        $user = User::find($id);
+        $user = User::findOrFail($id);
+
         if (!$this->isAdmin($auth_user)) {
             if ($auth_user->id != $id) {
                 return response([
@@ -136,27 +105,18 @@ class UserController extends Controller
                 ], 401);
             }
         } else {
-            if ($request->has('role_ids')) {
-                $validated = array();
-                foreach ($request->input('role_ids') as $id) {
-                    if (Role::find($id))
-                        array_push($validated, $id);
-                }
-                $user->roles()->sync($validated);
+            if (isset($validated['role_ids'])) {
+                $user->roles()->sync($validated['role_ids']);
             }
         }
 
-        $user->update($request->all());
+        $user->update($validated);
+
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($user->img_path);
             $user->img_path = $request->file('image')->store('img/u' . $id, 'public');
+            $user->save();
         }
-
-        $user->save();
-        // $path = ($user->img_path) ? $user->img_path : 'img/blank.jpg';
-        // $user['image'] = asset('public/storage/' . $path);
-        // $user['roles'] = $user->roles()->pluck('name');
-        // $user->faculty;
 
         return new UserResource($user);
     }
@@ -169,7 +129,7 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        Storage::disk('public')->delete(User::find($id)->img_path);
+        Storage::disk('public')->delete(User::findOrFail($id)->img_path);
         return User::destroy($id);
     }
 
