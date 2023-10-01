@@ -6,7 +6,6 @@ use App\Http\Resources\IndustryCollection;
 use App\Http\Resources\IndustryResource;
 use Illuminate\Http\Request;
 use App\Models\Industry;
-use Illuminate\Support\Facades\Validator;
 
 class IndustryController extends Controller
 {
@@ -15,31 +14,25 @@ class IndustryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): IndustryCollection
     {
         return new IndustryCollection(Industry::all());
     }
-
 
     /**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): IndustryResource
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'title' => 'required|string|max:45'
         ]);
 
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $industry = new Industry($request->all());
-
-        $industry->save();
+        $industry = Industry::create($validated);
 
         return new IndustryResource($industry);
     }
@@ -50,32 +43,26 @@ class IndustryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Industry $industry): IndustryResource
     {
-        return new IndustryResource(Industry::find($id));
+        return new IndustryResource($industry);
     }
-
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
+     * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Industry $industry): IndustryResource
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'title' => 'required|string|max:45'
         ]);
-
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $industry = Industry::find($id);
-        $industry->update($request->all());
-        $industry->save();
+        
+        $industry->update($validated);
 
         return new IndustryResource($industry);
     }
@@ -86,8 +73,8 @@ class IndustryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Industry $industry)
     {
-        return Industry::destroy($id);
+        return $industry->delete();
     }
 }

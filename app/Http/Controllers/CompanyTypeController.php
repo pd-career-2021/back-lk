@@ -6,7 +6,6 @@ use App\Http\Resources\CompanyTypeCollection;
 use App\Http\Resources\CompanyTypeResource;
 use Illuminate\Http\Request;
 use App\Models\CompanyType;
-use Illuminate\Support\Facades\Validator;
 
 class CompanyTypeController extends Controller
 {
@@ -15,7 +14,7 @@ class CompanyTypeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(): CompanyTypeCollection
     {
         return new CompanyTypeCollection(CompanyType::all());
     }
@@ -27,19 +26,13 @@ class CompanyTypeController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request): CompanyTypeResource
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'title' => 'required|string|max:45'
         ]);
 
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $companyType = new CompanyType($request->all());
-
-        $companyType->save();
+        $companyType = CompanyType::create($validated);
 
         return new CompanyTypeResource($companyType);
     }
@@ -50,9 +43,9 @@ class CompanyTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(CompanyType $companyType): CompanyTypeResource
     {
-        return new CompanyTypeResource(CompanyType::find($id));
+        return new CompanyTypeResource($companyType);
     }
 
 
@@ -63,18 +56,13 @@ class CompanyTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, CompanyType $companyType): CompanyTypeResource
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'title' => 'string|max:45'
         ]);
 
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $companyType = CompanyType::find($id);
-        $companyType->update($request->all())->save();
+        $companyType->update($request->all());
 
         return new CompanyTypeResource($companyType);
     }
@@ -85,8 +73,8 @@ class CompanyTypeController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(CompanyType $companyType)
     {
-        return CompanyType::destroy($id);
+        return $companyType->delete();
     }
 }
