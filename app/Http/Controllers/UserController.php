@@ -10,7 +10,6 @@ use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -33,20 +32,9 @@ class UserController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Factory $validator): UserResource
+    public function store(Request $request): UserResource
     {
-        // $validated = $validator->make($request->all(), [
-        //     'name' => 'required|string|max:45',
-        //     'surname' => 'required|string|max:45',
-        //     'email' => 'required|email|unique:users,email',
-        //     'password' => 'required|string|confirmed',
-        //     'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-        //     'sex' => 'required|string|in:male,female',
-        //     'role_ids' => 'required|array',
-        //     'role_ids.*' => 'integer',
-        //     'faculty_id' => 'required|integer',
-        // ])->validated();
-        $validated = $request->validate( [
+        $validated = $request->validate([
             'name' => 'required|string|max:45',
             'surname' => 'required|string|max:45',
             'email' => 'required|email|unique:users,email',
@@ -58,7 +46,7 @@ class UserController extends Controller
             'faculty_id' => 'required|integer',
         ]);
 
-        $user = new User($validated);
+        $user = User::create($validated);
         $user->password = bcrypt($validated['password']);
         $user->roles()->sync($validated['role_ids']);
         $faculty = Faculty::findOrFail($validated['faculty_id']);
@@ -79,9 +67,9 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id): UserResource
+    public function show(User $user): UserResource
     {
-        return new UserResource(User::findOrFail($id));
+        return new UserResource($user);
     }
 
     /**
@@ -92,20 +80,8 @@ class UserController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, Factory $validator): UserResource
+    public function update(Request $request, User $user): UserResource
     {
-        // $validated = $validator->make($request->all(), [
-        //     'name' => 'string|max:45',
-        //     'surname' => 'string|max:45',
-        //     'email' => 'email|unique:users,email',
-        //     'password' => 'string|confirmed',
-        //     'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
-        //     'sex' => 'string|in:male,female',
-        //     'role_ids' => 'array',
-        //     'role_ids.*' => 'integer',
-        //     'faculty_id' => 'integer',
-        // ])->validated();
-
         $validated = $request->validate( [
             'name' => 'string|max:45',
             'surname' => 'string|max:45',
@@ -119,7 +95,6 @@ class UserController extends Controller
         ]);
 
         $auth_user = $request->user();
-        $user = User::findOrFail($id);
 
         if (!$this->isAdmin($auth_user)) {
             if ($auth_user->id != $id) {
@@ -150,10 +125,10 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        Storage::disk('public')->delete(User::findOrFail($id)->img_path);
-        return User::destroy($id);
+        Storage::disk('public')->delete($user->img_path);;
+        return $user->delete();
     }
 
     /**

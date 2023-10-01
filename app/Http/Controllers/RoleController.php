@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Resources\RoleCollection;
 use App\Http\Resources\RoleResource;
 use App\Models\Role;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
 
 
@@ -28,19 +27,14 @@ class RoleController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Factory $validator): RoleResource 
+    public function store(Request $request): RoleResource 
     {
-        // $validated = $validator->make($request->all(), [
-        //     'name' => 'required|string|max:45',
-        //     'desc' => 'required|string|max:1000',
-        // ])->validated();
         $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000',
         ]);
 
-        $role = new Role($validated);
-        $role->save();
+        $role = Role::create($validated);
 
         return new RoleResource($role);
     }
@@ -51,9 +45,9 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id): RoleResource 
+    public function show(Role $role): RoleResource 
     {
-        return new RoleResource(Role::findOrFail($id));
+        return new RoleResource($role);
     }
 
     /**
@@ -64,19 +58,15 @@ class RoleController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, Factory $validator): RoleResource 
+    public function update(Request $request, Role $role): RoleResource 
     {
-        // $validated = $validator->make($request->all(), [
-        //     'name' => 'required|string|max:45',
-        //     'desc' => 'required|string|max:1000',
-        // ])->validated();
         $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000',
         ]);
 
-        $role = Role::findOrFail($id);
-        $role->update($validated)->save();
+        
+        $role->update($validated);
 
         return new RoleResource($role);
     }
@@ -87,8 +77,8 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Role $role)
     {
-        return Role::destroy($id);
+        return $role->delete();
     }
 }

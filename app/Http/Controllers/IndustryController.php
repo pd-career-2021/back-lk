@@ -6,7 +6,6 @@ use App\Http\Resources\IndustryCollection;
 use App\Http\Resources\IndustryResource;
 use Illuminate\Http\Request;
 use App\Models\Industry;
-use Illuminate\Support\Facades\Validator;
 
 class IndustryController extends Controller
 {
@@ -27,17 +26,13 @@ class IndustryController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, Factory $validator): IndustryResource
+    public function store(Request $request): IndustryResource
     {
-        // $validated = $validator->make($request->all(), [
-        //     'title' => 'required|string|max:45'
-        // ])->validated();
         $validated = $request->validate([
             'title' => 'required|string|max:45'
         ]);
 
-        $industry = new Industry($validated);
-        $industry->save();
+        $industry = Industry::create($validated);
 
         return new IndustryResource($industry);
     }
@@ -48,9 +43,9 @@ class IndustryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id): IndustryResource
+    public function show(Industry $industry): IndustryResource
     {
-        return new IndustryResource(Industry::findOrFail($id));
+        return new IndustryResource($industry);
     }
 
     /**
@@ -61,17 +56,13 @@ class IndustryController extends Controller
      * @param  \Illuminate\Validation\Factory  $validator
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id, Factory $validator): IndustryResource
+    public function update(Request $request, Industry $industry): IndustryResource
     {
-        // $validated = $validator->make($request->all(), [
-        //     'title' => 'required|string|max:45'
-        // ])->validated();
         $validated = $request->validate([
             'title' => 'required|string|max:45'
         ]);
-
-        $industry = Industry::findOrFail($id);
-        $industry->update($validated)->save();
+        
+        $industry->update($validated);
 
         return new IndustryResource($industry);
     }
@@ -82,8 +73,8 @@ class IndustryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Industry $industry)
     {
-        return Industry::destroy($id);
+        return $industry->delete();
     }
 }
