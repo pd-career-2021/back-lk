@@ -35,9 +35,9 @@ class EventController extends Controller
         return new EventCollection($response);
     }
 
-    public function show($id): EventResource
+    public function show(Event $event): EventResource
     {
-        return new EventResource(Event::find($id));
+        return new EventResource($event);
     }
 
     public function store(Request $request): EventResource
@@ -52,8 +52,7 @@ class EventController extends Controller
             'employer_ids.*' => 'integer|exists:employers,id',
         ]);
 
-        $event = new Event($validated);
-        $event->save();
+        $event = Event::create($validated);
 
         array_push($validated['employer_ids'], Employer::where('user_id', $request->user()->id)->first()->id);
         $event->employers()->sync($validated['employer_ids']);
@@ -66,7 +65,7 @@ class EventController extends Controller
         return new EventResource($event);
     }
 
-    public function update(Request $request, $id): EventResource
+    public function update(Request $request, Event $event): EventResource
     {
         $validated = $request->validate([
             'title' => 'string|max:45',
@@ -78,8 +77,6 @@ class EventController extends Controller
             'employer_ids.*' => 'integer|exists:employers,id',
         ]);
 
-        $event = Event::findOrFail($id);
-
         $user = $request->user();
 
         if ($this->isEmployer($user)) {
@@ -89,6 +86,8 @@ class EventController extends Controller
                 ], 401);
             }
         }
+
+        $event->update($validated);
 
         if (isset($validated['employer_ids'])) {
             array_push($validated['employer_ids'], Employer::where('user_id', $user->id)->first()->id);
@@ -102,30 +101,25 @@ class EventController extends Controller
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($event->img_path);
             $event->img_path = $request->file('image')->store('img/event' . $event->id, 'public');
+            $event->save();
         }
-
-        $event->update($validated);
 
         return new EventResource($event);
     }
 
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, Event $event)
     {
         $user = $request->user();
 
         if ($this->isEmployer($user)) {
-            $event = Event::findOrFail($id);
-
             if (!$event->employers()->where('user_id', $user->id)->exists()) {
-                return response([
-                    'message' => 'You do not have permission to do this.'
-                ], 401);
+                return response(['message' => 'You do not have permission to do this.'], 401);
             }
         }
 
         $event->employers()->detach();
-        Storage::disk('public')->delete(Event::find($id)->img_path);
+        Storage::disk('public')->delete($event->img_path);
 
-        return Event::destroy($id);
+        return $event->delete();
     }
 }

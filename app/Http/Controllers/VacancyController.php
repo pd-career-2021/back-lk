@@ -11,24 +11,19 @@ use Illuminate\Pipeline\Pipeline;
 use App\Http\Library\ApiHelpers;
 use App\Http\Resources\VacancyCollection;
 use App\Http\Resources\VacancyResource;
+use App\Models\CoreSkill;
 use App\Models\Employer;
 use App\Models\Faculty;
+use App\Models\User;
 use App\Models\Vacancy;
-use App\Models\CoreSkill;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class VacancyController extends Controller
 {
     use ApiHelpers;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): VacancyCollection
     {
         $vacancies = Vacancy::query();
         $response =
@@ -49,23 +44,23 @@ class VacancyController extends Controller
         return new VacancyCollection($response);
     }
 
-    public function indexEmployerVacancies(Request $request)
+    public function indexEmployerVacancies(Request $request): VacancyCollection
     {
-        $employer_id = Employer::where('user_id', $request->user()->id)->first()->id;
-        $vacancies = Vacancy::where('employer_id', $employer_id)->get();
+        $user = $request->user();
+        $employer = Employer::where('user_id', $user->id)->firstOrFail();
+        $vacancies = $employer->vacancies;
 
         return new VacancyCollection($vacancies);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show(Vacancy $vacancy): VacancyResource
     {
-        $validator = Validator::make($request->all(), [
+        return new VacancyResource($vacancy);
+    }
+
+    public function store(Request $request): VacancyResource
+    {
+        $validated = $request->validate([
             'title' => 'required|string|max:128',
             'desc' => 'required|string|max:1000',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -83,83 +78,45 @@ class VacancyController extends Controller
             'faculty_ids.*' => 'integer',
             'core_skills' => 'required|array',
             'core_skills.*' => 'string|max:64',
-            // 'core_skills_ids' => 'required|array',
-            // 'core_skills_ids.*' => 'integer',
         ]);
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
 
-        $vacancy = new Vacancy($request->all());
         $user = $request->user();
+        $employer = null;
 
         if ($this->isEmployer($user)) {
             $employer = Employer::where('user_id', $user->id)->first();
-        } else {
+        } elseif ($request->has('employer_id')) {
             $employer = Employer::find($request->input('employer_id'));
         }
 
         if (!$employer) {
-            return response([
-                'message' => 'Employer not found.'
-            ], 401);
-        } else {
-            $vacancy->employer()->associate($employer);
+            return response(['message' => 'Employer not found.'], 401);
         }
-        $vacancy->save();
 
-        $validated = array();
-        foreach ($request->input('faculty_ids') as $id) {
-            if (Faculty::find($id))
-                array_push($validated, $id);
-        }
-        $vacancy->faculties()->sync($validated);
+        $vacancy = Vacancy::create($validated);
+        $vacancy->employer()->associate($employer);
 
-        $validated = array();
+        $validatedFacultyIds = Faculty::whereIn('id', $request->input('faculty_ids'))->pluck('id')->toArray();
+        $vacancy->faculties()->sync($validatedFacultyIds);
+
+        $validatedCoreSkillIds = [];
         foreach ($request->input('core_skills') as $coreSkillTitle) {
-            $coreSkill = new CoreSkill([
-                'title' => $coreSkillTitle,
-            ]);
-            $coreSkill->save();
-            array_push($validated, $coreSkill->id);
+            $coreSkill = CoreSkill::firstOrCreate(['title' => $coreSkillTitle]);
+            $validatedCoreSkillIds[] = $coreSkill->id;
         }
-        $vacancy->skills()->sync($validated);
+        $vacancy->skills()->sync($validatedCoreSkillIds);
 
         if ($request->hasFile('image')) {
             $employer->img_path = $request->file('image')->store('img/v' . $employer->id, 'public');
+            $vacancy->save();
         }
-        $vacancy->save();
 
         return new VacancyResource($vacancy);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function update(Request $request, Vacancy $vacancy): VacancyResource
     {
-        $vacancy = Vacancy::find($id);
-        if (!$vacancy)
-            return response([
-                'message' => 'Vacancy not found.'
-            ], 401);
-
-        return new VacancyResource($vacancy);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'title' => 'required|string|max:128',
             'desc' => 'required|string|max:1000',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -177,104 +134,66 @@ class VacancyController extends Controller
             'faculty_ids.*' => 'integer',
             'core_skills' => 'required|array',
             'core_skills.*' => 'required|string|max:64',
-            // 'core_skills_ids' => 'required|array',
-            // 'core_skills_ids.*' => 'integer',
         ]);
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
 
-        $vacancy = Vacancy::find($id);
         $user = $request->user();
 
         if ($this->isEmployer($user)) {
-            $employer_id = Employer::where('user_id', $user->id)->first()->id;
-            if (Vacancy::where('id', $id)->first()->employer_id != $employer_id) {
-                return response([
-                    'message' => 'You do not have permission to do this.'
-                ], 401);
-            }
-        }
-
-        if ($this->isAdmin($user)) {
-            if ($request->has('employer_id')) {
-                $employer = Employer::find($request->input('employer_id'));
-                if (!$employer) {
-                    return response([
-                        'message' => 'Employer not found.'
-                    ], 401);
-                } else {
-                    $vacancy->employer()->associate($employer);
-                }
-            }
-        }
-
-        if ($this->isEmployer($user)) {
             $employer = Employer::where('user_id', $user->id)->first();
-        } else {
-            $employer = Employer::find($request->input('employer_id'));
+            if ($vacancy->employer_id !== $employer->id) {
+                return response(['message' => 'You do not have permission to do this.'], 401);
+            }
         }
 
-        $vacancy->update($request->all());
+        if ($this->isAdmin($user) && $request->has('employer_id')) {
+            $employer = Employer::findOrFail($request->input('employer_id'));
+            $vacancy->employer()->associate($employer);
+        }
+
+        $vacancy->update($validated);
+
+        $validatedFacultyIds = Faculty::whereIn('id', $request->input('faculty_ids'))->pluck('id')->toArray();
+        $vacancy->faculties()->sync($validatedFacultyIds);
+
+        $validatedCoreSkillIds = [];
+        foreach ($request->input('core_skills') as $coreSkillTitle) {
+            $coreSkill = CoreSkill::firstOrCreate(['title' => $coreSkillTitle]);
+            $validatedCoreSkillIds[] = $coreSkill->id;
+        }
+        $vacancy->skills()->sync($validatedCoreSkillIds);
+
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($vacancy->img_path);
-            $vacancy->img_path = $request->file('image')->store('img/v' . $employer->id, 'public');
+            $vacancy->img_path = $request->file('image')->store('img/v' . $vacancy->employer_id, 'public');
+            $vacancy->save();
         }
-
-        if ($request->has('faculty_ids')) {
-            $validated = array();
-            foreach ($request->input('faculty_ids') as $id) {
-                if (Faculty::find($id))
-                    array_push($validated, $id);
-            }
-            $vacancy->faculties()->sync($validated);
-        }
-
-        if ($request->has('core_skills')) {
-            $validated = array();
-            foreach ($request->input('core_skills') as $coreSkillTitle) {
-                $coreSkill = new CoreSkill([
-                    'title' => $coreSkillTitle,
-                ]);
-                $coreSkill->save();
-                array_push($validated, $coreSkill->id);
-            }
-            $vacancy->skills()->sync($validated);
-        }
-
-        $vacancy->save();
 
         return new VacancyResource($vacancy);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request, $id)
+    public function destroy(Request $request, Vacancy $vacancy)
     {
         $user = $request->user();
-        if ($this->isEmployer($user)) {
-            $employer_id = Employer::where('user_id', $user->id)->first()->id;
-            if (Vacancy::where('id', $id)->first()->employer_id == $employer_id) {
-                $vacancy = Vacancy::find($id);
-                $vacancy->faculties()->detach();
-                $vacancy->skills()->detach();
 
-                return Vacancy::destroy($id);
-            }
-        } else if ($this->isAdmin($user)) {
-            $vacancy = Vacancy::find($id);
+        if ($this->canDeleteVacancy($user, $vacancy)) {
             $vacancy->faculties()->detach();
             $vacancy->skills()->detach();
-
-            return Vacancy::destroy($id);
+            return $vacancy->delete();
         }
-        return response([
-            'message' => 'You do not have permission to do this.'
-        ], 401);
+        
+        return response(['message' => 'You do not have permission to do this.'], 401);
     }
+
+    private function canDeleteVacancy(User $user, Vacancy $vacancy)
+    {
+        if ($this->isAdmin($user)) {
+            return true;
+        }
+    
+        if ($this->isEmployer($user) && $vacancy->employer_id == $user->employer->id) {
+            return true;
+        }
+    
+        return false;
+    }    
 }
