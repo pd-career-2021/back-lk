@@ -6,86 +6,45 @@ use App\Http\Resources\ApplicationStatusCollection;
 use App\Http\Resources\ApplicationStatusResource;
 use Illuminate\Http\Request;
 use App\Models\ApplicationStatus;
-use Illuminate\Support\Facades\Validator;
 
 class ApplicationStatusController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): ApplicationStatusCollection
     {
         return new ApplicationStatusCollection(ApplicationStatus::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request): ApplicationStatusResource
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000'
         ]);
 
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $applicationStatus = new ApplicationStatus($request->all());
-        $applicationStatus->save();
+        $applicationStatus = ApplicationStatus::create($validated);
 
         return new ApplicationStatusResource($applicationStatus);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(ApplicationStatus $applicationStatus):ApplicationStatusResource
     {
-        return new ApplicationStatusResource(ApplicationStatus::find($id));
+        return new ApplicationStatusResource($applicationStatus);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, ApplicationStatus $applicationStatus):ApplicationStatusResource
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000'
         ]);
-
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-        
-        $applicationStatus = ApplicationStatus::find($id);
-        $applicationStatus->update($request->all())->save();
+    
+        $applicationStatus->update($validated);
 
         return new ApplicationStatusResource($applicationStatus);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(ApplicationStatus $applicationStatus)
     {
-        return ApplicationStatus::destroy($id);
+        return $applicationStatus->delete();
     }
 }
