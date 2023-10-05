@@ -15,23 +15,16 @@ class UserController extends Controller
 {
     use ApiHelpers;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index(): UserCollection
     {
         return new UserCollection(User::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Illuminate\Validation\Factory  $validator
-     * @return \Illuminate\Http\Response
-     */
+    public function show(User $user): UserResource
+    {
+        return new UserResource($user);
+    }
+
     public function store(Request $request): UserResource
     {
         $validated = $request->validate([
@@ -46,43 +39,27 @@ class UserController extends Controller
             'faculty_id' => 'required|integer',
         ]);
 
-        $user = User::create($validated);
+        $user = new User($validated);
         $user->password = bcrypt($validated['password']);
-        $user->roles()->sync($validated['role_ids']);
+
+        $validatedRoleIds = Role::whereIn('id', $validated['role_ids'])->pluck('id')->toArray();
+        $user->roles()->sync($validatedRoleIds);
+
         $faculty = Faculty::findOrFail($validated['faculty_id']);
         $user->faculty()->associate($faculty);
-        $user->save();
 
         if ($request->hasFile('image')) {
             $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
-            $user->save();
         }
 
+        $user->save();
+
         return new UserResource($user);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(User $user): UserResource
-    {
-        return new UserResource($user);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @param  \Illuminate\Validation\Factory  $validator
-     * @return \Illuminate\Http\Response
-     */
     public function update(Request $request, User $user): UserResource
     {
-        $validated = $request->validate( [
+        $validated = $request->validate([
             'name' => 'string|max:45',
             'surname' => 'string|max:45',
             'email' => 'email|unique:users,email',
@@ -94,51 +71,33 @@ class UserController extends Controller
             'faculty_id' => 'integer',
         ]);
 
-        $auth_user = $request->user();
+        $authUser = $request->user();
 
-        if (!$this->isAdmin($auth_user)) {
-            if ($auth_user->id != $id) {
-                return response([
-                    'message' => 'You do not have permission to do this.'
-                ], 401);
-            }
-        } else {
-            if (isset($validated['role_ids'])) {
-                $user->roles()->sync($validated['role_ids']);
-            }
+        if (!$this->isAdmin($authUser) && $authUser->id != $user->id) {
+            return response(['message' => 'You do not have permission to do this.'], 401);
+        }
+
+        if ($this->isAdmin($authUser) && $request->has('role_ids')) {
+            $validatedRoleIds = Role::whereIn('id', $validated['role_ids'])->pluck('id')->toArray();
+            $user->roles()->sync($validatedRoleIds);
         }
 
         $user->update($validated);
 
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($user->img_path);
-            $user->img_path = $request->file('image')->store('img/u' . $id, 'public');
-            $user->save();
+            $user->img_path = $request->file('image')->store('img/u' . $user->id, 'public');
         }
+        
+        $user->save();
 
         return new UserResource($user);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
     public function destroy(User $user)
     {
-        Storage::disk('public')->delete($user->img_path);;
+        Storage::disk('public')->delete($user->img_path);
+
         return $user->delete();
     }
-
-    /**
-     * Search for a email.
-     *
-     * @param  int  $email
-     * @return \Illuminate\Http\Response
-     */
-    // public function search($email)
-    // {
-    //     return User::where('email', $email)->get();
-    // }
 }

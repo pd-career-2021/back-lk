@@ -107,7 +107,7 @@ class VacancyController extends Controller
         $vacancy->skills()->sync($validatedCoreSkillIds);
 
         if ($request->hasFile('image')) {
-            $employer->img_path = $request->file('image')->store('img/v' . $employer->id, 'public');
+            $vacancy->img_path = $request->file('image')->store('img/v' . $vacancy->id, 'public');
             $vacancy->save();
         }
 
