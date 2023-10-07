@@ -14,119 +14,72 @@ class StudentController extends Controller
 {
     use ApiHelpers;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): StudentCollection
     {
         return new StudentCollection(Student::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request): StudentResource
     {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'desc' => 'required|string|max:1000',
             'user_id' => 'required|integer',
         ]);
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $student = new Student($request->all());
-        $user = User::find($request->input('user_id'));
-        if ($user) {
-            if ($user->student()->exists() || $user->employer()->exists()) {
-                return response([
-                    'message' => 'User already associated.'
-                ], 401);
-            } else {
-                $student->user()->associate($user);
-            }
-        }
-        $student->save();
+        $student = Student::create($validated);
 
         return new StudentResource($student);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function show(Student $student): StudentResource
     {
-        return new StudentResource(Student::find($id));
+        return new StudentResource($student);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+    public function update(Request $request, Student $student): StudentResource
     {
-        $validator = Validator::make($request->all(), [
+        $$validated = $request->validate([
             'desc' => 'string|max:1000',
             'user_id' => 'integer',
         ]);
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
-
-        $student = Student::find($id);
-        $user = $request->user();
-
-        if ($this->isStudent($user)) {
-            $student_id = Student::where('user_id', $user->id)->first()->id;
-            if ($id == $student_id) {
-                $student->update($request->all());
-                $student->save();
-                $student->user;
-                return $student;
-            } else {
-                return response([
-                    'message' => 'You do not have permission to do this.'
-                ], 401);
-            }
-        }
-
-        if ($request->has('user_id')) {
-            $user = User::find($request->input('user_id'));
-            if ($user) {
-                if ($user->student()->exists() || $user->employer()->exists()) {
-                    return response([
-                        'message' => 'User already associated.'
-                    ], 401);
-                } else {
-                    $student->user()->associate($user);
-                }
-            }
-        }
-
-        $student->update($request->all())->save();
+        $student->update($validated);
 
         return new StudentResource($student);
-    }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+            if (!$this->isAuthorizedToUpdate($request->user(), $student)) {
+                return response(['message' => 'You do not have permission to do this.'], Response::HTTP_UNAUTHORIZED);
+            }
+        
+            $validatedData = $request->validated();
+        
+            if ($request->has('user_id')) {
+                $user = User::find($validatedData['user_id']);
+                if (!$user) {
+                    return response(['message' => 'User not found.'], Response::HTTP_NOT_FOUND);
+                }
+        
+                if ($user->student()->exists() || $user->employer()->exists()) {
+                    return response(['message' => 'User already associated.'], Response::HTTP_UNAUTHORIZED);
+                }
+        
+                $student->user()->associate($user);
+            }
+
+            $student->update($validatedData);
+        
+            return new StudentResource($student);
+        }
+        
+        private function isAuthorizedToUpdate($user, $student): bool
+        {
+            if ($this->isStudent($user)) {
+                return $user->id === $student->user_id;
+            }
+        
+            return true;
+        }
+
+    public function destroy(Student $student)
     {
-        return Student::destroy($id);
+        return $student->delete();
     }
 }
