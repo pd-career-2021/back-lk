@@ -38,6 +38,7 @@ class AuthController extends Controller
         }
 
         $user->save();
+        
         $token = $user->createToken('polytoken', ['user'])->plainTextToken;
 
         return response()->json([

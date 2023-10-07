@@ -14,7 +14,12 @@ class ApplicationStatusController extends Controller
         return new ApplicationStatusCollection(ApplicationStatus::all());
     }
 
-       public function store(Request $request): ApplicationStatusResource
+    public function show(ApplicationStatus $applicationStatus): ApplicationStatusResource
+    {
+        return new ApplicationStatusResource($applicationStatus);
+    }
+
+    public function store(Request $request): ApplicationStatusResource
     {
         $validated = $request->validate([
             'name' => 'required|string|max:45',
@@ -26,18 +31,13 @@ class ApplicationStatusController extends Controller
         return new ApplicationStatusResource($applicationStatus);
     }
 
-    public function show(ApplicationStatus $applicationStatus): ApplicationStatusResource
-    {
-        return new ApplicationStatusResource($applicationStatus);
-    }
-
-    public function update(Request $request, ApplicationStatus $applicationStatus):ApplicationStatusResource
+    public function update(Request $request, ApplicationStatus $applicationStatus): ApplicationStatusResource
     {
         $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000'
         ]);
-    
+
         $applicationStatus->update($validated);
 
         return new ApplicationStatusResource($applicationStatus);

@@ -6,13 +6,17 @@ use App\Http\Resources\AudienceCollection;
 use App\Http\Resources\AudienceResource;
 use Illuminate\Http\Request;
 use App\Models\Audience;
-use Illuminate\Support\Facades\Validator;
 
 class AudienceController extends Controller
 {
     public function index(): AudienceCollection
     {
         return new AudienceCollection(Audience::all());
+    }
+
+    public function show(Audience $audience): AudienceResource
+    {
+        return new AudienceResource($audience);
     }
 
     public function store(Request $request): AudienceResource
@@ -22,11 +26,7 @@ class AudienceController extends Controller
         ]);
 
         $audience = Audience::create($validated);
-        return new AudienceResource($audience);
-    }
 
-    public function show(Audience $audience): AudienceResource
-    {
         return new AudienceResource($audience);
     }
 

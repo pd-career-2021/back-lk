@@ -8,7 +8,6 @@ use App\Http\Resources\StudentResource;
 use App\Models\Student;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -19,64 +18,62 @@ class StudentController extends Controller
         return new StudentCollection(Student::all());
     }
 
+    public function show(Student $student): StudentResource
+    {
+        return new StudentResource($student);
+    }
+
     public function store(Request $request): StudentResource
     {
         $validated = $request->validate([
             'desc' => 'required|string|max:1000',
             'user_id' => 'required|integer',
         ]);
-        $student = Student::create($validated);
 
-        return new StudentResource($student);
-    }
+        $user = User::findOrFail($validated['user_id']);
 
-    public function show(Student $student): StudentResource
-    {
+        if ($user->student()->exists() || $user->employer()->exists()) {
+            return response(['message' => 'User is already associated.'], 409);
+        }
+
+        $student = new Student($validated);
+        $student->user()->associate($user);
+        $student->save();
+
         return new StudentResource($student);
     }
 
     public function update(Request $request, Student $student): StudentResource
     {
-        $$validated = $request->validate([
+        $validated = $request->validate([
             'desc' => 'string|max:1000',
             'user_id' => 'integer',
         ]);
+
         $student->update($validated);
+        $authUser = $request->user();
+
+        if ($this->isStudent($authUser)) {
+            if ($authUser->student->id !== $student->id) {
+                return response()->json(['message' => 'You do not have permission to update this student.'], 403);
+            }
+        }
+
+        if ($request->has('user_id')) {
+            $newUser = User::findOrFail($validated['user_id']);
+
+            if ($newUser->student()->exists() || $newUser->employer()->exists()) {
+                return response()->json(['message' => 'User is already associated.'], 409);
+            }
+
+            $student->user()->associate($newUser);
+        }
+
+        $student->update($validated);
+        $student->save();
 
         return new StudentResource($student);
-
-            if (!$this->isAuthorizedToUpdate($request->user(), $student)) {
-                return response(['message' => 'You do not have permission to do this.'], Response::HTTP_UNAUTHORIZED);
-            }
-        
-            $validatedData = $request->validated();
-        
-            if ($request->has('user_id')) {
-                $user = User::find($validatedData['user_id']);
-                if (!$user) {
-                    return response(['message' => 'User not found.'], Response::HTTP_NOT_FOUND);
-                }
-        
-                if ($user->student()->exists() || $user->employer()->exists()) {
-                    return response(['message' => 'User already associated.'], Response::HTTP_UNAUTHORIZED);
-                }
-        
-                $student->user()->associate($user);
-            }
-
-            $student->update($validatedData);
-        
-            return new StudentResource($student);
-        }
-        
-        private function isAuthorizedToUpdate($user, $student): bool
-        {
-            if ($this->isStudent($user)) {
-                return $user->id === $student->user_id;
-            }
-        
-            return true;
-        }
+    }
 
     public function destroy(Student $student)
     {

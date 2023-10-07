@@ -24,6 +24,8 @@ class RoleController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000',
+            'slug' => 'required|string|max:15',
+            'permissions' => 'required|string',
         ]);
 
         $role = Role::create($validated);
@@ -36,6 +38,8 @@ class RoleController extends Controller
         $validated = $request->validate([
             'name' => 'required|string|max:45',
             'desc' => 'required|string|max:1000',
+            'slug' => 'required|string|max:15',
+            'permissions' => 'required|string',
         ]);
 
         $role->update($validated);

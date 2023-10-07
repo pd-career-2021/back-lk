@@ -86,7 +86,7 @@ class VacancyController extends Controller
         if ($this->isEmployer($user)) {
             $employer = Employer::where('user_id', $user->id)->first();
         } elseif ($request->has('employer_id')) {
-            $employer = Employer::find($request->input('employer_id'));
+            $employer = Employer::find($validated['employer_id']);
         }
 
         if (!$employer) {
@@ -96,11 +96,11 @@ class VacancyController extends Controller
         $vacancy = Vacancy::create($validated);
         $vacancy->employer()->associate($employer);
 
-        $validatedFacultyIds = Faculty::whereIn('id', $request->input('faculty_ids'))->pluck('id')->toArray();
+        $validatedFacultyIds = Faculty::whereIn('id', $validated['faculty_ids'])->pluck('id')->toArray();
         $vacancy->faculties()->sync($validatedFacultyIds);
 
         $validatedCoreSkillIds = [];
-        foreach ($request->input('core_skills') as $coreSkillTitle) {
+        foreach ($validated['core_skills'] as $coreSkillTitle) {
             $coreSkill = CoreSkill::firstOrCreate(['title' => $coreSkillTitle]);
             $validatedCoreSkillIds[] = $coreSkill->id;
         }
@@ -146,17 +146,17 @@ class VacancyController extends Controller
         }
 
         if ($this->isAdmin($user) && $request->has('employer_id')) {
-            $employer = Employer::findOrFail($request->input('employer_id'));
+            $employer = Employer::findOrFail($validated['employer_id']);
             $vacancy->employer()->associate($employer);
         }
 
         $vacancy->update($validated);
 
-        $validatedFacultyIds = Faculty::whereIn('id', $request->input('faculty_ids'))->pluck('id')->toArray();
+        $validatedFacultyIds = Faculty::whereIn('id', $validated['faculty_ids'])->pluck('id')->toArray();
         $vacancy->faculties()->sync($validatedFacultyIds);
 
         $validatedCoreSkillIds = [];
-        foreach ($request->input('core_skills') as $coreSkillTitle) {
+        foreach ($validated['core_skills'] as $coreSkillTitle) {
             $coreSkill = CoreSkill::firstOrCreate(['title' => $coreSkillTitle]);
             $validatedCoreSkillIds[] = $coreSkill->id;
         }
@@ -165,8 +165,9 @@ class VacancyController extends Controller
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($vacancy->img_path);
             $vacancy->img_path = $request->file('image')->store('img/v' . $vacancy->employer_id, 'public');
-            $vacancy->save();
         }
+        
+        $vacancy->save();
 
         return new VacancyResource($vacancy);
     }

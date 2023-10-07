@@ -7,6 +7,7 @@ use App\Filters\Event\EventDateFilter;
 use App\Http\Library\ApiHelpers;
 use App\Http\Resources\EventCollection;
 use App\Http\Resources\EventResource;
+use App\Models\Audience;
 use App\Models\Employer;
 use App\Models\Event;
 use Illuminate\Http\Request;
@@ -52,15 +53,24 @@ class EventController extends Controller
             'employer_ids.*' => 'integer|exists:employers,id',
         ]);
 
-        $event = Event::create($validated);
+        $user = $request->user();
 
-        array_push($validated['employer_ids'], Employer::where('user_id', $request->user()->id)->first()->id);
-        $event->employers()->sync($validated['employer_ids']);
+        $audience = Audience::findOrFail($validated['audience_id']);
+        $validatedEmployerIds = Employer::whereIn('id', $validated['employer_ids'])->pluck('id')->toArray();
+
+        if ($this->isEmployer($user)) {
+            $validatedEmployerIds = array_merge([$user->employer->id], $validatedEmployerIds);
+        }
+
+        $event = Event::create($validated);
+        $event->employers()->sync($validatedEmployerIds);
+        $event->audience()->associate($audience);
 
         if ($request->hasFile('image')) {
             $event->img_path = $request->file('image')->store('img/event' . $event->id, 'public');
-            $event->save();
         }
+
+        $event->save();
 
         return new EventResource($event);
     }
@@ -81,28 +91,27 @@ class EventController extends Controller
 
         if ($this->isEmployer($user)) {
             if (!$event->employers()->where('user_id', $user->id)->exists()) {
-                return response([
-                    'message' => 'You do not have permission to do this.'
-                ], 401);
+                return response()->json(['message' => 'You do not have permission to do this.'], 403);
+            }
+
+            if (!in_array($user->employer->id, $validated['employer_ids'])) {
+                return response()->json(['message' => 'You do not have permission to do this.'], 403);
             }
         }
 
+        $audience = Audience::findOrFail($validated['audience_id']);
+        $validatedEmployerIds = Employer::whereIn('id', $validated['employer_ids'])->pluck('id')->toArray();
+
         $event->update($validated);
-
-        if (isset($validated['employer_ids'])) {
-            array_push($validated['employer_ids'], Employer::where('user_id', $user->id)->first()->id);
-            $event->employers()->sync($validated);
-        }
-
-        if (isset($validated['audience_id'])) {
-            $event->audience()->associate($validated['audience_id']);
-        }
+        $event->employers()->sync($validatedEmployerIds);
+        $event->audience()->associate($audience);
 
         if ($request->hasFile('image')) {
             Storage::disk('public')->delete($event->img_path);
             $event->img_path = $request->file('image')->store('img/event' . $event->id, 'public');
-            $event->save();
         }
+
+        $event->save();
 
         return new EventResource($event);
     }
