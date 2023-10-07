@@ -58,30 +58,17 @@ class ApplicationController extends Controller
         ]);
 
         $application = Application::create($validated);
-        return new ApplicationResource($application);
 
         if ($this->isStudent($user)) {
-            $student = Student::where('user_id', $user->id)->first();
+            $student = $user->student;
         } else {
-            $student = Student::find($request->input('student_id'));
+            $student = Student::findOrFail($validated['student_id']);
         }
-
-        if (!$student) {
-            return response([
-                'message' => 'Student not found.'
-            ], 401);
-        } else {
             $application->student()->associate($student);
-        }
-
-        $vacancy = Vacancy::find($request->input('vacancy_id'));
-        if (!$vacancy) {
-            return response([
-                'message' => 'Vacancy not found.'
-            ], 401);
-        } else {
+    
+            $vacancy = Vacancy::findOrFail($validated['vacancy_id']);
             $application->vacancy()->associate($vacancy);
-        }
+        
 
         $application_status = ApplicationStatus::find($request->input('application_status_id'));
         if (!$application_status) {
@@ -97,9 +84,9 @@ class ApplicationController extends Controller
         return new ApplicationResource($application);
     }
 
-    public function show(Application $application): ApplicationStatusResource
+    public function show(Application $application): ApplicationResource
     {
-        return new  ApplicationResource($application);
+        return new ApplicationResource($application);
     }
 
     public function update(Request $request, Application $application): ApplicationResource
@@ -113,8 +100,6 @@ class ApplicationController extends Controller
 
         $application->update($validated);
 
-        return new ApplicationResource($application);
-        
         {
             $user = $request->user();
             $application = Application::findOrFail($id);
@@ -125,13 +110,7 @@ class ApplicationController extends Controller
                 if (!$employer || $employer->id !== $application->vacancy->employer_id) {
                     return response(['message' => 'You do not have permission to do this.'], 401);
                 }
-        
-                if ($request->has('application_status_id')) {
-                    $application->update(['application_status_id' => $request->input('application_status_id')]);
-                }
-            } else {
-                $application->fill($request->only(['desc', 'student_id', 'vacancy_id']));
-        
+           
                 if ($request->has('student_id')) {
                     $application->student()->associate(Student::findOrFail($request->input('student_id')));
                 }
@@ -145,7 +124,6 @@ class ApplicationController extends Controller
                 }
         
                 $application->save();
-            }
         
             return new ApplicationResource($application);
         }

@@ -28,21 +28,6 @@ class StudentController extends Controller
         $student = Student::create($validated);
 
         return new StudentResource($student);
-
-        $student = new Student($request->all());
-        $user = User::find($request->input('user_id'));
-        if ($user) {
-            if ($user->student()->exists() || $user->employer()->exists()) {
-                return response([
-                    'message' => 'User already associated.'
-                ], 401);
-            } else {
-                $student->user()->associate($user);
-            }
-        }
-        $student->save();
-
-        return new StudentResource($student);
     }
 
     public function show(Student $student): StudentResource
