@@ -18,6 +18,8 @@ use App\Orchid\Screens\Event\EventListScreen;
 use App\Orchid\Screens\Event\EventEditScreen;
 use App\Orchid\Screens\News\NewsListScreen;
 use App\Orchid\Screens\News\NewsEditScreen;
+use App\Orchid\Screens\Social\SocialEditScreen;
+use App\Orchid\Screens\Social\SocialListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -274,4 +276,37 @@ Route::screen('news/{news}/edit', NewsEditScreen::class)
         return $trail
             ->parent('platform.publications.news')
             ->push($news->title, route('platform.publications.news.edit', $news));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                                 Socials
+|--------------------------------------------------------------------------
+*/
+
+// Platform > System > Socials
+Route::screen('socials', SocialListScreen::class)
+    ->name('platform.systems.socials')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Социальные сети", route('platform.systems.socials'));
+    });
+
+// Platform > System > Socials > Create
+Route::screen('socials/create', SocialEditScreen::class)
+    ->name('platform.systems.socials.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.socials')
+            ->push(__('Create'), route('platform.systems.socials.create'));
+    });
+
+// Platform > System > Socials > Social
+Route::screen('socials/{social}/edit', SocialEditScreen::class)
+    ->name('platform.systems.socials.edit')
+    ->breadcrumbs(function (Trail $trail, $social) {
+        return $trail
+            ->parent('platform.systems.socials')
+            ->push($social->name, route('platform.systems.socials.edit', $social));
     });
