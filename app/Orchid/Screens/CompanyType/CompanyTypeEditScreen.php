@@ -117,7 +117,7 @@ class CompanyTypeEditScreen extends Screen
 
         Toast::info('Тип компании был сохранен');
 
-        return redirect()->route('platform.systems.company_type');
+        return redirect()->route('platform.systems.company_types');
     }
 
     /**
@@ -134,6 +134,6 @@ class CompanyTypeEditScreen extends Screen
 
         Toast::info('Тип компании был удален');
 
-        return redirect()->route('platform.systems.company_type');
+        return redirect()->route('platform.systems.company_types');
     }
 }

@@ -77,7 +77,7 @@ class CompanyTypeListScreen extends Screen
     public function layout(): iterable
     {
         return [
-            SocialListLayout::class,
+            CompanyTypeListLayout::class,
 
             Layout::modal('asyncEditCompanyTypeModal', CompanyTypeEditLayout::class)
                 ->async('asyncGetCompanyType'),

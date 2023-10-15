@@ -313,36 +313,36 @@ Route::screen('socials/{social}/edit', SocialEditScreen::class)
             ->push($social->name, route('platform.systems.socials.edit', $social));
     });
 
-    /*
+/*
 |--------------------------------------------------------------------------
-|                                 Company Types
+|                             Company Types
 |--------------------------------------------------------------------------
 */
 
 // Platform > System > Company Types
 Route::screen('company_types', CompanyTypeListScreen::class)
-->name('platform.systems.company_types')
-->breadcrumbs(function (Trail $trail) {
-    return $trail
-        ->parent('platform.index')
-        ->push("Типы компаний", route('platform.systems.company_types'));
-});
+    ->name('platform.systems.company_types')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Типы компаний", route('platform.systems.company_types'));
+    });
 
 // Platform > System > Company Types > Create
 Route::screen('company_types/create', CompanyTypeEditScreen::class)
-->name('platform.systems.company_types.create')
-->breadcrumbs(function (Trail $trail) {
-    return $trail
-        ->parent('platform.systems.company_types')
-        ->push(__('Create'), route('platform.systems.company_types.create'));
-});
+    ->name('platform.systems.company_types.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.company_types')
+            ->push(__('Create'), route('platform.systems.company_types.create'));
+    });
 
 // Platform > System > Company Types > Company Type
-Route::screen('company_types/company_type}/edit', CompanyTypeEditScreen::class)
-->name('platform.systems.company_types.edit')
-->breadcrumbs(function (Trail $trail, $company_types) {
-    return $trail
-        ->parent('platform.systems.company_types')
-        ->push($company_types->title, route('platform.systems.company_types.edit', $company_types));
-});
+Route::screen('company_types/{company_type}/edit', CompanyTypeEditScreen::class)
+    ->name('platform.systems.company_types.edit')
+    ->breadcrumbs(function (Trail $trail, $company_type) {
+        return $trail
+            ->parent('platform.systems.company_types')
+            ->push($company_type->title, route('platform.systems.company_types.edit', $company_type));
+    });
 

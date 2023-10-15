@@ -45,7 +45,7 @@ class CompanyTypeListLayout extends Table
                         ->list([
 
                             Link::make(__('Edit'))
-                                ->route('platform.systems.company_type.edit', $company_type->id)
+                                ->route('platform.systems.company_types.edit', $company_type->id)
                                 ->icon('pencil'),
 
                             Button::make(__('Delete'))

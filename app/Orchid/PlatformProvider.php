@@ -49,7 +49,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('grid')
                 ->route('platform.systems.company_types'),
 
-
             Menu::make("Вакансии")
                 ->icon('docs')
                 ->route('platform.employment.vacancies')

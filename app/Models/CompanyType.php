@@ -4,10 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Orchid\Filters\Filterable;
+use Orchid\Screen\AsSource;
 
 class CompanyType extends Model
 {
-    use HasFactory, AsSource, Filterable;;
+    use HasFactory, AsSource, Filterable;
 
     /**
      * The attributes that are mass assignable.
