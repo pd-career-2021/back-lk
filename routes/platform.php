@@ -20,6 +20,8 @@ use App\Orchid\Screens\News\NewsListScreen;
 use App\Orchid\Screens\News\NewsEditScreen;
 use App\Orchid\Screens\Social\SocialEditScreen;
 use App\Orchid\Screens\Social\SocialListScreen;
+use App\Orchid\Screens\CompanyType\CompanyTypeEditScreen;
+use App\Orchid\Screens\CompanyType\CompanyTypeListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -310,3 +312,37 @@ Route::screen('socials/{social}/edit', SocialEditScreen::class)
             ->parent('platform.systems.socials')
             ->push($social->name, route('platform.systems.socials.edit', $social));
     });
+
+    /*
+|--------------------------------------------------------------------------
+|                                 Company Types
+|--------------------------------------------------------------------------
+*/
+
+// Platform > System > Company Types
+Route::screen('company_types', CompanyTypeListScreen::class)
+->name('platform.systems.company_types')
+->breadcrumbs(function (Trail $trail) {
+    return $trail
+        ->parent('platform.index')
+        ->push("Типы компаний", route('platform.systems.company_types'));
+});
+
+// Platform > System > Company Types > Create
+Route::screen('company_types/create', CompanyTypeEditScreen::class)
+->name('platform.systems.company_types.create')
+->breadcrumbs(function (Trail $trail) {
+    return $trail
+        ->parent('platform.systems.company_types')
+        ->push(__('Create'), route('platform.systems.company_types.create'));
+});
+
+// Platform > System > Company Types > Company Type
+Route::screen('company_types/company_type}/edit', CompanyTypeEditScreen::class)
+->name('platform.systems.company_types.edit')
+->breadcrumbs(function (Trail $trail, $company_types) {
+    return $trail
+        ->parent('platform.systems.company_types')
+        ->push($company_types->title, route('platform.systems.company_types.edit', $company_types));
+});
+

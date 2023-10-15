@@ -45,6 +45,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('social-vkontakte')
                 ->route('platform.systems.socials'),
 
+            Menu::make("Типы компаний")
+                ->icon('grid')
+                ->route('platform.systems.company_types'),
+
+
             Menu::make("Вакансии")
                 ->icon('docs')
                 ->route('platform.employment.vacancies')

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class CompanyType extends Model
 {
-    use HasFactory;
+    use HasFactory, AsSource, Filterable;;
 
     /**
      * The attributes that are mass assignable.
@@ -16,5 +16,27 @@ class CompanyType extends Model
      */
     protected $fillable = [
         'title',
+    ];
+
+    /**
+     * The attributes for which you can use filters in url.
+     *
+     * @var array<string, string>
+     */
+    protected $allowedFilters = [
+        'id',
+        'title',
+    ];
+
+    /**
+     * The attributes for which can use sort in url.
+     *
+     * @var array
+     */
+    protected $allowedSorts = [
+        'id',
+        'title',
+        'updated_at',
+        'created_at',
     ];
 }
