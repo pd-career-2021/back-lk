@@ -34,7 +34,7 @@ class CoreSkillsListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Типы компаний';
+        return 'Ключевые навыки';
     }
 
     /**
