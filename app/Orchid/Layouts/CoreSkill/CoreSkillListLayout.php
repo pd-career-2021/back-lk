@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Orchid\Layouts\CoreSkills;
+namespace App\Orchid\Layouts\CoreSkill;
 
 use App\Models\CoreSkill;
 use Orchid\Screen\Actions\Button;
@@ -12,7 +12,7 @@ use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
-class CoreSkillsListLayout extends Table
+class CoreSkillListLayout extends Table
 {
     /**
      * @var string
@@ -25,34 +25,34 @@ class CoreSkillsListLayout extends Table
     public function columns(): array
     {
         return [
-            TD::make('title', "Заголовок")
+            TD::make('title', "Название")
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make()),
 
             TD::make('updated_at', __('Last edit'))
                 ->sort()
-                ->render(function (CoreSkills $core_skills) {
-                    return $core_skills->updated_at->toDateTimeString();
+                ->render(function (CoreSkill $core_skill) {
+                    return $core_skill->updated_at->toDateTimeString();
                 }),
 
             TD::make(__('Actions'))
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')
-                ->render(function (CoreSkills $core_skills) {
+                ->render(function (CoreSkill $core_skill) {
                     return DropDown::make()
                         ->icon('options-vertical')
                         ->list([
 
                             Link::make(__('Edit'))
-                                ->route('platform.systems.core_skills.edit', $core_skills->id)
+                                ->route('platform.systems.core_skills.edit', $core_skill->id)
                                 ->icon('pencil'),
 
                             Button::make(__('Delete'))
                                 ->icon('trash')
                                 ->confirm("Данные будут удалены безвозвратно. Вы уверены?")
                                 ->method('remove', [
-                                    'id' => $core_skills->id,
+                                    'id' => $core_skill->id,
                                 ]),
                         ]);
                 }),

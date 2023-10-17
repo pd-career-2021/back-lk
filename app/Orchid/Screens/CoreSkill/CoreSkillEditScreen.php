@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Orchid\Screens\CoreSkills;
+namespace App\Orchid\Screens\CoreSkill;
 
-use App\Models\CoreSkills;
-use App\Orchid\Layouts\CoreSkills\CoreSkillsEditLayout;
+use App\Models\CoreSkill;
+use App\Orchid\Layouts\CoreSkill\CoreSkillEditLayout;
 use Illuminate\Http\Request;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
@@ -14,24 +14,24 @@ use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 
-class CoreSkillsEditScreen extends Screen
+class CoreSkillEditScreen extends Screen
 {
     /**
-     * @var CoreSkills
+     * @var CoreSkill
      */
-    public $core_skills;
+    public $core_skill;
 
     /**
      * Query data.
      *
-     * @param CoreSkills $core_skills
+     * @param CoreSkill $core_skill
      *
      * @return array
      */
-    public function query(CoreSkills $core_skills): iterable
+    public function query(CoreSkill $core_skill): iterable
     {
         return [
-            'core_skills' => $core_skills,
+            'core_skill' => $core_skill,
         ];
     }
 
@@ -42,7 +42,7 @@ class CoreSkillsEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return $this->core_skills->exists ? 'Редактировать ключевые навыки' : 'Добавить ключевой навык';
+        return $this->core_skill->exists ? 'Редактировать ключевые навыки' : 'Добавить ключевой навык';
     }
 
     /**
@@ -75,7 +75,7 @@ class CoreSkillsEditScreen extends Screen
                 ->icon('trash')
                 ->confirm("Данные будут удалены безвозвратно. Вы уверены?")
                 ->method('remove')
-                ->canSee($this->core_skills->exists),
+                ->canSee($this->core_skill->exists),
 
             Button::make(__('Save'))
                 ->icon('check')
@@ -90,30 +90,30 @@ class CoreSkillsEditScreen extends Screen
     {
         return [
 
-            Layout::block(CoreSkillsEditLayout::class)
+            Layout::block(CoreSkillEditLayout::class)
                 ->title("Информация о ключевом навыке")
                 ->description('Основная информация о ключевом навыке')
                 ->commands(
                     Button::make(__('Save'))
                         ->type(Color::DEFAULT())
                         ->icon('check')
-                        ->canSee($this->core_skills->exists)
+                        ->canSee($this->core_skill->exists)
                         ->method('save')
                 ),
         ];
     }
     
     /**
-     * @param CoreSkills $core_skills
+     * @param CoreSkill $core_skill
      * @param Request $request
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function save(CoreSkills $core_skills, Request $request)
+    public function save(CoreSkill $core_skill, Request $request)
     {
-        $coreSkillsData = $request->get('core_skills');
+        $coreSkillData = $request->get('core_skill');
 
-        $$core_skills->fill($coreSkillsData)->save();
+        $core_skill->fill($coreSkillData)->save();
 
         Toast::info('Ключевой навык был сохранен');
 
@@ -121,16 +121,16 @@ class CoreSkillsEditScreen extends Screen
     }
 
     /**
-     * @param CoreSkills $core_skills
+     * @param CoreSkill $core_skill
      *
      * @throws \Exception
      *
      * @return \Illuminate\Http\RedirectResponse
      *
      */
-    public function remove(CoreSkills $core_skills)
+    public function remove(CoreSkill $core_skill)
     {
-        $core_skills->delete();
+        $core_skill->delete();
 
         Toast::info('Ключевой навык был удален');
 

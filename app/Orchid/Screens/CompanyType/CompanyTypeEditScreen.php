@@ -113,7 +113,7 @@ class CompanyTypeEditScreen extends Screen
     {
         $companyTypeData = $request->get('company_type');
 
-        $$company_type->fill($companyTypeData)->save();
+        $company_type->fill($companyTypeData)->save();
 
         Toast::info('Тип компании был сохранен');
 

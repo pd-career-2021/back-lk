@@ -91,8 +91,6 @@ class CompanyTypeListScreen extends Screen
      */
     public function asyncGetCompanyType(CompanyType $company_type): iterable
     {
-        $company_type->load('attachment');
-
         return [
             'company_type' => $company_type,
         ];

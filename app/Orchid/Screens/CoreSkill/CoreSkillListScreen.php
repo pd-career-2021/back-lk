@@ -2,18 +2,18 @@
 
 declare(strict_types=1);
 
-namespace App\Orchid\Screens\CoreSkills;
+namespace App\Orchid\Screens\CoreSkill;
 
-use App\Orchid\Layouts\CoreSkills\CoreSkillsEditLayout;
-use App\Orchid\Layouts\CoreSkills\CoreSkillsListLayout;
+use App\Orchid\Layouts\CoreSkill\CoreSkillEditLayout;
+use App\Orchid\Layouts\CoreSkill\CoreSkillListLayout;
 use Illuminate\Http\Request;
-use App\Models\CoreSkills;
+use App\Models\CoreSkill;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
 use Orchid\Support\Facades\Toast;
 
-class CoreSkillsListScreen extends Screen
+class CoreSkillListScreen extends Screen
 {
     /**
      * Query data.
@@ -23,7 +23,7 @@ class CoreSkillsListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'core_skills' => CoreSkills::filters()->paginate(10),
+            'core_skills' => CoreSkill::filters()->paginate(10),
         ];
     }
 
@@ -77,34 +77,32 @@ class CoreSkillsListScreen extends Screen
     public function layout(): iterable
     {
         return [
-            CoreSkillsListLayout::class,
+            CoreSkillListLayout::class,
 
-            Layout::modal('asyncEditCoreSkillsModal', CoreSkillsEditLayout::class)
-                ->async('asyncGetCoreSkills'),
+            Layout::modal('asyncEditCoreSkillModal', CoreSkillEditLayout::class)
+                ->async('asyncGetCoreSkill'),
         ];
     }
 
     /**
-     * @param CoreSkills $core_skills
+     * @param CoreSkill $core_skill
      *
      * @return array
      */
-    public function asyncGetCoreSkills(CoreSkills $core_skills): iterable
+    public function asyncGetCoreSkill(CoreSkill $core_skill): iterable
     {
-        $core_skills->load('attachment');
-
         return [
-            'core_skills' => $core_skills,
+            'core_skill' => $core_skill,
         ];
     }
 
     /**
      * @param Request $request
-     * @param CoreSkills $core_skills
+     * @param CoreSkill $core_skill
      */
-    public function saveCoreSkills(Request $request, CoreSkills $core_skills): void
+    public function saveCoreSkill(Request $request, CoreSkill $core_skill): void
     {
-        $core_skills->fill($request->input('core_skills'))->save();
+        $core_skill->fill($request->input('core_skill'))->save();
  
         Toast::info("Ключевой навык был сохранен");
     }
@@ -114,7 +112,7 @@ class CoreSkillsListScreen extends Screen
      */
     public function remove(Request $request): void
     {
-        CoreSkills::findOrFail($request->get('id'))->delete();
+        CoreSkill::findOrFail($request->get('id'))->delete();
 
         Toast::info("Ключевой навык был удален");
     }

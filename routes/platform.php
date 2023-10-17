@@ -22,8 +22,8 @@ use App\Orchid\Screens\Social\SocialEditScreen;
 use App\Orchid\Screens\Social\SocialListScreen;
 use App\Orchid\Screens\CompanyType\CompanyTypeEditScreen;
 use App\Orchid\Screens\CompanyType\CompanyTypeListScreen;
-use App\Orchid\Screens\CoreSkills\CoreSkillsEditScreen;
-use App\Orchid\Screens\CoreSkills\CoreSkillsListScreen;
+use App\Orchid\Screens\CoreSkill\CoreSkillEditScreen;
+use App\Orchid\Screens\CoreSkill\CoreSkillListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -355,7 +355,7 @@ Route::screen('company_types/{company_type}/edit', CompanyTypeEditScreen::class)
 */
 
 // Platform > System > Core Skills
-Route::screen('core_skills', CoreSkillsListScreen::class)
+Route::screen('core_skills', CoreSkillListScreen::class)
 ->name('platform.systems.core_skills')
 ->breadcrumbs(function (Trail $trail) {
     return $trail
@@ -364,7 +364,7 @@ Route::screen('core_skills', CoreSkillsListScreen::class)
 });
 
 // Platform > System > Core Skills > Create
-Route::screen('core_skills/create', CoreSkillsEditScreen::class)
+Route::screen('core_skills/create', CoreSkillEditScreen::class)
 ->name('platform.systems.core_skills.create')
 ->breadcrumbs(function (Trail $trail) {
     return $trail
@@ -373,7 +373,7 @@ Route::screen('core_skills/create', CoreSkillsEditScreen::class)
 });
 
 // Platform > System > Core Skills > Core Skill
-Route::screen('core_skills/{core_skill}/edit', CoreSkillsEditScreen::class)
+Route::screen('core_skills/{core_skill}/edit', CoreSkillEditScreen::class)
 ->name('platform.systems.core_skills.edit')
 ->breadcrumbs(function (Trail $trail, $core_skills) {
     return $trail

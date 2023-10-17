@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace App\Orchid\Layouts\CoreSkills;
+namespace App\Orchid\Layouts\CoreSkill;
 
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Rows;
 
-class CoreSkillsEditLayout extends Rows
+class CoreSkillEditLayout extends Rows
 {
     /**
      * Views.
@@ -18,7 +18,7 @@ class CoreSkillsEditLayout extends Rows
     public function fields(): array
     {
         return [
-            Input::make('core_skills.title')
+            Input::make('core_skill.title')
                 ->type('text')
                 ->max(45)
                 ->required()
