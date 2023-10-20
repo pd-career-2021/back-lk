@@ -24,6 +24,8 @@ use App\Orchid\Screens\CompanyType\CompanyTypeEditScreen;
 use App\Orchid\Screens\CompanyType\CompanyTypeListScreen;
 use App\Orchid\Screens\CoreSkill\CoreSkillEditScreen;
 use App\Orchid\Screens\CoreSkill\CoreSkillListScreen;
+use App\Orchid\Screens\Audience\AudienceEditScreen;
+use App\Orchid\Screens\Audience\AudienceListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -350,33 +352,66 @@ Route::screen('company_types/{company_type}/edit', CompanyTypeEditScreen::class)
 
 /*
 |--------------------------------------------------------------------------
-|                             Core Skills
+|                               Core Skills
 |--------------------------------------------------------------------------
 */
 
 // Platform > System > Core Skills
 Route::screen('core_skills', CoreSkillListScreen::class)
-->name('platform.systems.core_skills')
-->breadcrumbs(function (Trail $trail) {
-    return $trail
-        ->parent('platform.index')
-        ->push("Ключевые навыки", route('platform.systems.core_skills'));
-});
+    ->name('platform.systems.core_skills')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Ключевые навыки", route('platform.systems.core_skills'));
+    });
 
 // Platform > System > Core Skills > Create
 Route::screen('core_skills/create', CoreSkillEditScreen::class)
-->name('platform.systems.core_skills.create')
-->breadcrumbs(function (Trail $trail) {
-    return $trail
-        ->parent('platform.systems.core_skills')
-        ->push(__('Create'), route('platform.systems.core_skills.create'));
-});
+    ->name('platform.systems.core_skills.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.core_skills')
+            ->push(__('Create'), route('platform.systems.core_skills.create'));
+    });
 
 // Platform > System > Core Skills > Core Skill
 Route::screen('core_skills/{core_skill}/edit', CoreSkillEditScreen::class)
-->name('platform.systems.core_skills.edit')
-->breadcrumbs(function (Trail $trail, $core_skills) {
-    return $trail
-        ->parent('platform.systems.core_skills')
-        ->push($core_skills->title, route('platform.systems.core_skills.edit', $core_skills));
-});
+    ->name('platform.systems.core_skills.edit')
+    ->breadcrumbs(function (Trail $trail, $core_skill) {
+        return $trail
+            ->parent('platform.systems.core_skills')
+            ->push($core_skill->title, route('platform.systems.core_skills.edit', $core_skill));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                               Audiences
+|--------------------------------------------------------------------------
+*/
+
+// Platform > System > Audiences
+Route::screen('audiences', AudienceListScreen::class)
+    ->name('platform.systems.audiences')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Аудитория", route('platform.systems.audiences'));
+    });
+
+// Platform > System > Audiences > Create
+Route::screen('audiences/create', AudienceEditScreen::class)
+    ->name('platform.systems.audiences.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.audiences')
+            ->push(__('Create'), route('platform.systems.audiences.create'));
+    });
+
+// Platform > System > Audiences > Audience
+Route::screen('audiences/{audience}/edit', AudienceEditScreen::class)
+    ->name('platform.systems.audiences.edit')
+    ->breadcrumbs(function (Trail $trail, $audience) {
+        return $trail
+            ->parent('platform.systems.audiences')
+            ->push($audience->name, route('platform.systems.audiences.edit', $audience));
+    });
