@@ -11,31 +11,24 @@ use App\Models\Industry;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 
 class EmployerController extends Controller
 {
     use ApiHelpers;
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+    public function index(): EmployerCollection
     {
         return new EmployerCollection(Employer::all());
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function show(Employer $employer): EmployerResource
     {
-        $validator = Validator::make($request->all(), [
+        return new EmployerResource($employer);
+    }
+
+    public function store(Request $request): EmployerResource
+    {
+        $validated = $request->validate([
             'full_name' => 'required|string|max:128',
             'short_name' => 'string|max:64',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -44,68 +37,33 @@ class EmployerController extends Controller
             'industry_ids' => 'required|array',
             'industry_ids.*' => 'integer',
         ]);
-        if ($validator->fails()) {
-            return $validator->errors()->all();
+
+        $user = User::findOrFail($validated['user_id']);
+        if ($user->student()->exists() || $user->employer()->exists()) {
+            return response()->json(['message' => 'User is already associated.'], 409);
         }
 
         $employer = new Employer($request->all());
-        $user = User::find($request->input('user_id'));
-        if ($user) {
-            if ($user->student()->exists() || $user->employer()->exists()) {
-                return response([
-                    'message' => 'User already associated.'
-                ], 401);
-            } else {
-                $employer->user()->associate($user);
-            }
-        }
+        $employer->user()->associate($user);
 
-        $companyType = CompanyType::find($request->input('company_type_id'));
-        if (!$companyType) {
-            return response([
-                'message' => 'Company type not found.'
-            ], 401);
-        } else {
-            $employer->companyType()->associate($companyType);
-        }
-        $employer->save();
+        $companyType = CompanyType::findOrFail($validated['company_type_id']);
+        $employer->companyType()->associate($companyType);
 
-        $validated = array();
-        foreach ($request->input('industry_ids') as $id) {
-            if (Industry::find($id))
-                array_push($validated, $id);
-        }
-        $employer->industries()->sync($validated);
+        $validatedIndustryIds = Industry::whereIn('id', $validated['industry_ids'])->pluck('id')->toArray();
+        $employer->industries()->sync($validatedIndustryIds);
 
         if ($request->hasFile('image')) {
             $employer->img_path = $request->file('image')->store('img/e' . $employer->id, 'public');
         }
+
         $employer->save();
 
         return new EmployerResource($employer);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
+    public function update(Request $request, Employer $employer): EmployerResource
     {
-        return new EmployerResource(Employer::find($id));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
+        $validated = $request->validate([
             'full_name' => 'string|max:128',
             'short_name' => 'string|max:64',
             'image' => 'image|mimes:jpg,png,jpeg,gif,svg|max:2048',
@@ -114,73 +72,49 @@ class EmployerController extends Controller
             'industry_ids' => 'array',
             'industry_ids.*' => 'integer',
         ]);
-        if ($validator->fails()) {
-            return $validator->errors()->all();
-        }
 
-        $employer = Employer::find($id);
         $user = $request->user();
 
+
         if (!$this->isAdmin($user)) {
-            if ($user->id != $employer->user_id) {
-                return response([
-                    'message' => 'You do not have permission to do this.'
-                ], 401);
+            if ($user->id !== $employer->user_id) {
+                return response(['message' => 'You do not have permission to do this.'], 403);
             }
         } else {
             if ($request->has('user_id')) {
-                $user = User::find($request->input('user_id'));
-                if ($user) {
-                    if ($user->student()->exists() || $user->employer()->exists()) {
-                        return response([
-                            'message' => 'User already associated.'
-                        ], 401);
-                    } else {
-                        $employer->user()->associate($user);
-                    }
+                $newUser = User::findOrFail($validated['user_id']);
+                if ($newUser->student()->exists() || $newUser->employer()->exists()) {
+                    return response()->json(['message' => 'User is already associated.'], 409);
                 }
+                $employer->user()->associate($newUser);
             }
         }
 
-        $employer->update($request->all());
-        if ($request->hasFile('image')) {
-            Storage::disk('public')->delete($employer->img_path);
-            $employer->img_path = $request->file('image')->store('img/e' . $id, 'public');
-        }
+        $employer->update($validated);
 
         if ($request->has('company_type_id')) {
-            $companyType = CompanyType::find($request->input('company_type_id'));
-            if (!$companyType) {
-                return response([
-                    'message' => 'Company type not found.'
-                ], 401);
-            } else {
-                $employer->companyType()->associate($companyType);
-            }
+            $companyType = CompanyType::findOrFail($validated['company_type_id']);
+            $employer->companyType()->associate($companyType);
         }
 
         if ($request->has('industry_ids')) {
-            $validated = array();
-            foreach ($request->input('industry_ids') as $id) {
-                if (Industry::find($id))
-                    array_push($validated, $id);
-            }
-            $employer->industries()->sync($validated);
+            $validatedIndustryIds = Industry::whereIn('id', $validated['industry_ids'])->pluck('id')->toArray();
+            $employer->industries()->sync($validatedIndustryIds);
         }
+
+        if ($request->hasFile('image')) {
+            Storage::disk('public')->delete($employer->img_path);
+            $employer->img_path = $request->file('image')->store('img/e' . $employer->id, 'public');
+        }
+
         $employer->save();
 
         return new EmployerResource($employer);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
+    public function destroy(Employer $employer)
     {
-        Storage::disk('public')->delete(Employer::find($id)->img_path);
-        return Employer::destroy($id);
+        Storage::disk('public')->delete($employer->img_path);
+        return $employer->delete();
     }
 }

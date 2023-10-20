@@ -86,11 +86,7 @@ class VacancyController extends Controller
         if ($this->isEmployer($user)) {
             $employer = Employer::where('user_id', $user->id)->first();
         } elseif ($request->has('employer_id')) {
-            $employer = Employer::find($validated['employer_id']);
-        }
-
-        if (!$employer) {
-            return response(['message' => 'Employer not found.'], 401);
+            $employer = Employer::findOrFail($validated['employer_id']);
         }
 
         $vacancy = Vacancy::create($validated);
@@ -141,7 +137,7 @@ class VacancyController extends Controller
         if ($this->isEmployer($user)) {
             $employer = Employer::where('user_id', $user->id)->first();
             if ($vacancy->employer_id !== $employer->id) {
-                return response(['message' => 'You do not have permission to do this.'], 401);
+                return response(['message' => 'You do not have permission to do this.'], 403);
             }
         }
 
@@ -166,7 +162,7 @@ class VacancyController extends Controller
             Storage::disk('public')->delete($vacancy->img_path);
             $vacancy->img_path = $request->file('image')->store('img/v' . $vacancy->employer_id, 'public');
         }
-        
+
         $vacancy->save();
 
         return new VacancyResource($vacancy);
@@ -181,8 +177,8 @@ class VacancyController extends Controller
             $vacancy->skills()->detach();
             return $vacancy->delete();
         }
-        
-        return response(['message' => 'You do not have permission to do this.'], 401);
+
+        return response(['message' => 'You do not have permission to do this.'], 403);
     }
 
     private function canDeleteVacancy(User $user, Vacancy $vacancy)
@@ -190,11 +186,11 @@ class VacancyController extends Controller
         if ($this->isAdmin($user)) {
             return true;
         }
-    
+
         if ($this->isEmployer($user) && $vacancy->employer_id == $user->employer->id) {
             return true;
         }
-    
+
         return false;
-    }    
+    }
 }
