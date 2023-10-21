@@ -37,6 +37,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.systems.roles')
                 ->permission('platform.systems.roles'),
 
+            Menu::make("Работодатели")
+                ->icon('briefcase')
+                ->route('platform.systems.employers'),
+
             Menu::make("Факультеты")
                 ->icon('graduation')
                 ->route('platform.systems.faculties'),

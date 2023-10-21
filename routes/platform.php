@@ -26,6 +26,8 @@ use App\Orchid\Screens\CoreSkill\CoreSkillEditScreen;
 use App\Orchid\Screens\CoreSkill\CoreSkillListScreen;
 use App\Orchid\Screens\Audience\AudienceEditScreen;
 use App\Orchid\Screens\Audience\AudienceListScreen;
+use App\Orchid\Screens\Employer\EmployerEditScreen;
+use App\Orchid\Screens\Employer\EmployerListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -414,4 +416,37 @@ Route::screen('audiences/{audience}/edit', AudienceEditScreen::class)
         return $trail
             ->parent('platform.systems.audiences')
             ->push($audience->name, route('platform.systems.audiences.edit', $audience));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                               Employers
+|--------------------------------------------------------------------------
+*/
+
+// Platform > System > Employers
+Route::screen('employers', EmployerListScreen::class)
+    ->name('platform.systems.employers')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Работодатели", route('platform.systems.employers'));
+    });
+
+// Platform > System > Employers > Create
+Route::screen('employers/create', EmployerEditScreen::class)
+    ->name('platform.systems.employers.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.employers')
+            ->push(__('Create'), route('platform.systems.employers.create'));
+    });
+
+// Platform > System > Employers > Employer
+Route::screen('employers/{employer}/edit', EmployerEditScreen::class)
+    ->name('platform.systems.employers.edit')
+    ->breadcrumbs(function (Trail $trail, $employer) {
+        return $trail
+            ->parent('platform.systems.employers')
+            ->push($employer->short_name, route('platform.systems.employers.edit', $employer));
     });

@@ -7,10 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
+use Orchid\Screen\AsSource;
 
 class Employer extends Model
 {
-    use HasFactory;
+    use HasFactory, AsSource, Filterable, Attachable;
 
     /**
      * The attributes that are mass assignable.
@@ -31,6 +34,31 @@ class Employer extends Model
      */
     protected $hidden = [
         'img_path',
+    ];
+
+    /**
+     * The attributes for which you can use filters in url.
+     *
+     * @var array<string, string>
+     */
+    protected $allowedFilters = [
+        'id',
+        'full_name',
+        'short_name',
+    ];
+
+    /**
+     * The attributes for which can use sort in url.
+     *
+     * @var array
+     */
+    protected $allowedSorts = [
+        'id',
+        'full_name',
+        'short_name',
+        'desc',
+        'updated_at',
+        'created_at',
     ];
 
     public function user(): BelongsTo
