@@ -77,7 +77,7 @@ class StudentListScreen extends Screen
     public function layout(): iterable
     {
         return [
-            StudentlListLayout::class,
+            StudentListLayout::class,
 
             Layout::modal('asyncEditStudentModal', StudentEditLayout::class)
                 ->async('asyncGetStudent'),

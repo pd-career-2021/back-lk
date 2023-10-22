@@ -25,17 +25,18 @@ class StudentListLayout extends Table
     public function columns(): array
     {
         return [
-            TD::make('desc', "Описание")
-                ->sort()
-                ->cantHide()
-                ->filter(Input::make()),
-
             TD::make('user', "Пользователь")
                 ->sort()
                 ->filter(Input::make())
                 ->render(function (Student $student) {
                     return $student->user->name . ' ' . $student->user->surname;
                 }),
+
+            TD::make('desc', "Описание")
+                ->width('400px')
+                ->sort()
+                ->cantHide()
+                ->filter(Input::make()),
 
             TD::make('updated_at', __('Last edit'))
                 ->sort()

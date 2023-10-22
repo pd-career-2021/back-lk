@@ -28,6 +28,8 @@ use App\Orchid\Screens\Audience\AudienceEditScreen;
 use App\Orchid\Screens\Audience\AudienceListScreen;
 use App\Orchid\Screens\Employer\EmployerEditScreen;
 use App\Orchid\Screens\Employer\EmployerListScreen;
+use App\Orchid\Screens\Student\StudentEditScreen;
+use App\Orchid\Screens\Student\StudentListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -335,7 +337,7 @@ Route::screen('students', StudentListScreen::class)
     });
 
 // Platform > System > Student > Create
-Route::screen('students/create', studentEditScreen::class)
+Route::screen('students/create', StudentEditScreen::class)
     ->name('platform.systems.students.create')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
@@ -349,7 +351,7 @@ Route::screen('students/{student}/edit', StudentEditScreen::class)
     ->breadcrumbs(function (Trail $trail, $student) {
         return $trail
             ->parent('platform.systems.students')
-            ->push($student->desc, route('platform.systems.students.edit', $student));
+            ->push($student->user->name . ' ' . $student->user->surname, route('platform.systems.students.edit', $student));
     });
 
 /*
