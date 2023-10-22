@@ -47,6 +47,6 @@ class Student extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(User::class)->displayAppend('full_name');
+        return $this->belongsTo(User::class);
     }
 }

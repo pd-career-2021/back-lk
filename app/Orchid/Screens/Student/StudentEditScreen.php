@@ -90,7 +90,7 @@ class StudentEditScreen extends Screen
     {
         return [
 
-            Layout::block(studentEditLayout::class)
+            Layout::block(StudentEditLayout::class)
                 ->title("Информация о студенте")
                 ->description('Основная информация о студенте')
                 ->commands(

@@ -28,8 +28,10 @@ class StudentEditLayout extends Rows
                 ->placeholder('Описание'),
 
             Relation::make('student.user_id')
-                ->fromModel(User::class, 'full_name')
-                ->title('Пользователь')
+                ->fromModel(User::class, 'id')
+                ->displayAppend('fullName')
+                ->required()
+                ->title('Пользователь'),
         ];
     }
 }

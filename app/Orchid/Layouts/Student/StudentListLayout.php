@@ -34,7 +34,7 @@ class StudentListLayout extends Table
                 ->sort()
                 ->filter(Input::make())
                 ->render(function (Student $student) {
-                    return $student->user->full_name;
+                    return $student->user->name . ' ' . $student->user->surname;
                 }),
 
             TD::make('updated_at', __('Last edit'))
