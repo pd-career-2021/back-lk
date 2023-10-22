@@ -321,6 +321,39 @@ Route::screen('socials/{social}/edit', SocialEditScreen::class)
 
 /*
 |--------------------------------------------------------------------------
+|                                 Students
+|--------------------------------------------------------------------------
+*/
+
+// Platform > System > Students
+Route::screen('students', StudentListScreen::class)
+    ->name('platform.systems.students')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Студенты", route('platform.systems.students'));
+    });
+
+// Platform > System > Student > Create
+Route::screen('students/create', studentEditScreen::class)
+    ->name('platform.systems.students.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.students')
+            ->push(__('Create'), route('platform.systems.students.create'));
+    });
+
+// Platform > System > Students > Student
+Route::screen('students/{student}/edit', StudentEditScreen::class)
+    ->name('platform.systems.students.edit')
+    ->breadcrumbs(function (Trail $trail, $student) {
+        return $trail
+            ->parent('platform.systems.students')
+            ->push($student->desc, route('platform.systems.students.edit', $student));
+    });
+
+/*
+|--------------------------------------------------------------------------
 |                             Company Types
 |--------------------------------------------------------------------------
 */
