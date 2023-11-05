@@ -30,6 +30,10 @@ use App\Orchid\Screens\Employer\EmployerEditScreen;
 use App\Orchid\Screens\Employer\EmployerListScreen;
 use App\Orchid\Screens\Student\StudentEditScreen;
 use App\Orchid\Screens\Student\StudentListScreen;
+use App\Orchid\Screens\ApplicationStatus\ApplicationStatusListScreen;
+use App\Orchid\Screens\ApplicationStatus\ApplicationStatusEditScreen;
+use App\Orchid\Screens\Industry\IndustryEditScreen;
+use App\Orchid\Screens\Industry\IndustryListScreen;
 use Illuminate\Support\Facades\Route;
 use Tabuna\Breadcrumbs\Trail;
 
@@ -484,4 +488,70 @@ Route::screen('employers/{employer}/edit', EmployerEditScreen::class)
         return $trail
             ->parent('platform.systems.employers')
             ->push($employer->short_name, route('platform.systems.employers.edit', $employer));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                           Application statuses
+|--------------------------------------------------------------------------
+*/
+
+// Platform > System > Application statuses
+Route::screen('application-statuses', ApplicationStatusListScreen::class)
+    ->name('platform.systems.application-statuses')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Статусы откликов", route('platform.systems.application-statuses'));
+    });
+
+// Platform > System > Application statuses > Create
+Route::screen('application-statuses/create', ApplicationStatusEditScreen::class)
+    ->name('platform.systems.application-statuses.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.application-statuses')
+            ->push(__('Create'), route('platform.systems.application-statuses.create'));
+    });
+
+// Platform > System > Application statuses > Application status
+Route::screen('application-statuses/{application_status}/edit', ApplicationStatusEditScreen::class)
+    ->name('platform.systems.application-statuses.edit')
+    ->breadcrumbs(function (Trail $trail, $applicationStatus) {
+        return $trail
+            ->parent('platform.systems.application-statuses')
+            ->push("Статус отклика", route('platform.systems.application-statuses.edit', $applicationStatus));
+    });
+
+/*
+|--------------------------------------------------------------------------
+|                               Industries
+|--------------------------------------------------------------------------
+*/
+
+// Platform > System > Industries
+Route::screen('industries', IndustryListScreen::class)
+    ->name('platform.systems.industries')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push("Отрасли", route('platform.systems.industries'));
+    });
+
+// Platform > System > Industries > Create
+Route::screen('industries/create', IndustryEditScreen::class)
+    ->name('platform.systems.industries.create')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.systems.industries')
+            ->push(__('Create'), route('platform.systems.industries.create'));
+    });
+
+// Platform > System > Industries > Industry
+Route::screen('industries/{industry}/edit', IndustryEditScreen::class)
+    ->name('platform.systems.industries.edit')
+    ->breadcrumbs(function (Trail $trail, $industry) {
+        return $trail
+            ->parent('platform.systems.industries')
+            ->push($industry->title, route('platform.systems.industries.edit', $industry));
     });

@@ -57,6 +57,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('grid')
                 ->route('platform.systems.company_types'),
 
+            Menu::make("Отрасли")
+                ->icon('grid')
+                ->route('platform.systems.industries'),
+
             Menu::make("Ключевые навыки")
                 ->icon('grid')
                 ->route('platform.systems.core_skills'),
@@ -64,6 +68,10 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make("Аудитория")
                 ->icon('grid')
                 ->route('platform.systems.audiences'),
+
+            Menu::make("Статусы откликов")
+                ->icon('grid')
+                ->route('platform.systems.application-statuses'),
 
             Menu::make("Вакансии")
                 ->icon('docs')
