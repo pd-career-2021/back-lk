@@ -38,7 +38,7 @@ class VacancyController extends Controller
             ])
             ->via('apply')
             ->then(function ($vacancies) {
-                return $vacancies->get();
+                return $vacancies->paginate(10);
             });
 
         return new VacancyCollection($response);

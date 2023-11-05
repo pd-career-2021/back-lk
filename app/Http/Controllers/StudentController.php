@@ -15,7 +15,7 @@ class StudentController extends Controller
 
     public function index(): StudentCollection
     {
-        return new StudentCollection(Student::all());
+        return new StudentCollection(Student::paginate(10));
     }
 
     public function show(Student $student): StudentResource

@@ -18,7 +18,7 @@ class EmployerController extends Controller
 
     public function index(): EmployerCollection
     {
-        return new EmployerCollection(Employer::all());
+        return new EmployerCollection(Employer::paginate(10));
     }
 
     public function show(Employer $employer): EmployerResource

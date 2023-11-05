@@ -16,7 +16,7 @@ class ApplicationController extends Controller
     use ApiHelpers;
     public function index(): ApplicationCollection
     {
-        return new ApplicationCollection(Application::all());
+        return new ApplicationCollection(Application::paginate(10));
     }
 
     public function indexStudentApplications(Request $request): ApplicationCollection
@@ -27,7 +27,7 @@ class ApplicationController extends Controller
             return response()->json(['message' => 'You are not associated with any student.'], 404);
         }
 
-        $applications = Application::where('student_id', $student->id)->get();
+        $applications = Application::where('student_id', $student->id)->paginate(10);
 
         return new ApplicationCollection($applications);
     }
@@ -42,7 +42,7 @@ class ApplicationController extends Controller
 
         $vacancyIds = Vacancy::where('employer_id', $employer->id)->pluck('id')->toArray();
 
-        $applications = Application::whereIn('vacancy_id', $vacancyIds)->get();
+        $applications = Application::whereIn('vacancy_id', $vacancyIds)->paginate(10);
 
         return new ApplicationCollection($applications);
     }

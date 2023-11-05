@@ -16,7 +16,7 @@ class NewsController extends Controller
 
     public function index(): NewsCollection
     {
-        return new NewsCollection(News::all());
+        return new NewsCollection(News::paginate(10));
     }
 
     public function show(News $news): NewsResource

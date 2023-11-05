@@ -30,7 +30,7 @@ class EventController extends Controller
             ])
             ->via('apply')
             ->then(function ($events) {
-                return $events->get();
+                return $events->paginate(10);
             });
 
         return new EventCollection($response);

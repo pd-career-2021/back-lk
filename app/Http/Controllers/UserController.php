@@ -17,7 +17,7 @@ class UserController extends Controller
 
     public function index(): UserCollection
     {
-        return new UserCollection(User::all());
+        return new UserCollection(User::paginate(10));
     }
 
     public function show(User $user): UserResource
