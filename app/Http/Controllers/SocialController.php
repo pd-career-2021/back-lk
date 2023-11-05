@@ -15,7 +15,7 @@ class SocialController extends Controller
 
     public function index(): SocialCollection
     {
-        return new SocialCollection(Social::all());
+        return new SocialCollection(Social::paginate(10));
     }
 
     public function show(Social $social): SocialResource
