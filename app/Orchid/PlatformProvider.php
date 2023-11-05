@@ -33,10 +33,14 @@ class PlatformProvider extends OrchidServiceProvider
                 ->title("Система"),
 
             Menu::make(__('Roles'))
-                ->icon('lock')
-                ->route('platform.systems.roles')
-                ->permission('platform.systems.roles'),
+            ->icon('lock')
+            ->route('platform.systems.roles')
+            ->permission('platform.systems.roles'),
 
+            Menu::make("Студенты")
+                ->icon('user')
+                ->route('platform.systems.students'),
+            
             Menu::make("Работодатели")
                 ->icon('briefcase')
                 ->route('platform.systems.employers'),
@@ -52,10 +56,6 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make("Типы компаний")
                 ->icon('grid')
                 ->route('platform.systems.company_types'),
-
-            Menu::make("Студенты")
-                ->icon('user')
-                ->route('platform.systems.students'),
 
             Menu::make("Ключевые навыки")
                 ->icon('grid')
